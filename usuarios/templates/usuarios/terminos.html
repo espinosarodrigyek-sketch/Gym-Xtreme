@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Términos y Condiciones - GymXtreme{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card bg-dark text-white border-danger" style="border: 2px solid var(--rojo-gym);">
+                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, var(--rojo-gym), var(--rojo-oscuro));">
+                    <h1 class="text-center mb-0">
+                        <i class="fas fa-file-contract me-3"></i>TÉRMINOS Y CONDICIONES
+                    </h1>
+                    <p class="text-center mb-0 mt-2 opacity-75">GymXtreme - {{ terminos.fecha_actualizacion|date:"d/m/Y" if terminos else '' }}</p>
+                </div>
+                <div class="card-body p-4 p-lg-5">
+                    {% if terminos %}
+                        <div class="terminos-contenido">
+                            {{ terminos.contenido|safe }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No hay términos y condiciones configurados actualmente. Por favor, contacta al administrador.
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-center" style="background: rgba(0,0,0,0.3);">
+                     <a href="{% url 'planes:ver_planes' %}" class="btn btn-outline-danger">
+                        <i class="fas fa-arrow-left me-2"></i>Volver a los Planes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .terminos-contenido {
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+    
+    .terminos-contenido h1, .terminos-contenido h2, .terminos-contenido h3 {
+        color: var(--rojo-gym);
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .terminos-contenido p {
+        margin-bottom: 1rem;
+        text-align: justify;
+    }
+    
+    .terminos-contenido ul, .terminos-contenido ol {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+    }
+    
+    .terminos-contenido li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .terminos-contenido strong {
+        color: #ff6b6b;
+    }
+</style>
+{% endblock %}

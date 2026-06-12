@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load formato_cop %}
+
+{% block title %}Confirmar Cancelación - GYM{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0" style="background: rgba(0,0,0,0.3); border-radius: 15px;">
+                <div class="card-header border-0" style="background: linear-gradient(135deg, #DC3545, #A71D2A); border-radius: 15px 15px 0 0;">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirmar Cancelación de Suscripción
+                    </h5>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Información del Plan -->
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-warning me-2"></i>
+                        <strong>¿Está seguro?</strong>
+                        <p class="mb-0 mt-2">
+                            Desea cancelar su suscripción al plan <strong>{{ suscripcion.plan.nombre }}</strong>
+                        </p>
+                    </div>
+
+                    <!-- Detalles del Plan -->
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <p class="text-white-50 small mb-1">Plan Actual</p>
+                            <h6 class="text-white">{{ suscripcion.plan.nombre }}</h6>
+                        </div>
+                        <div class="col-6">
+                            <p class="text-white-50 small mb-1">Vencimiento</p>
+                            <h6 class="text-white">{{ suscripcion.fecha_fin|date:"d/m/Y" }}</h6>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <p class="text-white-50 small mb-1">Precio Mensual</p>
+                            <h6 class="text-success fw-bold">{{ suscripcion.plan.precio|cop }}</h6>
+                        </div>
+                        <div class="col-6">
+                            <p class="text-white-50 small mb-1">Duración</p>
+                            <h6 class="text-white">{{ suscripcion.plan.duracion_dias }} días</h6>
+                        </div>
+                    </div>
+
+                    <!-- Aviso importante -->
+                    <div class="alert alert-info" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Lo que sucederá al cancelar:
+                        </h6>
+                        <ul class="mb-0">
+                            <li>Tu suscripción se marcará como cancelada</li>
+                            <li>Perderás acceso a los beneficios del plan de inmediato</li>
+                            <li>Tu historial de compras se mantendrá disponible</li>
+                            <li>Podrás reactivar o contratar otro plan cuando lo desees</li>
+                            <li>No habrá reembolso de lo pagado</li>
+                        </ul>
+                    </div>
+
+                    <!-- Formulario de confirmación -->
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <!-- Checkbox de confirmación -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmarCheck" required>
+                            <label class="form-check-label text-white" for="confirmarCheck">
+                                Entiendo que cancelaré mi suscripción y perderé acceso a los beneficios del plan
+                            </label>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <a href="{% url 'mis_compras' %}" class="btn btn-secondary flex-grow-1">
+                                <i class="fas fa-times me-1"></i>No, Mantener Plan
+                            </a>
+                            <button type="submit" name="confirmar_cancelacion" value="si" class="btn btn-danger flex-grow-1" id="submitBtn" disabled>
+                                <i class="fas fa-trash me-1"></i>Sí, Cancelar Suscripción
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Información adicional -->
+                    <div class="mt-4 text-center">
+                        <p class="text-white-50 small">
+                            <i class="fas fa-headset me-1"></i>
+                            ¿Tienes dudas? <a href="{% url 'sobre_nosotros' %}" class="text-primary">Contáctanos</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Habilitar botón solo cuando se confirme
+    document.getElementById('confirmarCheck').addEventListener('change', function() {
+        document.getElementById('submitBtn').disabled = !this.checked;
+    });
+</script>
+{% endblock %}

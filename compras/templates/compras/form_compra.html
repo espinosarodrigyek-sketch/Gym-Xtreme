@@ -1,0 +1,339 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+<div style="max-width:800px;margin:0 auto;">
+    <div class="card-dark">
+        <div class="card-dark-header" style="text-align:center;">
+            <i class="fas fa-file-invoice-dollar" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>
+            {% if compra %}Editar Compra{% else %}Registrar Compra a Proveedor{% endif %}
+        </div>
+        <div class="card-dark-body">
+            <form method="POST" id="formCompra">
+                {% csrf_token %}
+
+                <!-- Proveedor y Producto -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Proveedor</label>
+                        <select name="proveedor" id="selectProveedor" class="form-input" required>
+                            <option value="">Seleccione un proveedor</option>
+                            {% for prov in proveedores %}
+                            <option value="{{ prov.id_proveedor }}" {% if compra and compra.proveedor.id_proveedor == prov.id_proveedor %}selected{% endif %}>{{ prov.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                     <div style="margin-bottom:18px;">
+                         <label class="form-label">Producto</label>
+                         <select name="producto" id="selectProducto" class="form-input" required>
+                             <option value="">Seleccione un producto</option>
+                         </select>
+                         <div id="loadingProductos" style="display:none;color:#666;font-size:0.8rem;margin-top:5px;">
+                             <i class="fas fa-spinner fa-spin"></i> Cargando productos...
+                         </div>
+                         <input type="hidden" id="productoEsConsumible" value="">
+                         <small id="productoTipoLabel" style="color:#888;font-size:0.75rem;"></small>
+                     </div>
+                </div>
+
+                <!-- Unidades, Costo, Venta -->
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Unidades</label>
+                        <input type="number" name="cantidad" id="inputCantidad" class="form-input" min="1" value="{% if detalle %}{{ detalle.cantidad }}{% else %}1{% endif %}" required>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Costo Unitario (Compra)</label>
+                        <input type="number" name="precio" id="inputCosto" class="form-input" step="100" min="0" value="{% if detalle %}{{ detalle.precio_unitario }}{% endif %}" placeholder="Precio de compra" required>
+                        <small style="color:#666;font-size:0.75rem;">Precio que pagas al proveedor</small>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Precio de Venta</label>
+                        <input type="number" name="precio_venta" id="inputVenta" class="form-input" step="100" min="0" placeholder="Precio para el cliente" required>
+                        <small style="color:#666;font-size:0.75rem;">Precio al que lo venderas</small>
+                    </div>
+                </div>
+
+        <!-- Sección de Fechas (oculta por defecto) -->
+        <div id="seccionFechas" style="margin-top:15px; display:none;">
+            <hr style="border-color:#334155;margin:15px 0;">
+            <p style="color:#888;font-size:0.8rem;margin-bottom:10px;">
+                <i class="fas fa-calendar" style="margin-right:5px;"></i>
+                <strong>Fechas del lote</strong>
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Fecha de Fabricación</label>
+                    <input type="date" name="fecha_fabricacion" id="inputFechaFabricacion" class="form-input" value="{% if detalle %}{{ detalle.fecha_fabricacion|date:'Y-m-d' }}{% endif %}">
+                    <small style="color:#888;font-size:0.75rem;">Fecha en que se fabricó el lote</small>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Fecha de Vencimiento</label>
+                    <input type="date" name="fecha_vencimiento" id="inputFechaVencimiento" class="form-input" value="{% if lote %}{{ lote.fecha_vencimiento|date:'Y-m-d' }}{% endif %}">
+                    <small style="color:#888;font-size:0.75rem;">Fecha en que vence el lote</small>
+                </div>
+            </div>
+        </div>
+
+<!-- Lote del Fabricante -->
+         <div id="seccionLoteFabricante" style="margin-top:10px; display:none;">
+            <div style="margin-bottom:18px;">
+                <label class="form-label" id="labelLoteFab">Número de Lote del Fabricante</label>
+                <input type="text" name="numero_lote_fabricante" id="inputLoteFabricante" class="form-input" placeholder="" value="{% if lote %}{{ lote.numero_lote_fabricante|default:'' }}{% endif %}">
+                <small style="color:#888;font-size:0.75rem;" id="ayudaLoteFab">Número de lote impreso por el fabricante en el empaque.</small>
+            </div>
+        </div>
+
+        <!-- Lote interno del sistema -->
+        <div id="seccionLoteAuto" style="margin-bottom:18px;padding:12px;background:#1a1a1a;border-radius:8px;border:1px solid #334155;">
+            <label class="form-label" style="color:#888;">Referencia Interna del Sistema</label>
+            <div style="font-size:1.1rem;color:#2ecc71;font-weight:bold;padding:8px 12px;background:#0a0a0a;border-radius:6px;display:inline-block;">
+                <span id="loteAutoDisplay">Se asignará automáticamente al guardar</span>
+            </div>
+            <small style="color:#666;font-size:0.75rem;display:block;margin-top:5px;">
+                El sistema generará automáticamente la referencia interna LOTE### para organizar y agrupar productos.
+            </small>
+        </div>
+
+                <!-- Mensajes de Django -->
+                {% if messages %}
+                <div style="margin-bottom:15px;">
+                    {% for message in messages %}
+                    <div style="padding:10px 15px;margin-bottom:8px;border-radius:6px;{% if message.tags == 'success' %}background:#1a5c1a;color:#4ade80;{% elif message.tags == 'error' %}background:#5c1a1a;color:#f87171;{% else %}background:#334155;color:#fff;{% endif %}">
+                        <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% else %}info-circle{% endif %}" style="margin-right:8px;"></i>
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Resumen de ganancia -->
+                <div id="resumenGanancia" style="background:#0a0a0a;border:1px solid #333;border-radius:10px;padding:15px;margin-bottom:20px;display:none;">
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;text-align:center;">
+                        <div>
+                            <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Total Compra</p>
+                            <p id="totalCompra" style="color:var(--rojo);font-size:1.3rem;font-weight:800;margin:5px 0 0;">$0</p>
+                        </div>
+                        <div>
+                            <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Total Venta</p>
+                            <p id="totalVenta" style="color:#198754;font-size:1.3rem;font-weight:800;margin:5px 0 0;">$0</p>
+                        </div>
+                        <div>
+                            <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Ganancia Bruta</p>
+                            <p id="gananciaBruta" style="color:#FFD700;font-size:1.3rem;font-weight:800;margin:5px 0 0;">$0</p>
+                        </div>
+                        <div>
+                            <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Margen</p>
+                            <p id="margenPorc" style="color:#0d6efd;font-size:1.3rem;font-weight:800;margin:5px 0 0;">0%</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-gym" style="width:100%;justify-content:center;padding:14px;font-size:1rem;">
+                    <i class="fas fa-save"></i> Registrar Compra y Crear Lote
+                </button>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+                    <button type="button" id="btnLimpiar" class="btn-gym" style="background:#6c757d;justify-content:center;padding:12px;font-size:0.9rem;">
+                        <i class="fas fa-broom"></i> Limpiar
+                    </button>
+                    <a href="/compras/" style="display:block;text-align:center;color:#666;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// ================================================================
+// CONFIGURACIÓN DEL FORMULARIO DE COMPRA
+// ================================================================
+
+(function() {
+    // Elementos del DOM
+    var selectProveedor = document.getElementById('selectProveedor');
+    var selectProducto = document.getElementById('selectProducto');
+    var inputLoteFabricante = document.getElementById('inputLoteFabricante');
+    var productoEsConsumible = document.getElementById('productoEsConsumible');
+    var productoTipoLabel = document.getElementById('productoTipoLabel');
+    var inputFechaFabricacion = document.getElementById('inputFechaFabricacion');
+    var inputFechaVencimiento = document.getElementById('inputFechaVencimiento');
+    var seccionFechas = document.getElementById('seccionFechas');
+    var seccionLoteFabricante = document.getElementById('seccionLoteFabricante');
+    var loadingProductos = document.getElementById('loadingProductos');
+
+    // ================================================================
+    // FUNCIÓN: Configurar visibilidad según tipo de producto
+    // ================================================================
+    function configurarTipoProducto() {
+        var valor = productoEsConsumible.value || '0';
+        if (valor === '1' || valor === 'true') {
+            if (seccionFechas) seccionFechas.style.display = 'block';
+            if (seccionLoteFabricante) seccionLoteFabricante.style.display = 'block';
+            if (inputLoteFabricante) inputLoteFabricante.setAttribute('required', 'required');
+            if (inputFechaFabricacion) inputFechaFabricacion.setAttribute('required', 'required');
+            if (inputFechaVencimiento) inputFechaVencimiento.setAttribute('required', 'required');
+            if (productoTipoLabel) {
+                productoTipoLabel.innerHTML = 'Producto consumible — complete fechas y lote del fabricante';
+                productoTipoLabel.style.color = '#4ade80';
+            }
+        } else {
+            if (seccionFechas) seccionFechas.style.display = 'none';
+            if (seccionLoteFabricante) seccionLoteFabricante.style.display = 'none';
+            if (inputLoteFabricante) inputLoteFabricante.removeAttribute('required');
+            if (inputFechaFabricacion) inputFechaFabricacion.removeAttribute('required');
+            if (inputFechaVencimiento) inputFechaVencimiento.removeAttribute('required');
+            if (productoTipoLabel) {
+                productoTipoLabel.innerHTML = 'Producto no consumible (ropa/accesorios) — sin fechas ni lote';
+                productoTipoLabel.style.color = '#60a5fa';
+            }
+        }
+    }
+
+    // ================================================================
+    // FUNCIÓN: Detectar tipo de producto
+    // ================================================================
+    function detectarTipoProducto(productoId) {
+        if (!selectProducto || !productoId) {
+            productoEsConsumible.value = '0';
+            return;
+        }
+        var opt = selectProducto.querySelector('option[value="' + productoId + '"]');
+        if (opt) {
+            var val = opt.getAttribute('data-es-consumible');
+            productoEsConsumible.value = (val === '1' || val === 'true') ? '1' : '0';
+        } else {
+            productoEsConsumible.value = '0';
+        }
+    }
+
+    // ================================================================
+    // EVENTO: Cambio de proveedor → cargar productos
+    // ================================================================
+    selectProveedor.addEventListener('change', function() {
+        var proveedorId = this.value;
+        
+        if (!proveedorId) {
+            selectProducto.innerHTML = '<option value="">Seleccione un producto</option>';
+            productoEsConsumible.value = '0';
+            configurarTipoProducto();
+            return;
+        }
+
+        if (loadingProductos) loadingProductos.style.display = 'block';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/productos/proveedor/' + proveedorId + '/');
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.onload = function() {
+            if (loadingProductos) loadingProductos.style.display = 'none';
+            if (xhr.status === 200) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    selectProducto.innerHTML = '<option value="">Seleccione un producto</option>';
+                    if (data.success && data.productos && data.productos.length > 0) {
+                        data.productos.forEach(function(prod) {
+                            var opt = document.createElement('option');
+                            opt.value = prod.id;
+                            opt.setAttribute('data-es-consumible', prod.es_consumible ? '1' : '0');
+                            opt.textContent = prod.nombre + ' (Stock: ' + prod.stock + ')';
+                            selectProducto.appendChild(opt);
+                        });
+                    }
+                } catch(e) {
+                    selectProducto.innerHTML = '<option value="">Error</option>';
+                }
+            } else {
+                selectProducto.innerHTML = '<option value="">Error</option>';
+            }
+        };
+        xhr.onerror = function() {
+            if (loadingProductos) loadingProductos.style.display = 'none';
+            selectProducto.innerHTML = '<option value="">Error</option>';
+        };
+        xhr.send();
+
+        // Reset
+        productoEsConsumible.value = '0';
+        configurarTipoProducto();
+    });
+
+    // ================================================================
+    // EVENTO: Cambio de producto
+    // ================================================================
+    selectProducto.addEventListener('change', function() {
+        var productoId = this.value;
+        if (productoId) {
+            detectarTipoProducto(productoId);
+            configurarTipoProducto();
+        } else {
+            productoEsConsumible.value = '0';
+            configurarTipoProducto();
+        }
+    });
+
+    // ================================================================
+    // Botón Limpiar
+    // ================================================================
+    document.getElementById('btnLimpiar').addEventListener('click', function() {
+        selectProveedor.value = '';
+        selectProducto.innerHTML = '<option value="">Seleccione un producto</option>';
+        document.getElementById('inputCantidad').value = '1';
+        document.getElementById('inputCosto').value = '';
+        document.getElementById('inputVenta').value = '';
+        if (inputLoteFabricante) inputLoteFabricante.value = '';
+        productoEsConsumible.value = '0';
+        configurarTipoProducto();
+    });
+
+    // ================================================================
+    // Cálculo de resumen
+    // ================================================================
+    function calcular() {
+        var cant = parseFloat(document.getElementById('inputCantidad').value) || 0;
+        var costo = parseFloat(document.getElementById('inputCosto').value) || 0;
+        var venta = parseFloat(document.getElementById('inputVenta').value) || 0;
+        var totalCompra = cant * costo;
+        var totalVenta = cant * venta;
+        var ganancia = totalVenta - totalCompra;
+        var margen = costo > 0 ? ((venta - costo) / costo * 100) : 0;
+
+        document.getElementById('totalCompra').textContent = '$' + totalCompra.toLocaleString();
+        document.getElementById('totalVenta').textContent = '$' + totalVenta.toLocaleString();
+        document.getElementById('gananciaBruta').textContent = '$' + ganancia.toLocaleString();
+        document.getElementById('margenPorc').textContent = margen.toFixed(1) + '%';
+
+        var resumenDiv = document.getElementById('resumenGanancia');
+        if (resumenDiv) {
+            resumenDiv.style.display = (costo > 0 || venta > 0) ? 'block' : 'none';
+        }
+    }
+
+    document.getElementById('inputCantidad').addEventListener('input', calcular);
+    document.getElementById('inputCosto').addEventListener('input', calcular);
+    document.getElementById('inputVenta').addEventListener('input', calcular);
+
+    // Inicializar
+    calcular();
+    configurarTipoProducto();
+
+    // ================================================================
+    // EDICIÓN: Cargar datos existentes (solo si es edición)
+    // ================================================================
+    {% if compra and detalle %}
+    console.log('Modo edición detectado');
+    selectProveedor.value = {{ compra.proveedor.id_proveedor }};
+    // Disparar evento change para cargar productos del proveedor
+    var event = new Event('change');
+    selectProveedor.dispatchEvent(event);
+    // Después de cargar, seleccionar el producto correspondiente
+    setTimeout(function() {
+        selectProducto.value = {{ detalle.producto.id_producto }};
+        if (selectProducto.value) {
+            detectarTipoProducto(selectProducto.value);
+            configurarTipoProducto();
+        }
+    }, 300);
+    {% endif %}
+
+    console.log('Formulario inicializado correctamente');
+})();
+</script>

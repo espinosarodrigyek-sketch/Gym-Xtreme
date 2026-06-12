@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}Sobre Nosotros - GYM XTREME{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #ffffff;
+        --text-secondary: #e2e8f0;
+        --text-muted: #94a3b8;
+    }
+
+    .about-hero {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(59, 130, 246, 0.8) 100%), 
+                    url('/media/images/logo.png') center/cover;
+        padding: 80px 20px;
+        text-align: center;
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 50px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .about-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+    }
+
+    .about-hero p {
+        font-size: 1.3rem;
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+        opacity: 0.95;
+    }
+
+    .about-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        margin-bottom: 60px;
+    }
+
+    .about-card {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .about-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary), #60a5fa);
+    }
+
+    .about-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+        border-color: var(--primary);
+    }
+
+    .about-card i {
+        font-size: 60px;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    .about-card h3 {
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .about-card p {
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+
+    /* Historia Section */
+    .history-section {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 50px;
+        margin-bottom: 60px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+    }
+
+    .history-section h2 {
+        color: var(--primary);
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 40px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .history-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: center;
+    }
+
+    .history-text p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        line-height: 1.9;
+        margin-bottom: 20px;
+    }
+
+    .history-image {
+        position: relative;
+    }
+
+    .history-image {
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        border-radius: 20px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+    }
+
+    .history-image .gym-icon {
+        font-size: 100px;
+        color: var(--primary);
+        margin-bottom: 20px;
+    }
+
+    .history-image .gym-stats {
+        display: flex;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .history-image .stat {
+        text-align: center;
+        color: white;
+    }
+
+    .history-image .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .history-image .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    /* Valores */
+    .values-section {
+        margin-bottom: 60px;
+        background: var(--bg-secondary);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+    }
+
+    .values-section h2 {
+        color: var(--text-primary);
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 50px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+
+    .value-item {
+        text-align: center;
+        padding: 30px;
+        background: var(--bg-primary);
+        border-radius: 15px;
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+    }
+
+    .value-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+    }
+
+    .value-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    }
+
+    .value-icon i {
+        font-size: 40px;
+        color: white;
+    }
+
+    .value-item h4 {
+        color: var(--text-primary);
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .value-item p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        border-radius: 20px;
+        padding: 60px 40px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), #60a5fa, var(--primary));
+    }
+
+    .cta-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
+
+    .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        opacity: 0.9;
+        color: var(--text-secondary);
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 18px 50px;
+        background: var(--primary);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+    }
+
+    .cta-button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .about-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .history-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .history-section {
+            padding: 30px 20px;
+        }
+        
+        .cta-section h2 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="about-hero">
+    <h1>Sobre Nosotros</h1>
+    <p>Conoce la historia y pasión que nos mueven a transformar vidas cada día</p>
+</div>
+
+<!-- Nuestra Historia -->
+<section class="history-section">
+    <h2>Nuestra Historia</h2>
+    <div class="history-content">
+        <div class="history-text">
+            <p><strong style="color: var(--text-primary);">GYM XTREME</strong> nació en 2015 con una visión clara: crear un espacio donde cada persona pudiera descubrir su máximo potencial físico y mental.</p>
+            
+            <p>Lo que comenzó como un pequeño gimnasio de barrio, se ha convertido en el centro de entrenamiento más innovador de la región. Nuestra filosofía se basa en tres pilares fundamentales: <strong style="color: var(--text-primary);">disciplina, superación y comunidad</strong>.</p>
+            
+            <p>Cada día, nuestro equipo de profesionales certificados se dedica a inspirar y guiar a nuestros miembros hacia sus objetivos, ya sea perder peso, ganar masa muscular, definir musculatura o simplemente mantener un estilo de vida saludable.</p>
+            
+            <p>En GYM XTREME, no solo entrenamos cuerpos; forjamos carácteres fuertes y mentes determinas.</p>
+        </div>
+        <div class="history-image">
+            <i class="fas fa-dumbbell gym-icon"></i>
+            <h3 style="color: white; margin-bottom: 10px;">GYM XTREME</h3>
+            <p style="color: var(--text-muted);">Transformando vidas desde 2015</p>
+            <div class="gym-stats">
+                <div class="stat">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Años</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Miembros</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Entrenadores</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Por Qué Elegirnos -->
+<section class="about-section">
+    <div class="about-card">
+        <i class="fas fa-dumbbell"></i>
+        <h3>Equipamiento de Primera</h3>
+        <p>Contamos con la última tecnología en máquinas y equipos de entrenamiento importadas de las mejores marcas internacionales.</p>
+    </div>
+    
+    <div class="about-card">
+        <i class="fas fa-heartbeat"></i>
+        <h3>Enfoque Personalizado</h3>
+        <p>Cada miembro recibe un plan de entrenamiento adaptado a sus objetivos, capacidades y preferencias individuales.</p>
+    </div>
+</section>
+
+<!-- Nuestros Valores -->
+<section class="values-section">
+    <h2>Nuestros Valores</h2>
+    <div class="values-grid">
+        <div class="value-item">
+            <div class="value-icon">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h4>Excelencia</h4>
+            <p>Buscamos la perfección en cada detalle de nuestro servicio</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4>Comunidad</h4>
+            <p>Fomentamos un ambiente de apoyo y motivación mutua</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <h4>Innovación</h4>
+            <p>Constantemente incorporamos nuevas tecnologías y métodos</p>
+        </div>
+        
+        <div class="value-item">
+            <div class="value-icon">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <h4>Compromiso</h4>
+            <p>Tu éxito es nuestro mayor premio</p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <h2>¿Listo para Transformarte?</h2>
+    <p>Únete a la familia GYM XTREME y comienza tu viaje hacia la mejor versión de ti mismo</p>
+    <a href="{% url 'registro' %}" class="cta-button">
+        <i class="fas fa-user-plus"></i> Únete Ahora
+    </a>
+</section>
+
+{% endblock %}

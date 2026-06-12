@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+.perfil-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.perfil-container h2 {
+    margin-bottom: 25px;
+    color: #222;
+    border-bottom: 2px solid red;
+    padding-bottom: 10px;
+}
+
+.foto-perfil {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.foto-perfil img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid red;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: red;
+}
+
+.btn-guardar {
+    background: red;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-guardar:hover {
+    background: #cc0000;
+}
+
+.badge-rol {
+    display: inline-block;
+    background: #f4f4f4;
+    color: #555;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+}
+</style>
+
+<div class="perfil-container">
+
+    <h2>Mi Perfil</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <!-- FOTO -->
+        <div class="foto-perfil">
+            {% if perfil.foto %}
+            <img src="{{ perfil.foto.url }}" alt="Foto de perfil">
+            {% else %}
+            <div style="width:100px;height:100px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:40px;">👤</div>
+            {% endif %}
+            <div>
+                <label for="foto" style="font-weight:bold;">Cambiar foto:</label><br>
+                <input type="file" name="foto" id="foto" accept="image/*">
+            </div>
+        </div>
+
+        <!-- NOMBRE -->
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="Tu nombre">
+        </div>
+
+        <!-- APELLIDO -->
+        <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Tu apellido">
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label>Correo electrónico</label>
+            <input type="email" name="email" value="{{ user.email }}" placeholder="tu@correo.com">
+        </div>
+
+        <!-- TELEFONO -->
+        <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" name="telefono" value="{{ perfil.telefono }}" placeholder="Ej: 3001234567">
+        </div>
+
+        <!-- DIRECCION -->
+        <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" name="direccion" value="{{ perfil.direccion }}" placeholder="Tu dirección">
+        </div>
+
+        <!-- EDAD -->
+        <div class="form-group">
+            <label>Edad</label>
+            <input type="number" name="edad" value="{{ perfil.edad|default:'' }}" placeholder="Tu edad" min="1" max="120">
+        </div>
+
+        <!-- PESO -->
+        <div class="form-group">
+            <label>Peso (kg)</label>
+            <input type="number" name="peso" value="{{ perfil.peso|default:'' }}" placeholder="Ej: 70" min="20" max="300" step="0.1">
+        </div>
+
+        <!-- ESTATURA -->
+        <div class="form-group">
+            <label>Estatura (m)</label>
+            <input type="number" name="estatura" value="{{ perfil.estatura|default:'' }}" placeholder="Ej: 1.70" min="1" max="2.5" step="0.01">
+        </div>
+
+        <!-- ROL (solo lectura) -->
+        <div class="form-group">
+            <label>Rol</label><br>
+            <span class="badge-rol">{{ perfil.get_rol_display }}</span>
+        </div>
+
+        <button type="submit" class="btn-guardar">Guardar cambios</button>
+
+    </form>
+
+    <br>
+    <a href="{% url 'home' %}" style="color:red;">← Volver al inicio</a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina {{ titulo }}</title>
+    <style type="text/css">
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .page-break {
+            page-break-after: always;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .header .subtitle {
+            font-size: 12px;
+            color: #ff4444;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        .header .user-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+            font-size: 11px;
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            background: #ff4444;
+            color: white;
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-around;
+            font-weight: 600;
+        }
+        
+        .stats-bar .stat {
+            text-align: center;
+        }
+        
+        .stats-bar .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .stats-bar .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+        
+        /* Content */
+        .content {
+            padding: 20px 30px;
+        }
+        
+        /* Section Title */
+        .section-title {
+            background: #1a1a1a;
+            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff4444;
+        }
+        
+        /* Day Card */
+        .day-card {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .day-header {
+            background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
+            color: white;
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .day-header.rest {
+            background: linear-gradient(135deg, #666666 0%, #444444 100%);
+        }
+        
+        .day-content {
+            padding: 12px 15px;
+        }
+        
+        .exercise {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .exercise:last-child {
+            border-bottom: none;
+        }
+        
+        .exercise-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .exercise-sets {
+            font-weight: 700;
+            color: #ff4444;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .exercise-note {
+            font-size: 9px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        /* Tips Section */
+        .tips-section {
+            background: #f8f8f8;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ff4444;
+        }
+        
+        .tips-section h3 {
+            color: #1a1a1a;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .tip {
+            padding: 4px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .tip:before {
+            content: "•";
+            color: #ff4444;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        /* Nutrition Section */
+        .nutrition-grid {
+            display: table;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        .nutrition-item {
+            display: table-cell;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .nutrition-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff4444;
+        }
+        
+        .nutrition-item .label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 1px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 9px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .footer .gym-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ff4444;
+            letter-spacing: 2px;
+        }
+        
+        /* Objetivo Badge */
+        .objetivo-badge {
+            background: #ff4444;
+            color: white;
+            padding: 8px 20px;
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        
+        /* Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .schedule-table th {
+            background: #333;
+            color: white;
+            padding: 8px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .schedule-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        .schedule-table .day-col {
+            background: #f8f8f8;
+            font-weight: 700;
+            text-align: center;
+            width: 80px;
+        }
+        
+        /* Progress */
+        .progress-section {
+            margin-top: 20px;
+        }
+        
+        .progress-bar-custom {
+            background: #1a1a1a;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar-fill {
+            background: #ff4444;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>

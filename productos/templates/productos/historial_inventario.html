@@ -1,0 +1,146 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div style="max-width:1200px;margin:0 auto;">
+        <div class="card-dark">
+            <div class="card-dark-header">
+                <i class="fas fa-history" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>
+                Historial de Inventario
+            </div>
+            <div class="card-dark-body">
+                <!-- Filtros -->
+                <form method="GET" style="margin-bottom:25px;background:#252525;padding:20px;border-radius:10px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;align-items:end;">
+                        <div>
+                            <label class="form-label" style="color:#aaa;">Producto</label>
+                            <select name="producto" class="form-input">
+                                <option value="">Todos los productos</option>
+                                {% for prod in productos %}
+                                <option value="{{ prod.id_producto }}" {% if request.GET.producto == prod.id_producto|stringformat:"s" %}selected{% endif %}>
+                                    {{ prod.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" style="color:#aaa;">Tipo de movimiento</label>
+                            <select name="tipo" class="form-input">
+                                <option value="">Todos</option>
+                                <option value="entrada" {% if request.GET.tipo == 'entrada' %}selected{% endif %}>Entradas</option>
+                                <option value="salida" {% if request.GET.tipo == 'salida' %}selected{% endif %}>Salidas</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" style="color:#aaa;">Fecha inicio</label>
+                            <input type="date" name="fecha_inicio" class="form-input" value="{{ request.GET.fecha_inicio }}">
+                        </div>
+                        <div>
+                            <label class="form-label" style="color:#aaa;">Fecha fin</label>
+                            <input type="date" name="fecha_fin" class="form-input" value="{{ request.GET.fecha_fin }}">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn-gym" style="width:100%;">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Tabla de historial -->
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#333;color:#fff;">
+                                <th style="padding:12px;text-align:left;">Fecha</th>
+                                <th style="padding:12px;text-align:left;">Producto</th>
+                                <th style="padding:12px;text-align:left;">Tipo</th>
+                                <th style="padding:12px;text-align:left;">Origen</th>
+                                <th style="padding:12px;text-align:right;">Cantidad</th>
+                                <th style="padding:12px;text-align:right;">Stock Anterior</th>
+                                <th style="padding:12px;text-align:right;">Stock Nuevo</th>
+                                <th style="padding:12px;text-align:left;">Usuario</th>
+                                <th style="padding:12px;text-align:left;">Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in historial %}
+                            <tr style="border-bottom:1px solid #444;color:#ddd;">
+                                <td style="padding:12px;">{{ item.fecha|date:"d/m/Y H:i" }}</td>
+                                <td style="padding:12px;">{{ item.producto.nombre }}</td>
+                                <td style="padding:12px;">
+                                    {% if item.tipo == 'entrada' %}
+                                    <span style="background:#22c55e;color:#fff;padding:3px 10px;border-radius:15px;font-size:0.8rem;">
+                                        <i class="fas fa-arrow-up"></i> Entrada
+                                    </span>
+                                    {% else %}
+                                    <span style="background:#ef4444;color:#fff;padding:3px 10px;border-radius:15px;font-size:0.8rem;">
+                                        <i class="fas fa-arrow-down"></i> Salida
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding:12px;">
+                                    {% if item.origen == 'compra' %}
+                                    <span style="color:#3b82f6;">Compra</span>
+                                    {% elif item.origen == 'venta' %}
+                                    <span style="color:#f59e0b;">Venta</span>
+                                    {% elif item.origen == 'ajuste' %}
+                                    <span style="color:#8b5cf6;">Ajuste</span>
+                                    {% elif item.origen == 'devolucion' %}
+                                    <span style="color:#ec4899;">Devolución</span>
+                                    {% else %}-{% endif %}
+                                </td>
+                                <td style="padding:12px;text-align:right;font-weight:bold;{% if item.tipo == 'entrada' %}color:#22c55e;{% else %}color:#ef4444;{% endif %}">
+                                    {% if item.tipo == 'entrada' %}+{% else %}-{% endif %}{{ item.cantidad }}
+                                </td>
+                                <td style="padding:12px;text-align:right;">{{ item.stock_anterior }}</td>
+                                <td style="padding:12px;text-align:right;">{{ item.stock_nuevo }}</td>
+                                <td style="padding:12px;">{{ item.usuario.username|default:"-" }}</td>
+                                <td style="padding:12px;font-size:0.85rem;color:#aaa;">{{ item.notas|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" style="padding:30px;text-align:center;color:#888;">
+                                    <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                                    No hay movimientos de inventario registrados.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-gym {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+}
+.btn-gym:hover {
+    background: var(--primary-hover);
+}
+.form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #1e1e1e;
+    color: #fff;
+    font-size: 0.95rem;
+}
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+</style>

@@ -1,0 +1,976 @@
+{% load static %}
+{% load formato_cop %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Compra - Gym</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --azul-gym: #0D6EFD;
+            --azul-oscuro: #0A58CA;
+            --primary-gym: #0D6EFD;
+            --primary-dark: #0A58CA;
+            --primary-light: #3D8BFD;
+            --negro: #1A1A1A;
+            --blanco: #FFFFFF;
+            --gris-oscuro: #2D2D2D;
+            --gris-claro: #F8F9FA;
+            --oro: #FFD700;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--negro) 0%, var(--gris-oscuro) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .card-custom {
+            background: var(--blanco);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+        
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--azul-gym) 0%, var(--azul-oscuro) 100%);
+            padding: 30px;
+            border: none;
+        }
+        
+        .card-header-custom h4 {
+            color: var(--blanco);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+        
+        .card-header-custom i {
+            color: var(--oro);
+            margin-right: 10px;
+        }
+        
+        .resumen-plan {
+            background: linear-gradient(135deg, var(--gris-claro) 0%, #E9ECEF 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid var(--azul-gym);
+        }
+        
+        .resumen-plan h5 {
+            color: var(--negro);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .resumen-plan h5 i {
+            color: var(--azul-gym);
+        }
+        
+        .precio-final {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--azul-gym);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-pago {
+            background: var(--gris-claro);
+            border-radius: 15px;
+            border: 2px solid #DEE2E6;
+        }
+        
+        .card-pago .card-header {
+            background: var(--negro);
+            color: var(--blanco);
+            border-radius: 13px 13px 0 0;
+            padding: 20px;
+            font-weight: 600;
+        }
+        
+        .card-pago .card-header i {
+            color: var(--azul-gym);
+        }
+        
+        .input-group-text {
+            background: var(--negro);
+            color: var(--blanco);
+            border: none;
+        }
+        
+        .form-control {
+            border: 2px solid #DEE2E6;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--azul-gym);
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .form-label {
+            color: var(--negro);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .btn-pagar {
+            background: linear-gradient(135deg, var(--primary-gym) 0%, var(--primary-dark) 100%);
+            color: var(--blanco);
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(13, 110, 253, 0.4);
+        }
+        
+        .btn-pagar:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(13, 110, 253, 0.5);
+            color: var(--blanco);
+        }
+        
+        .btn-pagar:active {
+            transform: translateY(0);
+        }
+        
+        .btn-pagar:disabled {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-volver {
+            background: transparent;
+            color: var(--negro);
+            border: 2px solid var(--negro);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-volver:hover {
+            background: var(--negro);
+            color: var(--blanco);
+        }
+        
+        .seguridad-badge {
+            background: linear-gradient(135deg, #28A745 0%, #1E7E34 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .seguridad-badge i {
+            margin-right: 5px;
+        }
+        
+        .form-check-input:checked {
+            background-color: var(--primary-gym);
+            border-color: var(--primary-gym);
+        }
+        
+        .form-check-label {
+            color: var(--gris-oscuro);
+        }
+        
+        .alert-success {
+            background: #D4EDDA;
+            border: none;
+            border-radius: 10px;
+            color: #155724;
+        }
+        
+        .alert-warning {
+            background: #FFF3CD;
+            border: none;
+            border-radius: 10px;
+            color: #856404;
+        }
+        
+        .alert-warning i {
+            color: #FFC107;
+        }
+        
+        /* Animaciones */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .spinner-custom {
+            width: 80px;
+            height: 80px;
+            border: 5px solid var(--gris-oscuro);
+            border-top: 5px solid var(--primary-gym);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: var(--blanco);
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .loading-subtext {
+            color: #999;
+            margin-top: 10px;
+        }
+        
+        /* Efecto de tarjeta */
+        .credit-card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+        }
+        
+        .chip {
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        /* Modal de Términos y Condiciones */
+        .modal-terminos .modal-content {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-terminos .modal-header {
+            background: linear-gradient(135deg, var(--primary-gym) 0%, var(--primary-dark) 100%);
+            border-radius: 20px 20px 0 0;
+            padding: 20px 25px;
+            border: none;
+        }
+        
+        .modal-terminos .modal-header .modal-title {
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-terminos .modal-header .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+        
+        .modal-terminos .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+        
+        .modal-terminos .modal-body {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+        
+        .modal-terminos .modal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-terminos .modal-body::-webkit-scrollbar-track {
+            background: #16213e;
+            border-radius: 10px;
+        }
+        
+        .modal-terminos .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary-gym);
+            border-radius: 10px;
+        }
+        
+        .modal-terminos .modal-body h1,
+        .modal-terminos .modal-body h2,
+        .modal-terminos .modal-body h3 {
+            color: var(--primary-light);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .modal-terminos .modal-body h1 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary-gym);
+            padding-bottom: 10px;
+        }
+        
+        .modal-terminos .modal-body h2 {
+            font-size: 1.25rem;
+        }
+        
+        .modal-terminos .modal-body h3 {
+            font-size: 1.1rem;
+        }
+        
+        .modal-terminos .modal-body p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .modal-terminos .modal-body ul,
+        .modal-terminos .modal-body ol {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        
+        .modal-terminos .modal-body li {
+            margin-bottom: 10px;
+        }
+        
+        .modal-terminos .modal-body strong {
+            color: var(--primary-light);
+        }
+        
+        .modal-terminos .modal-body a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        .modal-terminos .modal-body a:hover {
+            text-decoration: underline;
+        }
+        
+        .modal-terminos .modal-footer {
+            background: #16213e;
+            border: none;
+            padding: 20px 25px;
+            border-radius: 0 0 20px 20px;
+            gap: 15px;
+        }
+        
+        .btn-aceptar-terminos {
+            background: linear-gradient(135deg, var(--primary-gym) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(13, 110, 253, 0.4);
+        }
+        
+        .btn-aceptar-terminos:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.5);
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-gym) 100%);
+            color: white;
+        }
+        
+        .btn-aceptar-terminos:active {
+            transform: translateY(0);
+        }
+        
+        .btn-cerrar-terminos {
+            background: transparent;
+            color: #a0a0a0;
+            border: 2px solid #a0a0a0;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cerrar-terminos:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-custom"></div>
+        <div class="loading-text">Procesando Pago</div>
+        <div class="loading-subtext">Por favor espera...</div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-custom">
+                    <!-- Header -->
+                    <div class="card-header-custom text-center">
+                        <h4><i class="fas fa-credit-card"></i> Confirmar Compra</h4>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <!-- Resumen del Plan -->
+                        <div class="resumen-plan mb-4">
+                            <h5><i class="fas fa-clipboard-list"></i> Resumen del Plan</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Plan:</strong> <span class="text-primary">{{ plan.nombre }}</span></p>
+                                    <p class="mb-2"><strong>Duración:</strong> {{ plan.duracion_dias }} días</p>
+                                    <p class="mb-0"><strong>Beneficios:</strong> Acceso completo al gym</p>
+                                </div>
+                                <div class="col-md-6 text-md-end">
+                                    <p class="mb-0 text-muted">Total a pagar:</p>
+                                    <div class="precio-final">{{ plan.precio|cop }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alerta de suscripción activa -->
+                        {% if suscripcion_activa %}
+                        <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <div>
+                                <strong>¡Atención!</strong> Ya tienes una suscripción activa que vence el 
+                                <strong>{{ suscripcion_activa.fecha_fin }}</strong>. Tu nueva suscripción comenzará después.
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Formulario de Pago -->
+                        <form method="POST" action="{% url 'planes:procesar_pago' plan.id %}" id="pagoForm">
+                            {% csrf_token %}
+                            
+                            <!-- Datos del usuario para la rutina - DENTRO DEL FORMULARIO -->
+                            <div class="card-pago mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-user-circle"></i> Datos para tu Rutina Personalizada
+                                </div>
+                                <div class="card-body p-4">
+                                    <p class="text-muted mb-3">Para personalizar tu rutina de ejercicios necesitamos los siguientes datos:</p>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label"><i class="fas fa-birthday-cake me-2"></i>Edad</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                                <input type="number" class="form-control" 
+                                                       name="edad" 
+                                                       id="id_edad"
+                                                       placeholder="Años" 
+                                                       value="{{ perfil.edad|default:'' }}"
+                                                       min="10" max="100" required
+                                                       oninput="calcularIMC()">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label"><i class="fas fa-weight me-2"></i>Peso (kg)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-dumbbell"></i></span>
+                                                <input type="number" class="form-control" 
+                                                       name="peso" 
+                                                       id="id_peso"
+                                                       placeholder="kg" 
+                                                       value="{{ perfil.peso|default:'' }}"
+                                                       min="20" max="300" step="0.1" required
+                                                       oninput="calcularIMC()">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label"><i class="fas fa-ruler-vertical me-2"></i>Estatura (cm)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                                                <input type="number" class="form-control" 
+                                                       name="estatura" 
+                                                       id="id_estatura"
+                                                       placeholder="cm" 
+                                                       value="{{ perfil.estatura|default:'' }}"
+                                                       min="100" max="250" step="0.1" required
+                                                       oninput="calcularIMC()">
+                                            </div>
+                                            <small class="text-muted">En centímetros (ej: 175)</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Recomendación IMC -->
+                                    <div id="imc_recomendacion" class="mt-3 p-3 rounded" style="display: none;">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-calculator fa-2x me-3" style="color: var(--azul-gym);"></i>
+                                            <div>
+                                                <strong>Tu IMC: <span id="imc_valor"></span></strong>
+                                                <span id="imc_clasificacion" class="ms-2"></span>
+                                                <div class="mt-1">
+                                                    <i class="fas fa-lightbulb text-warning me-1"></i>
+                                                    <span id="imc_recomendacion_texto"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Selección de Rutina -->
+                            <div class="card-pago mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-running"></i> Elige tu Rutina Personalizada
+                                </div>
+                                <div class="card-body p-4">
+                                    {% if rutina_seleccionada %}
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong>Rutina seleccionada:</strong> {{ rutina_seleccionada.nombre }}
+                                        <a href="{{ url_elegir_rutina }}" class="btn btn-sm btn-outline-success ms-2">Cambiar</a>
+                                    </div>
+                                    {% else %}
+                                    
+                                    {% if opciones_rutina.0.es_db %}
+                                    <div class="mb-3 p-3" style="background: #e9ecef; border-radius: 8px;">
+                                        <a href="{{ url_elegir_rutina }}" class="btn w-100" style="background: var(--primary-gym); color: white;">
+                                            <i class="fas fa-list me-2"></i>Ver todas las rutinas disponibles
+                                        </a>
+                                        <small class="text-muted d-block mt-2 text-center">
+                                            O selecciona una de las opciones abajo
+                                        </small>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <p class="text-muted mb-3">Selecciona la rutina que mejor se adapte a tus objetivos:</p>
+                                    
+                                    <div id="alert_recomendacion" class="alert alert-success mb-3" {% if not imc or not clasificacion_imc or not rutina_recomendada %}style="display: none;"{% endif %}>
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        <strong id="alert_imc_texto">Basado en tus datos (IMC {{ imc }}), te recomendamos:</strong>
+                                        <span id="alert_rutina_nombre" class="badge ms-2" style="background: var(--primary-gym);">{{ rutina_recomendada_nombre }}</span>
+                                    </div>
+                                    
+<div class="row">
+                                        {% for opcion in opciones_rutina %}
+                                        <div class="col-md-6 mb-2">
+                                            <div class="form-check rounded p-3" style="background: #f8f9fa; border: 2px solid transparent; transition: all 0.3s;">
+                                                <input class="form-check-input" 
+                                                       type="radio" 
+                                                       name="objetivo_rutina" 
+                                                       id="objetivo_{{ opcion.valor }}" 
+                                                       value="{{ opcion.valor }}"
+                                                       {% if rutina_seleccionada_valor and opcion.valor == rutina_seleccionada_valor %}checked{% elif not rutina_seleccionada_valor and opcion.valor == rutina_recomendada %}checked{% endif %}>
+                                                <label class="form-check-label w-100" for="objetivo_{{ opcion.valor }}" style="cursor: pointer;">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas {{ opcion.icono }} fa-lg me-3" style="width: 30px; color: var(--azul-gym);"></i>
+                                                        <span>{{ opcion.nombre }}</span>
+                                                        <span id="badge_{{ opcion.valor }}" class="badge ms-auto" {% if opcion.valor != rutina_recomendada %}style="display: none;"{% endif %} style="background: var(--primary-gym);">Recomendado</span>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        {% if rutina_recomendada %}
+                                        El plan recomendado está seleccionado por defecto. Puedes cambiarlo si lo deseas.
+                                        {% else %}
+                                        Completa tus datos (edad, peso, estatura) para recibir una recomendación personalizada.
+                                        {% endif %}
+                                    </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-pago mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-lock"></i> Información de Pago Seguro
+                                </div>
+                                <div class="card-body p-4">
+                                    <!-- Badge de seguridad -->
+                                    <div class="text-center mb-4">
+                                        <span class="seguridad-badge">
+                                            <i class="fas fa-shield-alt"></i> Simulación de Pago - Sin cargo real
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Visa/Mastercard badges -->
+                                    <div class="text-center mb-4">
+                                        <i class="fab fa-cc-visa fa-3x mx-2" style="color: #1A1F71;"></i>
+                                        <i class="fab fa-cc-mastercard fa-3x mx-2" style="color: #EB001B;"></i>
+                                        <i class="fab fa-cc-amex fa-3x mx-2" style="color: #006FCF;"></i>
+                                    </div>
+
+                                    <!-- Número de Tarjeta -->
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-credit-card me-2"></i>Número de Tarjeta</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                                            <input type="text" class="form-control" 
+                                                   placeholder="1234 5678 9012 3456" 
+                                                   value="4242 4242 4242 4242"
+                                                   maxlength="19" required>
+                                        </div>
+                                        <small class="text-muted">Usa 4242 4242 4242 4242 para pruebas</small>
+                                    </div>
+
+                                    <!-- Fecha y CVV -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label"><i class="fas fa-calendar me-2"></i>Fecha de Vencimiento</label>
+                                            <input type="text" class="form-control" 
+                                                   placeholder="MM/YY" 
+                                                   value="12/28"
+                                                   maxlength="5" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label"><i class="fas fa-lock me-2"></i>CVV</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" 
+                                                       placeholder="123" 
+                                                       value="123"
+                                                       maxlength="4" required>
+                                                <span class="input-group-text" data-bs-toggle="tooltip" title="Código de 3 dígitos al reverso">
+                                                    <i class="fas fa-question-circle"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nombre del Titular -->
+                                    <div class="mb-3">
+                                        <label class="form-label"><i class="fas fa-user me-2"></i>Nombre del Titular</label>
+                                        <input type="text" class="form-control" 
+                                               placeholder="Nombre completo como aparece en la tarjeta" 
+                                               value="{{ user.get_full_name|default:user.username }}"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Términos y Botón -->
+                            <div class="text-center">
+                                <!-- Modal de Términos y Condiciones -->
+                                <div class="modal fade modal-terminos" id="modalTerminos" tabindex="-1" aria-labelledby="terminosModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="terminosModalLabel">
+                                                    <i class="fas fa-file-contract"></i> Términos y Condiciones
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="terminos-contenido">
+                                                    {{ terminos_contenido|safe }}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-cerrar-terminos" data-bs-dismiss="modal">
+                                                    <i class="fas fa-times me-2"></i> Cerrar
+                                                </button>
+                                                <button type="button" class="btn btn-aceptar-terminos" id="aceptarTerminos">
+                                                    <i class="fas fa-check me-2"></i> Acepto Todos los Términos
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input type="checkbox" class="form-check-input" id="terminos" name="acepto_terminos" required>
+                                    <label class="form-check-label d-flex align-items-center" for="terminos" style="cursor: pointer;">
+                                        <i class="fas fa-file-contract me-2" style="font-size: 1.2rem; color: var(--primary-gym);"></i>
+                                        He leído y acepto completamente los 
+                                        <a href="#" class="fw-bold" data-bs-toggle="modal" data-bs-target="#modalTerminos" style="text-decoration: none; color: var(--primary-gym);">
+                                            Términos y Condiciones de GymXtreme
+                                        </a>
+                                        <span class="badge ms-2" id="badgeTerminos" style="display: none; background: var(--primary-gym);">
+                                            ✅ Aceptado
+                                        </span>
+                                    </label>
+                                </div>
+
+                                
+                                <div class="d-grid gap-3">
+                                    <button type="submit" class="btn btn-pagar" id="btnPagar">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Pagar {{ plan.precio|cop }}
+                                    </button>
+                                    <a href="{% url 'planes:ver_planes' %}" class="btn btn-volver">
+                                        <i class="fas fa-arrow-left me-2"></i>
+                                        Volver a los planes
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Footer decorativo -->
+                <div class="text-center mt-4">
+                    <p class="text-white-50">
+                        <i class="fas fa-dumbbell me-2"></i>
+                        Tu salud es nuestra prioridad
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Elementos del modal de términos
+        const btnAceptarTerminos = document.getElementById('aceptarTerminos');
+        const checkboxTerminos = document.getElementById('terminos');
+        const badgeTerminos = document.getElementById('badgeTerminos');
+        const btnPagar = document.getElementById('btnPagar');
+        const modalTerminos = document.getElementById('modalTerminos');
+        
+        // Evento click en "Acepto Todos los Términos"
+        if (btnAceptarTerminos) {
+            btnAceptarTerminos.addEventListener('click', function() {
+                // 1. Marcar los términos como aceptados
+                checkboxTerminos.checked = true;
+                
+                // 2. Mostrar badge de aceptado
+                badgeTerminos.style.display = 'inline-flex';
+                badgeTerminos.style.alignItems = 'center';
+                badgeTerminos.style.gap = '5px';
+                
+                // 3. Habilitar botón de pago si estaba deshabilitado
+                btnPagar.disabled = false;
+                btnPagar.innerHTML = '<i class="fas fa-check-circle me-2"></i> Pagar {{ plan.precio|cop }}';
+                
+                // 4. Efecto visual de éxito
+                btnAceptarTerminos.innerHTML = '<i class="fas fa-check-double me-2"></i> ¡Términos Aceptados!';
+                btnAceptarTerminos.classList.remove('btn-aceptar-terminos');
+                btnAceptarTerminos.classList.add('btn-success');
+                btnAceptarTerminos.disabled = true;
+                
+                // 5. Cerrar el modal después de un breve momento
+                setTimeout(() => {
+                    const bootstrapModal = bootstrap.Modal.getInstance(modalTerminos);
+                    if (bootstrapModal) {
+                        bootstrapModal.hide();
+                    }
+                }, 800);
+            });
+        }
+        
+        // Validar checkbox de términos al cambiar
+        if (checkboxTerminos) {
+            checkboxTerminos.addEventListener('change', function() {
+                if (this.checked) {
+                    badgeTerminos.style.display = 'inline-flex';
+                    badgeTerminos.style.alignItems = 'center';
+                    btnPagar.disabled = false;
+                } else {
+                    badgeTerminos.style.display = 'none';
+                    // Opcional: deshabilitar botón de pago si se desmarca
+                    // btnPagar.disabled = true;
+                }
+            });
+        }
+        
+        // Inicializar tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+        
+        // Manejar el envío del formulario
+        document.getElementById('pagoForm').addEventListener('submit', function(e) {
+            // Validar que los términos estén aceptados
+            if (!checkboxTerminos.checked) {
+                e.preventDefault();
+                alert('Por favor acepta los Términos y Condiciones para continuar.');
+                return;
+            }
+            
+            const btnPagar = document.getElementById('btnPagar');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            
+            // Mostrar animación de procesamiento
+            btnPagar.disabled = true;
+            btnPagar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Procesando...';
+            loadingOverlay.style.display = 'flex';
+            
+            // El formulario se envía después de 2 segundos para mostrar la animación
+            setTimeout(() => {
+                // Continuar con el envío normal
+            }, 2000);
+        });
+        
+        // Formatear número de tarjeta mientras se escribe
+        document.querySelector('input[maxlength="19"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+        
+        // Formatear fecha mientras se escribe
+        document.querySelector('input[maxlength="5"]').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2);
+            }
+            e.target.value = value;
+        });
+        
+        // Función para calcular IMC en tiempo real
+        function calcularIMC() {
+            const peso = parseFloat(document.getElementById('id_peso').value);
+            const estatura = parseFloat(document.getElementById('id_estatura').value);
+            const imcRec = document.getElementById('imc_recomendacion');
+            const imcValor = document.getElementById('imc_valor');
+            const imcClasificacion = document.getElementById('imc_clasificacion');
+            const imcTexto = document.getElementById('imc_recomendacion_texto');
+            
+            if (peso && estatura && estatura > 0) {
+                // Convertir estatura de cm a metros
+                const estaturaMetros = estatura / 100;
+                const imc = peso / (estaturaMetros * estaturaMetros);
+                const imcRedondeado = imc.toFixed(1);
+                
+                imcRec.style.display = 'block';
+                imcValor.textContent = imcRedondeado;
+                
+                let clasificacion = '';
+                let colorClase = '';
+                let recomendacion = '';
+                let rutinaNombre = '';
+                
+                if (imc < 18.5) {
+                    clasificacion = 'Bajo peso';
+                    colorClase = 'text-primary';
+                    recomendacion = 'Te recomendamos ganar masa muscular';
+                    rutinaNombre = '💪 Subir Masa Muscular';
+                    seleccionarRutina('subir_masa');
+                } else if (imc < 25) {
+                    clasificacion = 'Peso normal';
+                    colorClase = 'text-success';
+                    recomendacion = 'Perfecto para mantener tu peso';
+                    rutinaNombre = '⚖️ Mantener Peso';
+                    seleccionarRutina('mantener');
+                } else if (imc < 30) {
+                    clasificacion = 'Sobrepeso';
+                    colorClase = 'text-warning';
+                    recomendacion = 'Te recomendamos bajar de peso';
+                    rutinaNombre = '🔥 Bajar de Peso';
+                    seleccionarRutina('bajar_peso');
+                } else {
+                    clasificacion = 'Obesidad';
+                    colorClase = 'text-danger';
+                    recomendacion = 'Te recomendamos bajar de peso urgentemente';
+                    rutinaNombre = '🔥 Bajar de Peso';
+                    seleccionarRutina('bajar_peso');
+                }
+                
+                imcClasificacion.className = 'ms-2 ' + colorClase;
+                imcClasificacion.textContent = '- ' + clasificacion;
+                imcTexto.textContent = recomendacion;
+                
+                // Actualizar la alerta verde de recomendación
+                const alertRec = document.getElementById('alert_recomendacion');
+                const alertImcTexto = document.getElementById('alert_imc_texto');
+                const alertRutinaNombre = document.getElementById('alert_rutina_nombre');
+                if (alertRec) {
+                    alertRec.style.display = 'block';
+                    alertImcTexto.textContent = 'Basado en tus datos (IMC ' + imcRedondeado + '), te recomendamos: ';
+                    alertRutinaNombre.textContent = rutinaNombre;
+                }
+            } else {
+                imcRec.style.display = 'none';
+            }
+        }
+        
+        // Función para seleccionar una rutina
+        function seleccionarRutina(valor) {
+            const radio = document.getElementById('objetivo_' + valor);
+            if (radio) {
+                radio.checked = true;
+                // Remover clase de todos
+                document.querySelectorAll('.form-check').forEach(el => {
+                    el.style.borderColor = 'transparent';
+                });
+                // Agregar clase al seleccionado
+                radio.closest('.form-check').style.borderColor = 'var(--azul-gym)';
+                
+                // Actualizar badges de "Recomendado"
+                const opciones = ['bajar_peso', 'subir_masa', 'mantener', 'definir', 'cardio', 'subir_masa_perder_grasa'];
+                opciones.forEach(function(op) {
+                    const badge = document.getElementById('badge_' + op);
+                    if (badge) {
+                        badge.style.display = op === valor ? 'inline' : 'none';
+                    }
+                });
+            }
+        }
+        
+        // Agregar estilos de hover a las opciones de rutina
+        document.querySelectorAll('.form-check').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                if (!this.querySelector('input').checked) {
+                    this.style.borderColor = '#ccc';
+                }
+            });
+            el.addEventListener('mouseleave', function() {
+                if (!this.querySelector('input').checked) {
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        });
+        
+        // Calcular IMC inicial si hay datos
+        calcularIMC();
+        
+        // Marcar la rutina seleccionada
+        document.querySelectorAll('input[name="objetivo_rutina"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.form-check').forEach(el => {
+                    el.style.borderColor = 'transparent';
+                });
+                this.closest('.form-check').style.borderColor = 'var(--azul-gym)';
+            });
+        });
+    </script>
+</body>
+</html>

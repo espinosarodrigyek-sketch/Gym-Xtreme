@@ -1,0 +1,29 @@
+<h2>Planes disponibles</h2>
+
+<div class="row">
+
+{% for plan in planes %}
+
+<div class="col-md-4">
+
+<div class="card shadow p-3">
+
+<h4>{{ plan.nombre }}</h4>
+
+<h2>${{ plan.precio }}</h2>
+
+<p>{{ plan.descripcion }}</p>
+
+<p>Duración: {{ plan.duracion_dias }} días</p>
+
+<button class="btn btn-primary">
+Suscribirse
+</button>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>

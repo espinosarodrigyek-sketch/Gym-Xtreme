@@ -1,0 +1,147 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <h2><i class="fas fa-trash-alt" style="margin-right:10px;color:var(--danger);"></i>Eliminar Datos Masivos</h2>
+    </div>
+
+    <!-- Warning Card -->
+    <div class="alert alert-error" style="background: var(--danger-light); border-color: var(--danger); color: var(--danger);">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>⚠️ Precaución:</strong> Esta acción eliminará permanentemente los datos seleccionados. Asegúrese de hacer un respaldo antes de proceder.
+    </div>
+
+    <!-- Delete Form -->
+    <div class="card-dark">
+        <div class="card-dark-header" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+            <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i> Configurar Eliminación
+        </div>
+        <div class="card-dark-body">
+            <form method="POST" id="eliminarForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-database"></i> Tipo de Dato</label>
+                            <select name="tipo_dato" class="form-input" id="tipoDato" required>
+                                <option value="productos">Productos</option>
+                                <option value="clientes">Clientes</option>
+                                <option value="planes">Planes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-filter"></i> Modo de Eliminación</label>
+                            <select name="modo" class="form-input" id="modoElim" required>
+                                <option value="todos">Eliminar Todo</option>
+                                <option value="fecha">Por Fecha (próximamente)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label class="form-label">
+                        <input type="checkbox" id="confirmDelete" required>
+                        <span style="color: var(--danger);">Confirmo que entiendo que esta acción es irreversible</span>
+                    </label>
+                </div>
+
+                <div class="d-flex gap-3 mt-3">
+                    <button type="submit" class="btn-gym" style="background: var(--danger);" id="btnEliminar">
+                        <i class="fas fa-trash"></i> Eliminar Datos
+                    </button>
+                    <a href="/admin-panel/" class="btn-gym" style="background: var(--bg-tertiary);">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Messages -->
+    {% if resultado %}
+    <div class="alert alert-success mt-4" style="background: var(--success-light); border-color: var(--success); color: var(--success);">
+        <i class="fas fa-check-circle"></i>
+        {{ resultado }}
+    </div>
+    {% endif %}
+
+    {% if errores %}
+    <div class="card-dark mt-4" style="border-color: var(--danger);">
+        <div class="card-dark-header" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+            <i class="fas fa-exclamation-triangle"></i> Errores
+        </div>
+        <div class="card-dark-body">
+            <ul style="color: var(--danger); margin: 0;">
+                {% for error in errores %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Data Statistics -->
+    <div class="card-dark mt-4">
+        <div class="card-dark-header">
+            <i class="fas fa-chart-bar" style="margin-right:8px;"></i> Estadísticas Actuales
+        </div>
+        <div class="card-dark-body">
+            <div class="economia-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: var(--primary);"><i class="fas fa-box"></i></div>
+                    <div class="metric-label">PRODUCTOS</div>
+                    <div class="metric-value" style="color: var(--primary);">{{ productos_count|default:0 }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: var(--success);"><i class="fas fa-users"></i></div>
+                    <div class="metric-label">CLIENTES</div>
+                    <div class="metric-value" style="color: var(--success);">{{ clientes_count|default:0 }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon" style="color: var(--warning);"><i class="fas fa-tags"></i></div>
+                    <div class="metric-label">PLANES</div>
+                    <div class="metric-value" style="color: var(--warning);">{{ planes_count|default:0 }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('eliminarForm').addEventListener('submit', function(e) {
+    if (!document.getElementById('confirmDelete').checked) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Debe confirmar',
+            text: 'Por favor marque la casilla de confirmación',
+            icon: 'warning',
+            confirmButtonColor: '#3b82f6',
+            background: '#1e293b',
+            color: '#ffffff'
+        });
+    } else {
+        e.preventDefault();
+        Swal.fire({
+            title: '¿Está completamente seguro?',
+            text: 'Esta acción NO se puede deshacer. Todos los datos seleccionados serán eliminados permanentemente.',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#334155',
+            confirmButtonText: 'Sí, eliminar todo',
+            cancelButtonText: 'Cancelar',
+            background: '#1e293b',
+            color: '#ffffff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.submit();
+            }
+        });
+    }
+});
+</script>

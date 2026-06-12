@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina Definir - 1 Año</title>
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 9px; color: #333; margin: 0; padding: 0;">
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; padding: 18px; text-align: center;">
+    <h1 style="font-size: 18px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 3px;">RUTINA DEFINICIÓN</h1>
+    <p style="color: white; font-size: 10px; font-weight: bold; letter-spacing: 2px; margin: 0;">PROGRAMA DEFINIR - 1 AÑO</p>
+    
+    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 8px;">
+        <p style="margin: 2px 0;"><strong>Usuario:</strong> {{ usuario.username }}</p>
+        <p style="margin: 2px 0;"><strong>Plan:</strong> {{ plan.nombre }}</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div style="background: #1a1a1a; color: white; padding: 8px 18px; display: flex; justify-content: space-around;">
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">{{ duracion_real_dias }}</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Días</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">5-6</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Días/Semana</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">PPL+HIIT</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Tipo</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">55 min</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Duración</div>
+    </div>
+</div>
+
+<!-- METAS -->
+<div style="padding: 12px; background: #fff5f5;">
+    <div style="background: #c92a2a; color: white; padding: 6px 10px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        METAS A 12 MESES
+    </div>
+    
+    <div style="display: flex; margin-top: 8px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">10-15</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Kg perder</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">6-8%</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Grasa menos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">Visible</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Abs</div>
+        </div>
+    </div>
+</div>
+
+<!-- PROGRAMA -->
+<div style="padding: 12px;">
+    <div style="background: #ff4444; color: white; padding: 6px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        PROGRAMA 12 MESES - DEFINICIÓN
+    </div>
+    
+    <!-- TRIMESTRE 1 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #ff6666; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 1 (MES 1-3): BASE
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 4px;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 1-2: Upper/Lower + HIIT</strong>
+                <p style="margin: 2px 0; font-size: 8px;">UL 4x + HIIT 2x | Déficit 400 kcal</p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 3: Push/Pull/Legs</strong>
+                <p style="margin: 2px 0; font-size: 8px;">PPL 6x + HIIT 3x</p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 2 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #cc0000; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 2 (MES 4-6): INTENSIFICACIÓN
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 4px;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 4-5: PPL + Cardio Diario</strong>
+                <p style="margin: 2px 0; font-size: 8px;">PPL 6x + LISS 30 min</p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 6: Circuitos + HIIT</strong>
+                <p style="margin: 2px 0; font-size: 8px;">4x semana circuitos | HIIT 3x</p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 3 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #1a1a1a; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 3 (MES 7-9): MÁXIMA QUEMA
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 4px;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 7-8: Doble Sesión</strong>
+                <p style="margin: 2px 0; font-size: 8px;">AM: LISS | PM: Fuerza + HIIT</p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 9: Tabata + Circuitos</strong>
+                <p style="margin: 2px 0; font-size: 8px;">Tabata 4x + Circuitos HIIT</p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 4 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #333; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 4 (MES 10-12): DEFINICIÓN FINAL
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 4px;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 10-11: Consolidación</strong>
+                <p style="margin: 2px 0; font-size: 8px;">Mantener déficit | Preservar músculo</p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 8px;">MES 12: Deload + Evaluación</strong>
+                <p style="margin: 2px 0; font-size: 8px;">Deload | Fotos | Nuevo ciclo</p>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+
+<!-- NUTRICION -->
+<div style="padding: 0 12px 12px 12px;">
+    <div style="background: #1a1a1a; color: white; padding: 6px 10px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        NUTRICIÓN PARA DEFINIR
+    </div>
+    
+    <div style="display: flex; margin-top: 8px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">2g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Proteína/kg</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">100-150g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Carbohidratos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">40-60g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Grasas</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 8px; background: #fff3f3; padding: 8px; border-left: 3px solid #ff4444;">
+        <h4 style="font-size: 9px; text-transform: uppercase; margin: 0 0 5px 0;">DÉFICIT PROGRESIVO</h4>
+        <p style="font-size: 8px; margin: 2px 0;">• Mes 1-6: Déficit 400-500 kcal</p>
+        <p style="font-size: 8px; margin: 2px 0;">• Mes 7-12: Déficit 300-400 kcal</p>
+    </div>
+    
+</div>
+
+<!-- FOOTER -->
+<div style="background: #1a1a1a; color: white; padding: 10px; text-align: center;">
+    <p style="font-size: 11px; font-weight: bold; color: #ff4444; margin: 0 0 3px 0; letter-spacing: 2px;">GYM FITNESS</p>
+    <p style="font-size: 6px; margin: 0; color: #888;">Define tu cuerpo, revela tu mejor versión 💪🔥</p>
+</div>
+
+</body>
+</html>

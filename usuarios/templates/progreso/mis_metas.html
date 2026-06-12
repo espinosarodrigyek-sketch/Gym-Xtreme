@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-hover: #2563eb;
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #ffffff;
+        --text-secondary: #e2e8f0;
+        --oro: #FFD700;
+    }
+
+    .page-title {
+        text-align: center;
+        color: var(--blanco);
+        margin-bottom: 30px;
+        font-weight: 700;
+        font-size: 2rem;
+    }
+
+    .page-title i { color: var(--primary); }
+
+    .form-card {
+        background: var(--blanco);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .form-card h5 { color: var(--negro); font-weight: 700; margin-bottom: 20px; }
+    .form-card h5 i { color: var(--primary); }
+
+    .form-control, .form-select {
+        border: 2px solid #DEE2E6;
+        border-radius: 10px;
+        padding: 12px 15px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(220,53,69,0.25);
+    }
+
+    .btn-agregar {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--rojo-oscuro) 100%);
+        color: var(--blanco);
+        border: none;
+        padding: 12px 30px;
+        font-weight: 700;
+        border-radius: 50px;
+        transition: all 0.3s;
+    }
+
+    .btn-agregar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(220,53,69,0.4);
+        color: var(--blanco);
+    }
+
+    .metas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .meta-card {
+        background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--negro) 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--blanco);
+    }
+
+    .meta-card h6 { font-weight: 700; margin-bottom: 10px; }
+    .meta-card .meta-info { color: #aaa; font-size: 0.9rem; margin-bottom: 5px; }
+    .meta-card .meta-objetivo { color: var(--oro); font-weight: 600; font-size: 1.1rem; }
+
+    .meta-actions { margin-top: 15px; display: flex; gap: 10px; }
+
+    .btn-meta {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-completar { background: #198754; color: white; }
+    .btn-completar:hover { background: #157347; color: white; }
+
+    .btn-eliminar-meta { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-eliminar-meta:hover { background: var(--primary); color: white; }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #aaa;
+    }
+
+    .empty-state i { font-size: 4rem; margin-bottom: 20px; color: #555; }
+    .empty-state p { font-size: 1.1rem; }
+
+    .frase-motivacional {
+        text-align: center;
+        color: rgba(255,255,255,0.6);
+        font-style: italic;
+        margin-bottom: 30px;
+    }
+</style>
+
+<h1 class="page-title"><i class="fas fa-bullseye"></i> Mis Metas</h1>
+
+{% if frase_motivacional %}
+<p class="frase-motivacional">"{{ frase_motivacional }}"</p>
+{% endif %}
+
+<div class="form-card">
+    <h5><i class="fas fa-bullseye me-2"></i>Crear Nueva Meta</h5>
+    <form method="POST" action="{% url 'crear_meta' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold">Tipo de meta</label>
+                <select class="form-select" name="tipo">
+                    <option value="peso">Alcanzar un peso específico</option>
+                    <option value="imc">Alcanzar un IMC específico</option>
+                    <option value="rutina">Completar una rutina</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold">Peso objetivo (kg)</label>
+                <input type="number" class="form-control" name="peso_objetivo" placeholder="Ej: 70" step="0.1" min="20" max="300">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold">Fecha límite</label>
+                <input type="date" class="form-control" name="fecha_objetivo">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Descripción</label>
+            <input type="text" class="form-control" name="descripcion" placeholder="Ej: Bajar a 70kg para diciembre" required>
+        </div>
+        <button type="submit" class="btn btn-agregar">
+            <i class="fas fa-plus me-2"></i>Crear Meta
+        </button>
+    </form>
+</div>
+
+{% if metas_activas %}
+<h3 class="text-white mb-3"><i class="fas fa-tasks me-2"></i>Metas Activas</h3>
+<div class="metas-grid mb-5">
+    {% for meta in metas_activas %}
+    <div class="meta-card">
+        <h6><i class="fas fa-flag me-2" style="color: var(--oro);"></i>{{ meta.descripcion }}</h6>
+        {% if meta.peso_objetivo %}
+        <div class="meta-info">
+            <i class="fas fa-crosshairs me-1"></i> Objetivo: <span class="meta-objetivo">{{ meta.peso_objetivo }} kg</span>
+            {% if peso_actual %}
+            <br><small>Actual: {{ peso_actual }} kg</small>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if meta.fecha_objetivo %}
+        <div class="meta-info"><i class="fas fa-calendar me-1"></i> Fecha límite: {{ meta.fecha_objetivo|date:"d/m/Y" }}</div>
+        {% endif %}
+        <div class="meta-actions">
+            <form method="POST" action="{% url 'completar_meta' meta.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-meta btn-completar"><i class="fas fa-check me-1"></i>Completar</button>
+            </form>
+            <form method="POST" action="{% url 'eliminar_meta' meta.id %}" style="display:inline;" onsubmit="event.preventDefault(); Swal.fire({title:'¿Eliminar meta?',text:'¿Estás seguro de eliminar esta meta?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)this.submit();});">
+                {% csrf_token %}
+                <button type="submit" class="btn-meta btn-eliminar-meta"><i class="fas fa-trash me-1"></i>Eliminar</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="form-card">
+    <div class="empty-state">
+        <i class="fas fa-bullseye"></i>
+        <p>No tienes metas activas. Crea una para mantenerte motivado.</p>
+    </div>
+</div>
+{% endif %}
+
+{% if metas_completadas %}
+<h3 class="text-white mb-3"><i class="fas fa-trophy me-2" style="color: var(--oro);"></i>Metas Completadas</h3>
+<div class="metas-grid">
+    {% for meta in metas_completadas %}
+    <div class="meta-card" style="border-color: #198754;">
+        <h6><i class="fas fa-check-circle me-2" style="color: #198754;"></i>{{ meta.descripcion }}</h6>
+        {% if meta.peso_objetivo %}
+        <div class="meta-info">Objetivo alcanzado: {{ meta.peso_objetivo }} kg</div>
+        {% endif %}
+        <div class="meta-info">Completada: {{ meta.fecha_completada|date:"d/m/Y" }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<br>
+<a href="{% url 'historial_peso' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+    <i class="fas fa-chart-line me-2"></i>Ver mi progreso completo
+</a>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respuesta Registrada - Gym Xtreme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --rojo: #DC3545; --rojo-dark: #A71D2A; --negro: #111111; --negro-light: #1a1a1a; }
+        body { background: var(--negro); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; text-align: center; }
+        .card { background: var(--negro-light); border: 1px solid #333; border-radius: 15px; padding: 40px; }
+        .icon { font-size: 4rem; margin-bottom: 20px; }
+        .icon-aprobado { color: #198754; }
+        .icon-rechazado { color: var(--rojo); }
+        h1 { margin: 0 0 15px; font-weight: 700; }
+        p { color: #ccc; margin-bottom: 25px; }
+        .btn { display: inline-block; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; background: var(--rojo); color: white; transition: all 0.2s; }
+        .btn:hover { background: var(--rojo-dark); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            {% if accion == 'aprobar' %}
+            <div class="icon icon-aprobado">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>¡Aprobado!</h1>
+            <p>La devolución ha sido <strong>APROBADA</strong> correctamente.</p>
+            {% else %}
+            <div class="icon icon-rechazado">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h1>Rechazado</h1>
+            <p>La devolución ha sido <strong>RECHAZADA</strong> correctamente.</p>
+            {% endif %}
+            
+            <p style="font-size: 0.9rem; color: #888;">
+                Producto: {{ devolucion.producto_nombre }}<br>
+                Proveedor: {{ devolucion.proveedor.nombre }}
+            </p>
+            
+            <p>El administrador ha sido notificado de su decisión.</p>
+            
+            <a href="/" class="btn">
+                <i class="fas fa-home"></i> Volver al Inicio
+            </a>
+        </div>
+    </div>
+</body>
+</html>

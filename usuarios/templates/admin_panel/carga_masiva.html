@@ -1,0 +1,191 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <h2><i class="fas fa-upload" style="margin-right:10px;color:var(--primary);"></i>Carga Masiva de Datos</h2>
+    </div>
+
+    <!-- Instructions Card -->
+    <div class="card-dark mb-4">
+        <div class="card-dark-header">
+            <i class="fas fa-info-circle" style="margin-right:8px;"></i> Instrucciones
+        </div>
+        <div class="card-dark-body">
+            <ol style="color: var(--text-secondary); line-height: 1.8;">
+                <li>Seleccione el <strong style="color: var(--primary);">tipo de dato</strong> que desea cargar</li>
+                <li>Prepare un archivo <strong>CSV</strong> con los datos</li>
+                <li>El archivo debe tener las siguientes columnas según el tipo:</li>
+            </ol>
+            
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-tags"></i> Categorías</h6>
+                        <small style="color: var(--text-secondary);">
+                            nombre, descripcion
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-box"></i> Productos</h6>
+                        <small style="color: var(--text-secondary);">
+                            nombre, descripcion, categoria_id, precio_costo, precio_venta, stock_actual, estado
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-users"></i> Clientes</h6>
+                        <small style="color: var(--text-secondary);">
+                            username, email, password, first_name, last_name, telefono, edad, peso, estatura
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-tags"></i> Planes</h6>
+                        <small style="color: var(--text-secondary);">
+                            nombre, descripcion, precio, duracion_dias
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-truck"></i> Proveedores</h6>
+                        <small style="color: var(--text-secondary);">
+                            nombre, telefono, email, direccion, ciudad, estado
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-user-cog"></i> Usuarios</h6>
+                        <small style="color: var(--text-secondary);">
+                            username, email, password, first_name, last_name, cedula, tarjeta, telefono, direccion, edad, rol
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box" style="background: var(--bg-tertiary); padding: 15px; border-radius: 10px;">
+                        <h6 style="color: var(--primary); margin-bottom: 10px;"><i class="fas fa-dumbbell"></i> Maquinaria</h6>
+                        <small style="color: var(--text-secondary);">
+                            nombre, descripcion, tipo, ubicacion, estado, precio_compra, precio_venta
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card-dark">
+        <div class="card-dark-header">
+            <i class="fas fa-file-upload" style="margin-right:8px;"></i> Subir Archivo
+        </div>
+        <div class="card-dark-body">
+            <form method="POST" enctype="multipart/form-data" id="cargaForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-database"></i> Tipo de Dato</label>
+                            <select name="tipo_dato" class="form-input" id="tipoDato" required>
+                                <option value="productos">Productos</option>
+                                <option value="categorias">Categorías</option>
+                                <option value="clientes">Clientes</option>
+                                <option value="planes">Planes</option>
+                                <option value="proveedores">Proveedores</option>
+                                <option value="usuarios">Usuarios/Admin</option>
+                                <option value="maquinaria">Maquinaria</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-file"></i> Archivo (CSV o Excel)</label>
+                            <input type="file" name="archivo" class="form-input" accept=".csv,.xlsx,.xls" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-3">
+                    <button type="submit" class="btn-gym">
+                        <i class="fas fa-upload"></i> Cargar Datos
+                    </button>
+                    <a href="/admin-panel/" class="btn-gym" style="background: var(--bg-tertiary);">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Messages -->
+    {% if resultado %}
+    <div class="alert alert-success mt-4" style="background: var(--success-light); border-color: var(--success); color: var(--success);">
+        <i class="fas fa-check-circle"></i>
+        <strong>Carga completada:</strong>
+        <span>{{ resultado.creados }} registros creados</span> | 
+        <span>{{ resultado.duplicados }} duplicados omitidos</span>
+    </div>
+    {% endif %}
+
+    {% if errores %}
+    <div class="card-dark mt-4" style="border-color: var(--danger);">
+        <div class="card-dark-header" style="background: linear-gradient(135deg, var(--danger), #dc2626);">
+            <i class="fas fa-exclamation-triangle"></i> Errores
+        </div>
+        <div class="card-dark-body">
+            <ul style="color: var(--danger); margin: 0;">
+                {% for error in errores %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Download Templates -->
+    <div class="card-dark mt-4">
+        <div class="card-dark-header">
+            <i class="fas fa-download" style="margin-right:8px;"></i> Descargar Plantillas
+        </div>
+        <div class="card-dark-body">
+            <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                Descargue estas plantillas para ver el formato requerido:
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/static/plantillas/productos.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Productos
+                </a>
+                <a href="/static/plantillas/categorias.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Categorías
+                </a>
+                <a href="/static/plantillas/clientes.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Clientes
+                </a>
+                <a href="/static/plantillas/planes.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Planes
+                </a>
+                <a href="/static/plantillas/proveedores.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Proveedores
+                </a>
+                <a href="/static/plantillas/ventas.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Ventas
+                </a>
+                <a href="/static/plantillas/compras.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Compras
+                </a>
+                <a href="/static/plantillas/maquinaria.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Maquinaria
+                </a>
+                <a href="/static/plantillas/usuarios.csv" download class="btn-gym" style="background: var(--bg-tertiary);">
+                    <i class="fas fa-file-csv"></i> Usuarios
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

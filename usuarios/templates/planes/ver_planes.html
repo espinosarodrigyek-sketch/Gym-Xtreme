@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load formato_cop %}
+
+{% block content %}
+
+<style>
+
+body{
+background:#0f172a;
+font-family:Arial;
+}
+
+.titulo{
+text-align:center;
+color:white;
+margin-bottom:40px;
+}
+
+.contenedor{
+display:flex;
+gap:40px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+/* TARJETA PLAN */
+
+.plan-card{
+background:white;
+width:300px;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0px 10px 30px rgba(0,0,0,0.4);
+transition:0.3s;
+}
+
+.plan-card:hover{
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 15px 30px rgba(0,0,0,0.3);
+}
+
+.plan-img{
+width:100%;
+height:200px;
+object-fit:cover;
+}
+
+.plan-body{
+padding:20px;
+}
+
+.precio{
+font-size:22px;
+font-weight:bold;
+color:#22c55e;
+}
+
+.boton{
+background:#22c55e;
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.boton:hover{
+background:#16a34a;
+}
+
+/* DESCRIPCION CONTROLADA */
+
+.plan-descripcion{
+font-size:14px;
+color:#444;
+line-height:1.6;
+
+display:-webkit-box;
+-webkit-line-clamp:3;
+-webkit-box-orient:vertical;
+
+overflow:hidden;
+}
+
+/* BOTON VER MAS */
+
+.ver-mas{
+color:#ff6b00;
+font-weight:bold;
+cursor:pointer;
+margin-top:6px;
+display:inline-block;
+font-size:13px;
+}
+
+</style>
+
+<h1 class="titulo">Planes del Gimnasio 💪</h1>
+
+<div class="contenedor">
+
+{% for plan in planes %}
+
+<div class="plan-card">
+
+{% if plan.imagen %}
+  <img src="{{ plan.imagen.url }}" class="plan-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" alt="{{ plan.nombre }}">
+  <div class="plan-img-fallback" style="display:none;width:100%;height:200px;background:linear-gradient(135deg,#dc143c 0%,#8b0000 100%);align-items:center;justify-content:center;color:white;font-size:48px;">
+    💪
+  </div>
+{% else %}
+  <div class="plan-img" style="background:linear-gradient(135deg,#dc143c 0%,#8b0000 100%);display:flex;align-items:center;justify-content:center;color:white;font-size:48px;">
+    💪
+  </div>
+{% endif %}
+
+<div class="plan-body">
+
+<h2>{{ plan.nombre }}</h2>
+
+<p class="precio">{{ plan.precio|cop }}</p>
+
+<p><b>Duración:</b> {{ plan.duracion_dias }} días</p>
+
+<p class="plan-descripcion" id="desc{{plan.id}}">
+{{ plan.descripcion }}
+</p>
+
+<span class="ver-mas" onclick="mostrarTexto({{plan.id}})">
+Ver más
+</span>
+
+<br>
+
+{% if user.is_authenticated %}
+<a href="{% url 'planes:confirmar_compra' plan.id %}">
+<button class="boton">Comprar plan</button>
+</a>
+<a href="{% url 'planes:agregar_plan_carrito' plan.id %}">
+<button class="boton" style="background:#64748b; margin-left:5px;">Agregar al carrito</button>
+</a>
+{% else %}
+<a href="{% url 'login' %}">
+<button class="boton" style="background:#64748b;">Iniciar sesion para comprar</button>
+</a>
+{% endif %}
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<script>
+
+function mostrarTexto(id){
+
+let texto = document.getElementById("desc"+id);
+
+if(texto.style.webkitLineClamp == "unset"){
+texto.style.webkitLineClamp = "3";
+}else{
+texto.style.webkitLineClamp = "unset";
+}
+
+}
+
+</script>
+
+{% endblock %}

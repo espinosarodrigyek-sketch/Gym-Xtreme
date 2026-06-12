@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load rutinas_extras %}
+
+{% block title %}{{ rutina.nombre }} - GYM{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header con navegación -->
+    <div class="text-center mb-4">
+        <a href="{% url 'ver_rutinas' %}" class="btn btn-outline-light btn-sm mb-3">
+            <i class="fas fa-arrow-left me-1"></i>Volver a Rutinas
+        </a>
+        <h1 class="text-white fw-bold" style="font-size: 2rem;">{{ rutina.nombre }}</h1>
+        <p class="text-white-50">{{ rutina.descripcion }}</p>
+        
+        <!-- Badges de info -->
+        <div class="mb-3">
+            <span class="badge bg-{% if rutina.nivel == 'principiante' %}success{% elif rutina.nivel == 'intermedio' %}warning{% else %}danger{% endif %} me-2">
+                <i class="fas fa-signal me-1"></i>{{ rutina.get_nivel_display }}
+            </span>
+            <span class="badge bg-secondary me-2">
+                <i class="fas fa-calendar me-1"></i>{{ rutina.duracion_dias }} días
+            </span>
+            <span class="badge bg-info me-2">
+                <i class="fas fa-list me-1"></i>{{ rutina.ejercicios.count }} ejercicios
+            </span>
+            {% if rutina.es_predeterminada %}
+            <span class="badge bg-warning">
+                <i class="fas fa-star me-1"></i>Rutina del Sistema
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Ejercicios por día en tarjetas con tablas -->
+    <div class="row">
+        {% for dia in dias_orden %}
+        {% with ejercicios=ejercios_por_dia|get_item:dia %}
+        {% if ejercicios %}
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card border-0" style="background: #1A1A1A; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                <!-- Header del día -->
+                <div class="card-header text-center py-3" style="background: linear-gradient(135deg, #DC3545, #A71D2A);">
+                    <h5 class="text-white mb-0">
+                        <i class="fas fa-calendar-day me-2"></i>{{ dia|upper }}
+                    </h5>
+                </div>
+                
+                <!-- Tabla de ejercicios -->
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover mb-0" style="margin-bottom: 0;">
+                        <thead>
+                            <tr style="background: #0a0a0a;">
+                                <th style="width: 50px;">#</th>
+                                <th>Ejercicio</th>
+                                <th style="width: 80px;">Series</th>
+                                <th style="width: 100px;">Reps</th>
+                                <th style="width: 80px;">Descanso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ejercicio in ejercicios %}
+                            <tr>
+                                <td style="color: #b0b0b0;">{{ forloop.counter }}</td>
+                                <td>
+                                    <div class="fw-bold" style="color: #ffffff; font-size: 1rem;">{{ ejercicio.nombre }}</div>
+                                    {% if ejercicio.descripcion %}
+                                    <small style="color: #a0a0a0; display: block; margin-top: 4px; line-height: 1.4;">
+                                        <span class="ejercicio-desc-corta">{{ ejercicio.descripcion|truncatechars:50 }}</span>
+                                        {% if ejercicio.descripcion|length > 50 %}
+                                        <span class="ejercicio-desc-completa" style="display: none;">{{ ejercicio.descripcion }}</span>
+                                        <a href="#" class="text-danger ver-mas" onclick="toggleDescripcion(this); return false;">ver más</a>
+                                        {% endif %}
+                                    </small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge" style="background: #DC3545; color: white; padding: 6px 12px; font-size: 0.85rem;">{{ ejercicio.series }} series</span>
+                                </td>
+                                <td>
+                                    <span class="badge" style="background: #0d6efd; color: white; padding: 6px 12px; font-size: 0.85rem;">{{ ejercicio.repeticiones }}</span>
+                                </td>
+                                <td>
+                                    <span style="color: #a0a0a0;"><i class="fas fa-clock me-1"></i>{% widthratio ejercicio.descanso 60 1 %} min</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Footer del día -->
+                <div class="card-footer text-center" style="background: #0a0a0a; border-top: 1px solid #333;">
+                    <small class="text-muted">
+                        <i class="fas fa-stopwatch me-1"></i>
+                        Total: {{ ejercicios|length }} ejercicios
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+    <!-- Resumen semanal -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0" style="background: linear-gradient(135deg, #1a1a1a, #2d2d2d); border-radius: 15px; padding: 25px;">
+                <h5 class="text-white mb-4 text-center">
+                    <i class="fas fa-chart-bar me-2 text-danger"></i>Resumen Semanal
+                </h5>
+                <div class="row text-center">
+                    {% for dia in dias_orden %}
+                    {% with ejercicios=ejercios_por_dia|get_item:dia %}
+                    <div class="col">
+                        <div class="p-3" style="background: #0a0a0a; border-radius: 10px;">
+                            <div class="text-white-50 small text-uppercase">{{ dia|slice:":3" }}</div>
+                            <div class="text-white fw-bold" style="font-size: 1.5rem;">{{ ejercicios|length|default:"0" }}</div>
+                            <small class="text-muted">ejercicios</small>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="card mt-4 border-0" style="background: #1A1A1A; border-radius: 15px;">
+        <div class="card-body text-center">
+            <h5 class="text-white mb-3">¿Necesitas esta rutina en tu correo?</h5>
+            <p class="text-white-50 mb-3">Contáctanos para recibir tu rutina personalizada junto con tu plan</p>
+            <a href="{% url 'home' %}" class="btn btn-danger">
+                <i class="fas fa-envelope me-2"></i>Contactar
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleDescripcion(link) {
+    var descCorta = link.previousElementSibling.previousElementSibling;
+    var descCompleta = link.previousElementSibling;
+    
+    if (descCompleta.style.display === 'none') {
+        descCompleta.style.display = 'inline';
+        descCorta.style.display = 'none';
+        link.textContent = 'ver menos';
+    } else {
+        descCompleta.style.display = 'none';
+        descCorta.style.display = 'inline';
+        link.textContent = 'ver más';
+    }
+    return false;
+}
+</script>
+
+<style>
+    .table-dark {
+        --bs-table-bg: #1A1A1A;
+        --bs-table-striped-bg: #252525;
+        --bs-table-hover-bg: rgba(220, 53, 69, 0.1);
+    }
+    
+    .table thead th {
+        border-bottom: 2px solid #DC3545;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #e0e0e0 !important;
+    }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(220, 53, 69, 0.15) !important;
+    }
+    
+    .table td {
+        color: #ffffff;
+        vertical-align: middle;
+    }
+    
+    .badge {
+        font-weight: 600;
+    }
+    
+    .card {
+        transition: transform 0.3s ease;
+    }
+    
+    /* Enhanced text visibility */
+    .text-white {
+        color: #ffffff !important;
+    }
+    
+    .text-muted {
+        color: #a0a0a0 !important;
+    }
+    
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* Improve description text visibility */
+    .table td small {
+        color: #b0b0b0 !important;
+        line-height: 1.5;
+    }
+    
+    .ver-mas {
+        font-size: 12px;
+        cursor: pointer;
+        text-decoration: none;
+        margin-left: 5px;
+    }
+    
+    .ver-mas:hover {
+        text-decoration: underline;
+    }
+    
+    /* Footer styling */
+    .card-footer {
+        border-top: 1px solid #444 !important;
+    }
+    
+    /* Ensure images load properly */
+    .table td img {
+        display: block;
+    }
+</style>
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

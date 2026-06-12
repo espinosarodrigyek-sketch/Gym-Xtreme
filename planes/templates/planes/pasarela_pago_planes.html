@@ -1,0 +1,671 @@
+{% extends "base.html" %}
+{% load formato_cop %}
+
+{% block content %}
+
+<style>
+    :root {
+        --negro: #0f172a;
+        --negro-claro: #1e293b;
+        --verde-gym: #22c55e;
+        --verde-oscuro: #16a34a;
+        --rojo-gym: #DC3545;
+        --rojo-oscuro: #A71D2A;
+        --azul-gym: #0D6EFD;
+        --blanco: #ffffff;
+        --gris: #64748b;
+        --gris-claro: #e2e8f0;
+        --amarillo: #fbbf24;
+    }
+
+    body {
+        background: var(--negro);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .pasarela-container {
+        max-width: 1100px;
+        margin: 0 auto 40px;
+    }
+
+    .pasarela-titulo {
+        color: var(--blanco);
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .pasarela-titulo i {
+        color: var(--verde-gym);
+        margin-right: 10px;
+    }
+
+    .pasarela-subtitulo {
+        color: var(--gris);
+        font-size: 15px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .pasarela-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+    }
+
+    @media (max-width: 768px) {
+        .pasarela-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* TARJETA DE CRÉDITO */
+    .tarjeta-wrapper {
+        perspective: 1000px;
+        margin-bottom: 28px;
+    }
+
+    .tarjeta {
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        height: 255px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        padding: 28px 30px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(13, 110, 253, 0.15);
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .tarjeta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        animation: tarjetaBrillo 3s linear infinite;
+    }
+
+    @keyframes tarjetaBrillo {
+        0% { transform: translateX(-30%) translateY(-30%); }
+        100% { transform: translateX(30%) translateY(30%); }
+    }
+
+    .tarjeta-chip {
+        width: 52px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--amarillo) 0%, #d97706 100%);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: #7c2d12;
+        letter-spacing: 1px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tarjeta-numero {
+        color: var(--gris-claro);
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+        margin-bottom: 16px;
+        font-family: 'Courier New', monospace;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 0 20px rgba(255,255,255,0.08);
+    }
+
+    .tarjeta-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tarjeta-info-item label {
+        color: #64748b;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .tarjeta-info-item span {
+        color: var(--gris-claro);
+        font-size: 15px;
+        font-weight: 600;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 1px;
+    }
+
+    .tarjeta-logo {
+        font-size: 26px;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--verde-gym) 0%, var(--azul-gym) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* SECCIONES */
+    .pasarela-card {
+        background: var(--negro-claro);
+        border-radius: 16px;
+        border: 1px solid #334155;
+        overflow: hidden;
+    }
+
+    .pasarela-card-header {
+        padding: 20px 24px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pasarela-card-header i {
+        font-size: 1.1rem;
+    }
+
+    .pasarela-card-body {
+        padding: 24px;
+    }
+
+    /* RESUMEN DEL PEDIDO */
+    .resumen-header {
+        background: linear-gradient(135deg, var(--rojo-gym) 0%, var(--rojo-oscuro) 100%);
+    }
+
+    .resumen-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #334155;
+    }
+
+    .resumen-item:last-child {
+        border-bottom: none;
+    }
+
+    .resumen-item-nombre {
+        color: var(--blanco);
+        font-weight: 600;
+        font-size: 15px;
+        flex: 1;
+    }
+
+    .resumen-item-detalle {
+        color: var(--gris);
+        font-size: 13px;
+    }
+
+    .resumen-item-precio {
+        color: var(--verde-gym);
+        font-weight: 700;
+        font-size: 15px;
+        margin-left: 12px;
+        white-space: nowrap;
+    }
+
+    /* FORMULARIO DE PAGO */
+    .form-pago-header {
+        background: linear-gradient(135deg, var(--azul-gym) 0%, #0a58ca 100%);
+    }
+
+    .form-label {
+        color: #cbd5e1;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-control-sim {
+        width: 100%;
+        background: #0f172a;
+        border: 2px solid #334155;
+        border-radius: 10px;
+        padding: 12px 16px;
+        color: white;
+        font-size: 15px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+    .form-control-sim:focus {
+        border-color: var(--azul-gym);
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+    }
+
+    .form-control-sim::placeholder {
+        color: #475569;
+    }
+
+    .form-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-row-2 .form-group {
+        margin-bottom: 0;
+    }
+
+    /* BOTÓN CONFIRMAR */
+    .btn-confirmar-pago {
+        width: 100%;
+        background: linear-gradient(135deg, var(--verde-gym) 0%, var(--verde-oscuro) 100%);
+        color: white;
+        border: none;
+        padding: 17px;
+        border-radius: 12px;
+        font-size: 1.15rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-confirmar-pago:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(34, 197, 94, 0.35);
+    }
+
+    /* SEGURIDAD */
+    .pasarela-seguridad {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 14px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+    .pasarela-seguridad i {
+        color: var(--verde-gym);
+    }
+
+    /* REFERENCIA */
+    .referencia-box {
+        background: #0f172a;
+        border: 1px dashed #334155;
+        border-radius: 10px;
+        padding: 10px 16px;
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    .referencia-box small {
+        color: var(--gris);
+        font-size: 12px;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .referencia-box strong {
+        color: var(--verde-gym);
+        font-family: 'Courier New', monospace;
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+
+    /* TOTAL FINAL */
+    .pasarela-total {
+        background: #0f172a;
+        border: 2px solid #334155;
+        border-radius: 14px;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 18px;
+    }
+
+    .pasarela-total-label {
+        color: #94a3b8;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .pasarela-total-valor {
+        color: var(--verde-gym);
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .pasarela-total-dias {
+        margin-top: 14px;
+        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+        border-left: 4px solid var(--azul-gym);
+        border-radius: 10px;
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #93c5fd;
+        font-size: 14px;
+    }
+
+    .pasarela-total-dias i {
+        color: var(--azul-gym);
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .pasarela-total-dias strong {
+        color: var(--azul-gym);
+    }
+
+    /* ANIMACIONES */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pasarela-card {
+        animation: fadeInUp 0.4s ease forwards;
+    }
+
+    .tarjeta-wrapper {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* ALERTA */
+    .pasarela-alerta {
+        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+        border-left: 4px solid var(--azul-gym);
+        border-radius: 10px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        color: #93c5fd;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pasarela-alerta i {
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+</style>
+
+<div class="pasarela-container">
+
+    <h1 class="pasarela-titulo">
+        <i class="fas fa-credit-card"></i> Pasarela de Pago
+    </h1>
+    <p class="pasarela-subtitulo">Completa tu compra de planes de forma segura</p>
+
+    <!-- ALERTA: DÍAS SE SUMAN -->
+    <div class="pasarela-alerta">
+        <i class="fas fa-info-circle"></i>
+        <span><strong>Importante:</strong> Al comprar más de un plan, los días se suman automáticamente al vencimiento de tu suscripción actual.</span>
+    </div>
+
+    <!-- MENSAJES -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'info' %}info{% else %}success{% endif %} mb-3"
+         style="border-radius:10px;font-size:15px;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="pasarela-grid">
+
+        <!-- COLUMNA IZQ: TARJETA + FORMULARIO -->
+        <div>
+
+            <!-- TARJETA DE CRÉDITO ANIMADA -->
+            <div class="tarjeta-wrapper">
+                <div class="tarjeta" id="tarjetaVisual">
+                    <div class="tarjeta-chip">CHIP</div>
+                    <div class="tarjeta-numero" id="tarjetaNumero">•••• •••• •••• ••••</div>
+                    <div class="tarjeta-info">
+                        <div class="tarjeta-info-item">
+                            <label>Titular</label>
+                            <span id="tarjetaNombre">{{ nombre_completo|upper }}</span>
+                        </div>
+                        <div class="tarjeta-info-item" style="text-align:right;">
+                            <label>Expira</label>
+                            <span id="tarjetaExpira">MM/AA</span>
+                        </div>
+                        <div class="tarjeta-info-item" style="text-align:right;">
+                            <label>Marca</label>
+                            <span class="tarjeta-logo">GXM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE PAGO -->
+            <div class="pasarela-card">
+                <div class="pasarela-card-header form-pago-header">
+                    <i class="fas fa-credit-card"></i> Datos de Pago
+                </div>
+                <div class="pasarela-card-body">
+                    <form method="POST" action="{% url 'planes:procesar_pago_carrito_planes' %}" id="pasarelaForm">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label class="form-label" for="id_numero">
+                                <i class="fas fa-credit-card me-2"></i>Número de tarjeta
+                            </label>
+                            <input type="text"
+                                   class="form-control-sim"
+                                   id="id_numero"
+                                   name="numero_tarjeta"
+                                   placeholder="0000 0000 0000 0000"
+                                   maxlength="19"
+                                   required
+                                   oninput="actualizarTarjeta('numero', this.value)">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="id_titular">
+                                <i class="fas fa-user me-2"></i>Nombre del titular
+                            </label>
+                            <input type="text"
+                                   class="form-control-sim"
+                                   id="id_titular"
+                                   name="titular"
+                                   placeholder="Como aparece en la tarjeta"
+                                   value="{{ nombre_completo }}"
+                                   required
+                                   oninput="actualizarTarjeta('nombre', this.value)">
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label" for="id_expira">
+                                    <i class="fas fa-calendar me-2"></i>Expira (MM/AA)
+                                </label>
+                                <input type="text"
+                                       class="form-control-sim"
+                                       id="id_expira"
+                                       name="expiracion"
+                                       placeholder="MM/AA"
+                                       maxlength="5"
+                                       required
+                                       oninput="actualizarTarjeta('expira', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="id_cvv">
+                                    <i class="fas fa-lock me-2"></i>CVV
+                                </label>
+                                <input type="text"
+                                       class="form-control-sim"
+                                       id="id_cvv"
+                                       name="cvv"
+                                       placeholder="•••"
+                                       maxlength="4"
+                                       required>
+                            </div>
+                        </div>
+
+                        <!-- REFERENCIA -->
+                        <div class="referencia-box">
+                            <small><i class="fas fa-hashtag me-1"></i> Referencia de pago</small>
+                            <strong>{{ referencia }}</strong>
+                        </div>
+
+                        <!-- BOTÓN CONFIRMAR -->
+                        <button type="submit" class="btn-confirmar-pago" id="btnConfirmarPago">
+                            <i class="fas fa-check-circle"></i>
+                            Confirmar Pago — {{ total|cop }}
+                        </button>
+
+                        <!-- SEGURIDAD -->
+                        <div class="pasarela-seguridad">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Pago simulado seguro — tus datos no se envían a ningún banco</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- COLUMNA DER: RESUMEN DEL PEDIDO -->
+        <div>
+
+            <div class="pasarela-card">
+                <div class="pasarela-card-header resumen-header">
+                    <i class="fas fa-receipt"></i> Resumen del Pedido
+                </div>
+                <div class="pasarela-card-body">
+
+                    {% for item in items %}
+                    <div class="resumen-item">
+                        <div>
+                            <div class="resumen-item-nombre">{{ item.nombre }}</div>
+                            <div class="resumen-item-detalle">
+                                {{ item.cantidad }} x {{ item.duracion_dias }} días · {{ item.precio|cop }}/u
+                            </div>
+                        </div>
+                        <div class="resumen-item-precio">{{ item.subtotal|cop }}</div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- TOTAL -->
+                    <div class="pasarela-total">
+                        <div>
+                            <div class="pasarela-total-label">Total a pagar</div>
+                            <div style="font-size:13px;color:#64748b;margin-top:3px;">
+                                {{ total_items_carrito }} plan(es) · {{ total_dias }} días incluidos
+                            </div>
+                        </div>
+                        <div class="pasarela-total-valor">{{ total|cop }}</div>
+                    </div>
+
+                    <!-- ACUMULACIÓN DE DÍAS -->
+                    <div class="pasarela-total-dias">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>
+                            Los <strong>{{ total_dias }} días</strong> se sumarán al vencimiento de tu
+                            {% if suscripcion_activa %}
+                                suscripción actual (vence el {{ suscripcion_activa.fecha_fin|date:"d/m/Y" }}).
+                            {% else %}
+                                nueva suscripción.
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <!-- INFO ADICIONAL -->
+                    <div style="margin-top:18px;padding:14px 16px;background:#0f172a;border-radius:10px;border:1px solid #334155;">
+                        <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+                            <i class="fas fa-info-circle" style="color:var(--azul-gym);margin-top:2px;"></i>
+                            <div style="font-size:13px;color:#94a3b8;line-height:1.6;">
+                                Al confirmar el pago se creará tu suscripción con los <strong style="color:white;">{{ total_dias }} días</strong>
+                                incluidos. Si ya tienes una suscripción activa, los días se agregan
+                                automáticamente al finalizar el plazo vigente.
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Acceso inmediato</span>
+                            <span class="badge bg-info"><i class="fas fa-dumbbell me-1"></i>Todas las instalaciones</span>
+                            <span class="badge bg-warning text-dark"><i class="fas fa-envelope me-1"></i>Rutina por correo</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div style="margin-top:14px;">
+                <a href="{% url 'planes:ver_carrito_planes' %}" class="btn btn-outline-secondary w-100" style="border-radius:10px;font-weight:600;">
+                    <i class="fas fa-arrow-left me-2"></i>Volver al carrito
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ── Actualizar tarjeta visual mientras el usuario escribe ──
+function actualizarTarjeta(campo, valor) {
+    if (campo === 'numero') {
+        // Formatear: 0000 0000 0000 0000
+        valor = valor.replace(/\D/g, '').substring(0, 16);
+        const formateado = valor.replace(/(.{4})/g, '$1 ').trim();
+        document.getElementById('tarjetaNumero').textContent = formateado || '•••• •••• •••• ••••';
+        document.getElementById('id_numero').value = formateado;
+    }
+    if (campo === 'nombre') {
+        document.getElementById('tarjetaNombre').textContent = valor.toUpperCase() || 'NOMBRE TITULAR';
+    }
+    if (campo === 'expira') {
+        valor = valor.replace(/\D/g, '').substring(0, 4);
+        const mm = valor.substring(0, 2);
+        const aa = valor.substring(2, 4);
+        document.getElementById('tarjetaExpira').textContent = (mm ? mm + '/' : '') + aa;
+        document.getElementById('id_expira').value = (mm ? mm + '/' : '') + aa;
+    }
+}
+
+// ── Animación al cargar ──
+window.addEventListener('DOMContentLoaded', () => {
+    const tarjeta = document.getElementById('tarjetaVisual');
+    tarjeta.style.transform = 'rotateY(0deg)';
+    setTimeout(() => {
+        tarjeta.style.transform = 'rotateY(8deg) rotateX(-3deg)';
+        setTimeout(() => {
+            tarjeta.style.transform = 'rotateY(0deg) rotateX(0deg)';
+        }, 1200);
+    }, 400);
+});
+</script>
+
+{% endblock %}

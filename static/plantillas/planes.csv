@@ -1,0 +1,6 @@
+nombre,descripcion,precio,duracion_dias,caracteristicas
+Basico,Plan de membresía básico acceso a maquinas,80000,30,"Acceso a area de maquinas,vestuario"
+Premium,Plan completo acceso total,150000,30,"Acceso total a todas las areas, clases grupales incluidas, nutritionist"
+VIP,Plan VIP servicios exclusivos,250000,30,"Acceso total, clases ilimitadas, sesiones con entrenador personal, sauna"
+Anual Basico,Plan anual básico,800000,365,"Acceso a area de maquinas por un año"
+Anual Premium,Plan anual completo,1500000,365,"Acceso total por un año todas las areas y clases"

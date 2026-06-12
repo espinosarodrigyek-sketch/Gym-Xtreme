@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina General - 1 Año</title>
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 9px; color: #333; margin: 0; padding: 0;">
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; padding: 18px; text-align: center;">
+    <h1 style="font-size: 18px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 3px;">RUTINA ELITE</h1>
+    <p style="color: white; font-size: 10px; font-weight: bold; letter-spacing: 2px; margin: 0;">PROGRAMA COMPETRO - 1 AÑO</p>
+    
+    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 8px;">
+        <p style="margin: 2px 0;"><strong>Usuario:</strong> {{ usuario.username }}</p>
+        <p style="margin: 2px 0;"><strong>Plan:</strong> {{ plan.nombre }}</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div style="background: #1a1a1a; color: white; padding: 8px 18px; display: flex; justify-content: space-around;">
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">{{ duracion_real_dias }}</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Días</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">5-6</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Días/Semana</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">Advanced</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Nivel</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 14px; font-weight: bold;">60 min</div>
+        <div style="font-size: 6px; text-transform: uppercase;">Duración</div>
+    </div>
+</div>
+
+<!-- PROGRAMA -->
+<div style="padding: 12px;">
+    <div style="background: #ff4444; color: white; padding: 6px 10px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        PROGRAMA 12 MESES - CICLO ANUAL
+    </div>
+    
+    <!-- TRIMESTRE 1 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #ff6666; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 1 (MES 1-3): BASE
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 6px;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 1-2: Full Body</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Lun: FB A | Mié: FB B | Vie: FB C<br>
+                    3x12 compuestos, 3x15 aislamiento
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 3: Upper/Lower</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Lun: Upper | Mar: Lower | Jue: Upper | Vie: Lower
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 2 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #cc0000; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 2 (MES 4-6): PROGRESIÓN
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 6px;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 4-5: Push/Pull/Legs</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Lun: Push | Mar: Pull | Mié: Legs | Jue: Push | Vie: Pull | Sáb: Legs
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 6: Arnold Split</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Lun: Pecho+E | Mar: Piernas | Mié: Hombros+B<br>
+                    Jue: Pecho+E | Vie: Piernas | Sáb: Full
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 3 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #1a1a1a; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 3 (MES 7-9): INTENSIDAD
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 6px;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 7-8: Heavy Duty</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    3 ejercicios principales, 3x al fallo<br>
+                    Técnicas: rest-pause, drop sets
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 9: Doble Upper/Lower</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Lun: Upper A | Mar: Lower A | Mié: Upper B<br>
+                    Jue: Lower B | Vie: Upper C | Sáb: Full
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- TRIMESTRE 4 -->
+    <div style="margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden;">
+        <div style="background: #333; color: white; padding: 6px 10px; font-weight: bold; font-size: 9px;">
+            TRIMESTRE 4 (MES 10-12): MANTENIMIENTO
+        </div>
+        <div style="padding: 8px;">
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 9px;">MES 10-11: Consolidación</strong>
+                <p style="margin: 2px 0; font-size: 8px;">
+                    Variar métodos, enfocar puntos débiles<br>
+                    <strong>MES 12:</strong> Deload + Evaluación + Nuevo ciclo
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+
+<!-- NUTRICION -->
+<div style="padding: 0 12px 12px 12px;">
+    <div style="background: #1a1a1a; color: white; padding: 6px 10px; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        NUTRICIÓN 12 MESES
+    </div>
+    
+    <div style="display: flex; margin-top: 8px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">{{ perfil.peso|default:"70" }}g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Proteína</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">280g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Carbohidratos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 8px; border-left: none;">
+            <div style="font-size: 14px; font-weight: bold; color: #ff4444;">80g</div>
+            <div style="font-size: 7px; text-transform: uppercase; color: #666;">Grasas</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 8px; background: #fff3f3; padding: 8px; border-left: 3px solid #ff4444;">
+        <h4 style="font-size: 9px; text-transform: uppercase; margin: 0 0 5px 0;">DURANTE EL AÑO</h4>
+        <p style="font-size: 8px; margin: 2px 0;">• Ajustar según objetivo: bulk/cut/maintenance</p>
+        <p style="font-size: 8px; margin: 2px 0;">• Deload cada 6-8 semanas</p>
+        <p style="font-size: 8px; margin: 2px 0;">• Reevaluar cada 3 meses</p>
+    </div>
+    
+</div>
+
+<!-- FOOTER -->
+<div style="background: #1a1a1a; color: white; padding: 10px; text-align: center;">
+    <p style="font-size: 11px; font-weight: bold; color: #ff4444; margin: 0 0 3px 0; letter-spacing: 2px;">GYM FITNESS</p>
+    <p style="font-size: 6px; margin: 0; color: #888;">Un año para transformar tu vida 💪🔥</p>
+</div>
+
+</body>
+</html>

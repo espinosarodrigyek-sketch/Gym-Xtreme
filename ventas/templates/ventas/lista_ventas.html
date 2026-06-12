@@ -1,0 +1,57 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-cash-register" style="margin-right:10px;color:var(--primary);"></i>Ventas</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="/ventas/reporte/pdf/?{% if request.GET.id_venta %}id_venta={{ request.GET.id_venta }}&{% endif %}{% if request.GET.fecha %}fecha={{ request.GET.fecha }}&{% endif %}{% if request.GET.total_min %}total_min={{ request.GET.total_min }}&{% endif %}{% if request.GET.total_max %}total_max={{ request.GET.total_max }}{% endif %}" class="btn-gym" style="background:#0d6efd;"><i class="fas fa-file-pdf"></i> PDF</a>
+                <a href="/ventas/reporte/excel/?{% if request.GET.id_venta %}id_venta={{ request.GET.id_venta }}&{% endif %}{% if request.GET.fecha %}fecha={{ request.GET.fecha }}&{% endif %}{% if request.GET.total_min %}total_min={{ request.GET.total_min }}&{% endif %}{% if request.GET.total_max %}total_max={{ request.GET.total_max }}{% endif %}" class="btn-gym" style="background:#198754;"><i class="fas fa-file-excel"></i> Excel</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <form method="GET" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+            {% csrf_token %}
+            {{ form.id_venta }}
+            {{ form.fecha }}
+            {{ form.total_min }}
+            {{ form.total_max }}
+            <button type="submit" class="btn-gym"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Registro de Ventas</div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead><tr><th>ID</th><th>Usuario</th><th>Fecha</th><th>Productos</th><th>Total</th><th>Acciones</th></tr></thead>
+                <tbody>
+                    {% for venta in ventas %}
+                    <tr>
+                        <td>{{ venta.id_venta }}</td>
+                        <td>{{ venta.usuario.username }}</td>
+                        <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% for d in venta.detalles.all %}
+                            <span style="background:rgba(13,110,253,0.15);color:#0d6efd;padding:2px 8px;border-radius:8px;font-size:0.75rem;margin:2px;display:inline-block;">
+                                {{ d.producto.nombre }} x{{ d.cantidad }}
+                            </span>
+                            {% endfor %}
+                        </td>
+                        <td style="color:var(--success);font-weight:700;">{{ venta.total|cop }}</td>
+                        <td>
+                            <a href="/ventas/detalle/{{ venta.id_venta }}/" class="btn-action btn-sell"><i class="fas fa-eye"></i></a>
+                            <a href="{% url 'eliminar_venta' venta.id_venta %}" class="btn-action btn-delete" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar venta?',text:'¿Eliminar venta #{{ venta.id_venta }}? El stock será restaurado.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='{% url "eliminar_venta" venta.id_venta %}'});"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:30px;color:#666;">No hay ventas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

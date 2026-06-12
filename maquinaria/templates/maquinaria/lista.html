@@ -1,0 +1,118 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<style>
+.modal-custom { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:9999; }
+.modal-content-custom { background:#1a1a1a;border:2px solid var(--rojo);border-radius:15px;width:90%;max-width:500px;overflow:hidden; }
+.modal-header-custom { padding:15px 20px;background:linear-gradient(135deg,var(--rojo),#8e0000);display:flex;justify-content:space-between;align-items:center; }
+.close-modal { color:#fff;font-size:2rem;cursor:pointer; }
+.close-modal:hover { color:#ff4444; }
+.modal-body-custom { padding:20px; }
+.modal-footer-custom { padding:15px 20px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #333; }
+</style>
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-cogs" style="margin-right:10px;color:var(--rojo);"></i>Inventario de Maquinaria</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="/maquinaria/crear/" class="btn-gym"><i class="fas fa-plus"></i> Nueva Maquina</a>
+                <a href="/maquinaria/reporte/pdf/" class="btn-gym" style="background:#0d6efd;"><i class="fas fa-file-pdf"></i> PDF</a>
+                <a href="/maquinaria/reporte/excel/" class="btn-gym" style="background:#198754;"><i class="fas fa-file-excel"></i> Excel</a>
+                <button type="button" class="btn-gym" style="background:#ff4444;border:none;" onclick="document.getElementById('modal-limpiar').style.display='flex'">
+                    <i class="fas fa-trash"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIMPIAR -->
+    <div id="modal-limpiar" class="modal-custom">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <h3 style="color:#fff;margin:0;"><i class="fas fa-exclamation-triangle"></i> Confirmar Limpieza</h3>
+                <span class="close-modal" onclick="document.getElementById('modal-limpiar').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body-custom" style="text-align:center;padding:20px;">
+                <i class="fas fa-cogs" style="font-size:4rem;color:#ff4444;margin-bottom:20px;"></i>
+                <h4 style="color:#fff;">¿Eliminar TODA la maquinaria?</h4>
+                <p style="color:#888;">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-gym" style="background:#333;" onclick="document.getElementById('modal-limpiar').style.display='none'">Cancelar</button>
+                <form method="post" action="/maquinaria/limpiar/" style="display:inline;">{% csrf_token %}<button type="submit" class="btn-gym" style="background:#ff4444;border:none;">Confirmar</button></form>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}{% for message in messages %}<div class="alert-gym">{{ message }}</div>{% endfor %}{% endif %}
+
+    <!-- Filtros -->
+    <div class="filter-bar">
+        <form method="GET" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+            <input type="number" name="id_maquina" class="form-input" placeholder="ID">
+            <input type="text" name="nombre" class="form-input" placeholder="Nombre">
+            <select name="tipo" class="form-input">
+                <option value="">Tipo</option>
+                <option value="cardio">Cardio</option>
+                <option value="fuerza">Fuerza</option>
+                <option value="funcional">Funcional</option>
+                <option value="pesas">Pesas</option>
+                <option value="accesorio">Accesorio</option>
+                <option value="otro">Otro</option>
+            </select>
+            <select name="ubicacion" class="form-input">
+                <option value="">Todas las ubicaciones</option>
+                {% for ubi in ubicaciones %}
+                <option value="{{ ubi }}" {% if request.GET.ubicacion == ubi %}selected{% endif %}>{{ ubi }}</option>
+                {% endfor %}
+            </select>
+            <select name="estado" class="form-input">
+                <option value="">Estado</option>
+                <option value="activo">Activo</option>
+                <option value="reparacion">En Reparacion</option>
+                <option value="venta">En Venta</option>
+                <option value="vendido">Vendido</option>
+            </select>
+            <button class="btn-gym"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <!-- Tabla -->
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Maquinas Registradas</div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead><tr><th>Nombre</th><th>Tipo</th><th>Ubicacion</th><th>Precio Compra</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                    {% for m in maquinas %}
+                    <tr>
+                        <td><strong>{{ m.nombre }}</strong></td>
+                        <td>{{ m.get_tipo_display }}</td>
+                        <td>{{ m.ubicacion|default:"-" }}</td>
+                        <td>{% if m.precio_compra %}{{ m.precio_compra|cop }}{% else %}-{% endif %}</td>
+                        <td>
+                            {% if m.estado == 'activo' %}<span class="badge-activo">Activo</span>
+                            {% elif m.estado == 'reparacion' %}<span class="badge-reparacion">En Reparacion</span>
+                            {% elif m.estado == 'venta' %}<span class="badge-venta">En Venta</span>
+                            {% elif m.estado == 'vendido' %}<span class="badge-vendido">Vendido</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/maquinaria/editar/{{ m.id_maquina }}/" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
+                            <a href="/maquinaria/eliminar/{{ m.id_maquina }}/" class="btn-action btn-delete" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar?',text:'¿Seguro que deseas eliminar este equipo?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/maquinaria/eliminar/{{ m.id_maquina }}/'});"><i class="fas fa-trash"></i></a>
+                            {% if m.estado == 'activo' or m.estado == 'reparacion' %}
+                            <a href="/maquinaria/venta/{{ m.id_maquina }}/" class="btn-action btn-sell"><i class="fas fa-tag"></i></a>
+                            {% elif m.estado == 'venta' %}
+                            <a href="/maquinaria/quitar-venta/{{ m.id_maquina }}/" class="btn-action btn-delete" title="Quitar de venta"><i class="fas fa-times"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" style="text-align:center;padding:30px;color:#666;">No hay maquinaria registrada.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

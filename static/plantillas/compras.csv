@@ -1,0 +1,4 @@
+id_proveedor,producto_id,cantidad,precio_unitario,estado
+1,1,50,25000,pendiente
+1,2,30,18000,pendiente
+2,3,25,22000,confirmada

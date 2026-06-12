@@ -1,0 +1,64 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+<div style="max-width:800px;margin:0 auto;">
+    <div class="card-dark">
+        <div class="card-dark-header" style="text-align:center;">
+            {% if proveedor %}<i class="fas fa-edit" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>Editar Proveedor
+            {% else %}<i class="fas fa-plus-circle" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>Nuevo Proveedor{% endif %}
+        </div>
+        <div class="card-dark-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-input" value="{{ proveedor.nombre|default:'' }}" required>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Ciudad</label>
+                        <input type="text" name="ciudad" class="form-input" value="{{ proveedor.ciudad|default:'' }}">
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Telefono</label>
+                        <input type="text" name="telefono" class="form-input" value="{{ proveedor.telefono|default:'' }}">
+                    </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-input" value="{{ proveedor.email|default:'' }}">
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Direccion</label>
+                    <input type="text" name="direccion" class="form-input" value="{{ proveedor.direccion|default:'' }}">
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Estado</label>
+                    <select name="estado" class="form-input">
+                        <option value="activo" {% if proveedor.estado == 'activo' or not proveedor %}selected{% endif %}>Activo</option>
+                        <option value="inactivo" {% if proveedor.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                    </select>
+                </div>
+                
+                {% if productos %}
+                <div style="margin-bottom:20px;padding:15px;background:#1a1a1a;border-radius:8px;border:1px solid #333;">
+                    <label class="form-label" style="margin-bottom:12px;display:block;">Productos que provee este proveedor</label>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+                        {% for producto in productos %}
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px;background:#252525;border-radius:5px;">
+                            <input type="checkbox" name="productos" value="{{ producto.id_producto }}" 
+                                {% if proveedor and producto in proveedor.productos.all %}checked{% endif %}>
+                            <span>{{ producto.nombre }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn-gym" style="width:100%;justify-content:center;padding:14px;"><i class="fas fa-save"></i> Guardar</button>
+                <a href="/proveedores/" style="display:block;text-align:center;color:#666;margin-top:12px;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+</div>

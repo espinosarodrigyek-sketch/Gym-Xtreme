@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial; }
+
+        h1 {
+            text-align: center;
+        }
+
+        .info {
+            text-align: right;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #111;
+            color: white;
+            padding: 6px;
+            font-size: 12px;
+        }
+
+        td {
+            border: 1px solid black;
+            padding: 5px;
+            font-size: 11px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🏋️ Reporte de Maquinaria</h1>
+
+<div class="info">
+    Fecha: {{ now|date:"d/m/Y H:i" }}
+</div>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Ubicación</th>
+        <th>Estado</th>
+    </tr>
+
+    {% for m in maquinas %}
+    <tr>
+        <td>{{ m.id_maquina }}</td>
+        <td>{{ m.nombre }}</td>
+        <td>{{ m.tipo }}</td>
+        <td>{{ m.ubicacion }}</td>
+        <td>{{ m.estado }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

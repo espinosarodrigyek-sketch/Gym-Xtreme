@@ -1,0 +1,22 @@
+# Este archivo define el formato del CSV para importar productos
+# Columnas requeridas: nombre, descripcion, categoria, precio_costo, precio_venta, stock_actual, estado
+# Columnas opcionales: proveedor (nombre del proveedor para relacionar)
+
+# FORMATO DEL CSV:
+# ================
+# nombre,descripcion,categoria,precio_costo,precio_venta,stock_actual,estado,proveedor
+# Proteína Whey Gold,Proteína de suero 5lbs,Suplementos,85000,145000,50,activo,NutriSport Colombia
+# Creatina Monohidratada,Creatina 300g,Suplementos,35000,65000,120,activo,NutriSport Colombia
+# Pre-Workout,Pre entrenamiento,Suplementos,42000,78000,80,activo,Supplements Pro
+
+# EJEMPLO SIMPLE (sin proveedor):
+# ================================
+nombre,descripcion,categoria,precio_costo,precio_venta,stock_actual,estado
+Proteína Whey Gold,Proteína de suero 5lbs,Suplementos,85000,145000,50,activo
+Creatina,Creatina monohidratada,Suplementos,35000,65000,120,activo
+
+# EJEMPLO CON PROVEEDOR:
+# ======================
+nombre,descripcion,categoria,precio_costo,precio_venta,stock_actual,estado,proveedor
+Proteína Whey Gold,Proteína de suero 5lbs,Suplementos,85000,145000,50,activo,NutriSport Colombia
+Creatina Monohidratada,Creatina 300g,Suplementos,35000,65000,120,activo,NutriSport Colombia

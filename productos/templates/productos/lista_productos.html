@@ -1,0 +1,242 @@
+{% load formato_cop %}{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div style="max-width:1400px;margin:0 auto;padding:20px;">
+        
+        <!-- Header -->
+        <div class="card-dark" style="margin-bottom:30px;">
+            <div class="card-dark-header" style="text-align:center;">
+                <i class="fas fa-box-open" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                <h1 style="margin:0;font-size:1.8rem;">Gestión de Productos</h1>
+                <p style="margin:10px 0 0;color:#888;font-size:1rem;">
+                    Control completo de inventario y lotes
+                </p>
+            </div>
+        </div>
+
+        <!-- Métricas principales -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:30px;">
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Total Productos</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#2ecc71;margin:10px 0 0;">{{ productos|length }}</p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Stock Total</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#0d6efd;margin:10px 0 0;">{{ total_stock }} uds</p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Valor Inventario</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#ffc107;margin:10px 0 0;">
+                        $ {{ total_stock|floatformat:2 }}
+                    </p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Alertas Activas</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#ff6b6b;margin:10px 0 0;">{{ total_alertas }}</p>
+                </div>
+            </div>
+        </div>
+
+         <!-- Botones de acción -->
+         <div style="display:flex;gap:15px;margin-bottom:30px;flex-wrap:wrap;">
+             <a href="{% url 'crear_producto' %}" class="btn-gym" style="padding:12px 20px;">
+                 <i class="fas fa-plus"></i> Nuevo Producto
+             </a>
+             <a href="{% url 'alertas_lotes' %}" class="btn-gym" style="padding:12px 20px;background:#ff6b6b;">
+                 <i class="fas fa-bell"></i> Ver Alertas
+             </a>
+             <a href="{% url 'crear_categoria' %}" class="btn-gym" style="padding:12px 20px;">
+                 <i class="fas fa-tags"></i> Nueva Categoría
+             </a>
+             <a href="{% url 'reporte_pdf' %}" class="btn-gym" style="padding:12px 20px;background:#28a745;">
+                 <i class="fas fa-file-pdf"></i> PDF Productos
+             </a>
+             <a href="{% url 'reporte_excel' %}" class="btn-gym" style="padding:12px 20px;background:#28a745;">
+                 <i class="fas fa-file-excel"></i> Excel Productos
+             </a>
+             {% if productos %}
+             <button onclick="confirmarLimpiarProductos()" class="btn-gym" style="padding:12px 20px;background:#dc3545;border:none;cursor:pointer;">
+                 <i class="fas fa-trash-alt"></i> Limpiar todo
+             </button>
+             {% endif %}
+         </div>
+
+        <!-- Lista de productos -->
+        <div class="card-dark">
+            <div class="card-dark-header">
+                <h2 style="margin:0;">Lista de Productos</h2>
+            </div>
+            <div class="card-dark-body">
+                {% if productos %}
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:2px solid #333;">
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">ID</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Nombre</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Categoría</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Stock</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Últ. Fab.</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Precio Costo</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Precio Venta</th>
+                                <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Estado</th>
+                                <th style="text-align:center;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for producto in productos %}
+                            <tr style="border-bottom:1px solid #222;hover{background:#111;}">
+                                <td style="padding:12px;color:#fff;">{{ producto.id_producto }}</td>
+                                <td style="padding:12px;color:#fff;">{{ producto.nombre }}</td>
+                                <td style="padding:12px;color:#fff;">{{ producto.categoria.nombre|default:"Sin categoría" }}</td>
+                                <td style="padding:12px;color:#fff;">{{ producto.stock_actual }} uds</td>
+                                <td style="padding:12px;color:#fff;">
+                                    {% if producto.ultima_fecha_fabricacion %}
+                                        {{ producto.ultima_fecha_fabricacion|date:"d/m/Y" }}
+                                    {% else %}
+                                        <span style="color:#666;">-</span>
+                                    {% endif %}
+                                </td>
+                                 <td style="padding:12px;color:#fff;">{{ producto.precio_costo|cop_raw }}</td>
+                                  <td style="padding:12px;color:#fff;">{{ producto.precio_venta|cop_raw }}</td>
+                                <td style="padding:12px;color:#fff;">
+                                    {% if producto.estado == 'activo' %}
+                                    <span style="padding:4px 8px;border-radius:4px;font-size:0.85rem;background:#1a5c1a;color:#4ade80;">Activo</span>
+                                    {% else %}
+                                    <span style="padding:4px 8px;border-radius:4px;font-size:0.85rem;background:#5c1a1a;color:#f87171;">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding:12px;text-align:center;">
+                                    <a href="{% url 'detalle_producto' producto.id_producto %}" style="padding:6px 10px;background:#0d6efd;color:#fff;border-radius:4px;text-decoration:none;font-size:0.85rem;">
+                                        <i class="fas fa-eye"></i> Ver
+                                    </a>
+                                    <a href="{% url 'editar_producto' producto.id_producto %}" style="padding:6px 10px;background:#ffc107;color:#000;border-radius:4px;text-decoration:none;font-size:0.85rem;margin-left:5px;">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <button onclick="toggleProducto({{ producto.id_producto }}, this)" style="padding:6px 10px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;margin-left:5px;">
+                                        <i class="fas fa-toggle-{{ producto.estado|yesno:'off,on' }}"></i>
+                                    </button>
+                                    <form action="{% url 'eliminar_producto' producto.id_producto %}" method="post" style="display:inline;margin-left:5px;">
+                                        {% csrf_token %}
+                                        <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este producto?');" style="padding:6px 10px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align:center;padding:40px;color:#666;">
+                    <i class="fas fa-box" style="font-size:3rem;display:block;margin-bottom:15px;"></i>
+                    <p style="font-size:1.2rem;margin:0;">No hay productos registrados</p>
+                    <p style="color:#888;font-size:0.9rem;">
+                        <a href="{% url 'crear_producto' %}" style="color:#0d6efd;text-decoration:none;">Crear el primero</a>
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    tr:hover {
+        background: #111 !important;
+    }
+    .btn-gym {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .btn-gym:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
+
+<script>
+function toggleProducto(productoId, button) {
+    const row = button.closest('tr');
+    const estadoSpan = row.querySelector('td:nth-child(8) span');
+    
+    // Obtener CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Enviar petición AJAX
+    fetch(`/productos/toggle/ajax/${productoId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Actualizar el estado visual
+            if (data.nuevo_estado === 'activo') {
+                estadoSpan.textContent = 'Activo';
+                estadoSpan.style.background = '#1a5c1a';
+                estadoSpan.style.color = '#4ade80';
+                button.innerHTML = '<i class="fas fa-toggle-on"></i>';
+            } else {
+                estadoSpan.textContent = 'Inactivo';
+                estadoSpan.style.background = '#5c1a1a';
+                estadoSpan.style.color = '#f87171';
+                button.innerHTML = '<i class="fas fa-toggle-off"></i>';
+            }
+        } else {
+            alert('Error al cambiar el estado del producto');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar la solicitud');
+    });
+}
+
+function confirmarLimpiarProductos() {
+    const mensaje = `⚠️ ADVERTENCIA CRÍTICA\n\n` +
+        `Esta acción eliminará TODOS los productos de la base de datos.\n\n` +
+        `Esta acción NO se puede deshacer.\n\n` +
+        `¿Estás completamente seguro de que deseas continuar?\n\n` +
+        `Escribe "LIMPIAR" para confirmar:`;
+    
+    const respuesta = prompt(mensaje);
+    
+    if (respuesta === 'LIMPIAR') {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url "limpiar_productos" %}';
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            form.appendChild(csrfToken.cloneNode(true));
+        }
+        
+        const confirmInput = document.createElement('input');
+        confirmInput.type = 'hidden';
+        confirmInput.name = 'confirmacion';
+        confirmInput.value = 'si';
+        form.appendChild(confirmInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    } else {
+        alert('❌ Acción cancelada.');
+    }
+}
+</script>

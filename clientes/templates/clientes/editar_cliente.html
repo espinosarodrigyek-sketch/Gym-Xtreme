@@ -1,0 +1,49 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<body style="background-color:#0f0f0f;">
+
+<div class="container mt-5">
+
+<div class="card shadow-lg">
+
+<div class="card-header text-center text-white" style="background: linear-gradient(90deg,#ff0000,#990000);">
+<h3 class="fw-bold">GESTIONAR CLIENTE</h3>
+</div>
+
+<div class="card-body bg-white">
+
+<form method="post">
+{% csrf_token %}
+
+<div class="mb-3">
+<label class="form-label fw-bold">Usuario</label>
+{{ form.usuario }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold">Plan</label>
+{{ form.plan }}
+</div>
+
+<div class="form-check mb-3">
+{{ form.activa }}
+<label class="form-check-label">Suscripción activa</label>
+</div>
+
+<button class="btn btn-danger">
+💾 Guardar
+</button>
+
+<a href="{% url 'lista_clientes' %}" class="btn btn-secondary">
+⬅ Volver
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+</body>

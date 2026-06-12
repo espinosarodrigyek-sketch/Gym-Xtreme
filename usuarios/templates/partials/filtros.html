@@ -1,0 +1,310 @@
+{% load filtros_extras %}
+<div class="filtros-container" id="filtrosContainer">
+    <form method="GET" action="{{ request.path }}" id="filtrosForm" class="filtros-form">
+        <div class="filtros-grid">
+            <!-- Búsqueda -->
+            {% if mostrar_buscar %}
+            <div class="filtro-item filtro-buscar">
+                <label class="filtro-label">
+                    <i class="fas fa-search"></i> Buscar
+                </label>
+                <input type="text" 
+                       name="buscar" 
+                       value="{{ buscar|default:'' }}" 
+                       placeholder="{{ placeholder_buscar|default:'Buscar...' }}"
+                       class="filtro-input"
+                       autocomplete="off">
+            </div>
+            {% endif %}
+            
+            <!-- Fecha Inicio -->
+            {% if mostrar_fecha %}
+            <div class="filtro-item">
+                <label class="filtro-label">
+                    <i class="fas fa-calendar"></i> Desde
+                </label>
+                <input type="date" 
+                       name="fecha_inicio" 
+                       value="{{ fecha_inicio|default:'' }}" 
+                       class="filtro-input">
+            </div>
+            {% endif %}
+            
+            <!-- Fecha Fin -->
+            {% if mostrar_fecha %}
+            <div class="filtro-item">
+                <label class="filtro-label">
+                    <i class="fas fa-calendar"></i> Hasta
+                </label>
+                <input type="date" 
+                       name="fecha_fin" 
+                       value="{{ fecha_fin|default:'' }}" 
+                       class="filtro-input">
+            </div>
+            {% endif %}
+            
+            <!-- Estado -->
+            {% if mostrar_estado and opciones_estado %}
+            <div class="filtro-item">
+                <label class="filtro-label">
+                    <i class="fas fa-toggle-on"></i> Estado
+                </label>
+                <select name="estado" class="filtro-input filtro-select">
+                    <option value="">Todos</option>
+                    {% for value, label in opciones_estado %}
+                    <option value="{{ value }}" {% if estado == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            
+            <!-- Filtros Select Personalizados -->
+            {% for filtro in filtros_custom %}
+            <div class="filtro-item">
+                <label class="filtro-label">
+                    <i class="fas fa-filter"></i> {{ filtro.label }}
+                </label>
+                <select name="{{ filtro.name }}" class="filtro-input filtro-select">
+                    <option value="">Todos</option>
+                    {% for option in filtro.opciones %}
+                    <option value="{{ option.value }}" {% if filtro.value == option.value %}selected{% endif %}>{{ option.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Acciones -->
+        <div class="filtros-acciones">
+            <button type="submit" class="btn-filtro btn-filtro-aplicar">
+                <i class="fas fa-filter"></i> Aplicar
+            </button>
+            
+            {% if tiene_filtros %}
+            <a href="{{ request.path }}" class="btn-filtro btn-filtro-limpiar">
+                <i class="fas fa-times"></i> Limpiar
+            </a>
+            {% endif %}
+            
+            {% if mostrar_export %}
+            <div class="filtros-export">
+                <button type="button" class="btn-filtro btn-export" onclick="exportarReporte('pdf')">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                <button type="button" class="btn-filtro btn-export" onclick="exportarReporte('excel')">
+                    <i class="fas fa-file-excel"></i> Excel
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Campos ocultos para exportación -->
+        <input type="hidden" name="exportar" id="exportarTipo" value="">
+    </form>
+</div>
+
+<style>
+.filtros-container {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.filtros-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.filtros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filtro-label {
+    color: #888;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.filtro-label i {
+    color: #DC3545;
+    font-size: 0.7rem;
+}
+
+.filtro-input {
+    background: #0f0f0f;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.filtro-input:focus {
+    outline: none;
+    border-color: #DC3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.filtro-input::placeholder {
+    color: #555;
+}
+
+.filtro-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 35px;
+}
+
+.filtros-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+}
+
+.btn-filtro {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-filtro-aplicar {
+    background: linear-gradient(135deg, #DC3545, #A71D2A);
+    color: white;
+}
+
+.btn-filtro-aplicar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-filtro-limpiar {
+    background: #333;
+    color: #aaa;
+}
+
+.btn-filtro-limpiar:hover {
+    background: #444;
+    color: white;
+}
+
+.filtros-export {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.btn-export {
+    background: #2d2d2d;
+    color: white;
+    border: 1px solid #444;
+}
+
+.btn-export:hover {
+    background: #3d3d3d;
+    border-color: #DC3545;
+}
+
+@media (max-width: 768px) {
+    .filtros-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .filtros-acciones {
+        flex-direction: column;
+    }
+    
+    .filtros-export {
+        margin-left: 0;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filtros-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filtrosForm');
+    const inputs = form.querySelectorAll('input[type="text"], input[type="date"], select');
+    
+    // Guardar valores originales para limpiar
+    const valoresOriginales = {};
+    inputs.forEach(input => {
+        valoresOriginales[input.name] = input.value;
+    });
+    
+    // Función para verificar si hay filtros activos
+    function hayFiltrosActivos() {
+        let tiene = false;
+        inputs.forEach(input => {
+            if (input.value && input.value !== '') {
+                tiene = true;
+            }
+        });
+        return tiene;
+    }
+    
+    // Actualizar estado del botón limpiar
+    function actualizarLimpiar() {
+        const btnLimpiar = document.querySelector('.btn-filtro-limpiar');
+        if (btnLimpiar) {
+            btnLimpiar.style.display = hayFiltrosActivos() ? 'inline-flex' : 'none';
+        }
+    }
+    
+    actualizarLimpiar();
+    
+    // Auto-submit en cambio (opcional - descomentar para búsqueda en tiempo real)
+    /*
+    let timeout;
+    inputs.forEach(input => {
+        input.addEventListener('change', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+    });
+    */
+    
+    // Exportación
+    window.exportarReporte = function(tipo) {
+        document.getElementById('exportarTipo').value = tipo;
+        form.submit();
+    };
+});
+</script>

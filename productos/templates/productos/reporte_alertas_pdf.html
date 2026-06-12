@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+{% load formato_cop %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Reporte de Alertas de Lotes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #333;
+            padding-bottom: 15px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .fecha {
+            text-align: right;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .seccion {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .seccion-titulo {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .critica {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .alta {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .media {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .baja {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #333;
+            font-weight: bold;
+        }
+        
+        table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .sin-alertas {
+            text-align: center;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .resumen {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .resumen-titulo {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .resumen-item {
+            display: inline-block;
+            margin-right: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .pie {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 REPORTE DE ALERTAS DE LOTES</h1>
+        <p>Sistema de Gestión de Inventario - Productos próximos a vencer</p>
+    </div>
+    
+    <div class="fecha">
+        <strong>Generado:</strong> {{ now|date:"d/m/Y H:i" }}
+    </div>
+    
+    <!-- ALERTAS CRÍTICAS -->
+    {% if alertas_criticas %}
+    <div class="seccion">
+        <div class="seccion-titulo critica">
+            🔴 ALERTAS CRÍTICAS (≤ 7 días) - {{ alertas_criticas|length }} producto(s)
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Lote</th>
+                    <th>Cantidad</th>
+                    <th>Vencimiento</th>
+                    <th>Días Restantes</th>
+                    <th>Precio Unitario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in alertas_criticas %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.lote.numero_lote }}</td>
+                    <td>{{ item.lote.cantidad }} uds</td>
+                    <td>{{ item.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                    <td><strong style="color: #ff6b6b;">{{ item.dias_restantes }}</strong></td>
+                     <td>{{ item.precio_unitario_fmt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="seccion">
+        <div class="seccion-titulo critica">
+            🔴 ALERTAS CRÍTICAS (≤ 7 días) - 0 productos
+        </div>
+        <div class="sin-alertas">
+            ✓ No hay alertas críticas en este momento
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ALERTAS ALTAS -->
+    {% if alertas_altas %}
+    <div class="seccion">
+        <div class="seccion-titulo alta">
+            🟠 ALERTAS ALTAS (8-14 días) - {{ alertas_altas|length }} producto(s)
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Lote</th>
+                    <th>Cantidad</th>
+                    <th>Vencimiento</th>
+                    <th>Días Restantes</th>
+                    <th>Precio Unitario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in alertas_altas %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.lote.numero_lote }}</td>
+                    <td>{{ item.lote.cantidad }} uds</td>
+                    <td>{{ item.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                    <td><strong style="color: #ff9800;">{{ item.dias_restantes }}</strong></td>
+                     <td>{{ item.precio_unitario_fmt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="seccion">
+        <div class="seccion-titulo alta">
+            🟠 ALERTAS ALTAS (8-14 días) - 0 productos
+        </div>
+        <div class="sin-alertas">
+            ✓ No hay alertas altas en este momento
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ALERTAS MEDIAS -->
+    {% if alertas_medias %}
+    <div class="seccion">
+        <div class="seccion-titulo media">
+            🟡 ALERTAS MEDIAS (15-30 días) - {{ alertas_medias|length }} producto(s)
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Lote</th>
+                    <th>Cantidad</th>
+                    <th>Vencimiento</th>
+                    <th>Días Restantes</th>
+                    <th>Precio Unitario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in alertas_medias %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.lote.numero_lote }}</td>
+                    <td>{{ item.lote.cantidad }} uds</td>
+                    <td>{{ item.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                    <td><strong style="color: #ffc107;">{{ item.dias_restantes }}</strong></td>
+                     <td>{{ item.precio_unitario_fmt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="seccion">
+        <div class="seccion-titulo media">
+            🟡 ALERTAS MEDIAS (15-30 días) - 0 productos
+        </div>
+        <div class="sin-alertas">
+            ✓ No hay alertas medias en este momento
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- ALERTAS BAJAS -->
+    {% if alertas_bajas %}
+    <div class="seccion">
+        <div class="seccion-titulo baja">
+            🟢 ALERTAS BAJAS (&gt; 30 días) - {{ alertas_bajas|length }} producto(s)
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Lote</th>
+                    <th>Cantidad</th>
+                    <th>Vencimiento</th>
+                    <th>Días Restantes</th>
+                    <th>Precio Unitario</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in alertas_bajas %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.lote.numero_lote }}</td>
+                    <td>{{ item.lote.cantidad }} uds</td>
+                    <td>{{ item.lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                    <td><strong style="color: #2ecc71;">{{ item.dias_restantes }}</strong></td>
+                     <td>{{ item.precio_unitario_fmt }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="seccion">
+        <div class="seccion-titulo baja">
+            🟢 ALERTAS BAJAS (&gt; 30 días) - 0 productos
+        </div>
+        <div class="sin-alertas">
+            ✓ No hay alertas bajas en este momento
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- RESUMEN -->
+    <div class="resumen">
+        <div class="resumen-titulo">📊 RESUMEN GENERAL</div>
+        <div class="resumen-item"><strong>Críticas:</strong> {{ alertas_criticas|length }}</div>
+        <div class="resumen-item"><strong>Altas:</strong> {{ alertas_altas|length }}</div>
+        <div class="resumen-item"><strong>Medias:</strong> {{ alertas_medias|length }}</div>
+        <div class="resumen-item"><strong>Bajas:</strong> {{ alertas_bajas|length }}</div>
+        <div class="resumen-item"><strong style="color: #ff6b6b;">TOTAL:</strong> {{ alertas_criticas|length|add:alertas_altas|length|add:alertas_medias|length|add:alertas_bajas|length }}</div>
+    </div>
+    
+    <div class="pie">
+        <p>Este reporte fue generado automáticamente por el sistema de gestión de inventario.</p>
+        <p>Fecha: {{ now|date:"d/m/Y H:i" }}</p>
+    </div>
+</body>
+</html>

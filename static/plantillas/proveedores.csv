@@ -1,0 +1,4 @@
+id_proveedor,nombre,telefono,email,direccion,ciudad,estado
+1,Proveedor Suplementos SA,3001234567,proveedor1@email.com,Calle 10 #20-30,Bogota,activo
+2,Distribuidora Fitness,3002345678,proveedor2@email.com,Av 40 #15-25,Medellin,activo
+3,Mayorista Deportes,3003456789,proveedor3@email.com,Carrera 50 #5-15,Cali,activo

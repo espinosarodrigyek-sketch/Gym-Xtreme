@@ -1,0 +1,349 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div style="max-width:900px;margin:0 auto;">
+        <div class="card-dark">
+            <div class="card-dark-header">
+                <i class="fas fa-running" style="margin-right:8px;"></i>
+                {% if es_crear %}Crear Nueva Rutina{% else %}Editar Rutina{% endif %}
+            </div>
+            <div class="card-dark-body">
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert-gym {% if message.tags == 'success' %}success{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" id="rutinaForm" onsubmit="console.log('Form submitted!'); return prepararFormulario();">
+                    {% csrf_token %}
+                    
+                    <input type="hidden" name="ejercicios_api" id="ejercicios_api" value="">
+                    <input type="hidden" id="ejercicio_count" name="ejercicio_count" value="{{ ejercicios|length|default:0 }}">
+                    
+                    <h5 style="color:var(--rojo);margin-bottom:15px;border-bottom:1px solid #333;padding-bottom:10px;">
+                        <i class="fas fa-info-circle me-2"></i>Datos de la Rutina
+                    </h5>
+                    
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                        <div>
+                            <label class="form-label">Nombre *</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                            <small style="color:var(--rojo);">{{ form.nombre.errors }}</small>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <label class="form-label">Nivel *</label>
+                            {{ form.nivel }}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:20px;">
+                        <label class="form-label">Descripci&oacute;n</label>
+                        {{ form.descripcion }}
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                        <div>
+                            <label class="form-label">Duraci&oacute;n (d&iacute;as) *</label>
+                            {{ form.duracion_dias }}
+                        </div>
+                        <div style="display:flex;align-items:center;gap:15px;padding-top:25px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                {{ form.activa }}
+                                <label for="id_activa" style="margin:0;color:#aaa;">Rutina activa</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 style="color:var(--rojo);margin:25px 0 15px;border-bottom:1px solid #333;padding-bottom:10px;">
+                        <i class="fas fa-dumbbell me-2"></i>Ejercicios de la Rutina
+                    </h5>
+
+                    <div id="ejercicios-container">
+                        {% if ejercicios %}
+                            {% for ejercicio in ejercicios %}
+                            <div class="ejercicio-card" style="background:#0a0a0a;border:1px solid #333;border-radius:10px;padding:15px;margin-bottom:15px;">
+                                <input type="hidden" name="ejercicio_api_id_{{ forloop.counter0 }}" value="{{ ejercicio.ejercicio_externo_id|default:'' }}">
+                                <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:end;">
+                                    <div>
+                                        <label class="form-label">Ejercicio</label>
+                                        <input type="text" name="ejercicio_nombre_{{ forloop.counter0 }}" class="form-input" value="{{ ejercicio.nombre }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Series</label>
+                                        <input type="number" name="ejercicio_series_{{ forloop.counter0 }}" class="form-input" value="{{ ejercicio.series }}" min="1">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Reps</label>
+                                        <input type="text" name="ejercicio_reps_{{ forloop.counter0 }}" class="form-input" value="{{ ejercicio.repeticiones }}">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Descanso(min)</label>
+                                        <input type="number" name="ejercicio_descanso_{{ forloop.counter0 }}" class="form-input" value="{% widthratio ejercicio.descanso 60 1 %}" min="0" max="30">
+                                    </div>
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 2fr auto;gap:10px;margin-top:10px;align-items:end;">
+                                    <div>
+                                        <label class="form-label">D&iacute;a</label>
+                                        <select name="ejercicio_dia_{{ forloop.counter0 }}" class="form-input">
+                                            {% for dia_val, dia_nombre in dias %}
+                                            <option value="{{ dia_val }}" {% if ejercicio.dia == dia_val %}selected{% endif %}>{{ dia_nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Descripci&oacute;n</label>
+                                        <input type="text" name="ejercicio_desc_{{ forloop.counter0 }}" class="form-input" value="{{ ejercicio.descripcion }}">
+                                    </div>
+                                    <button type="button" class="btn-action btn-delete" onclick="eliminarEjercicio(this);" style="margin-bottom:5px;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <button type="button" onclick="agregarNuevoEjercicio()" class="btn-gym" style="background:#198754;margin-bottom:20px;">
+                        <i class="fas fa-plus me-2"></i>Agregar Ejercicio
+                    </button>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:25px;">
+                        <button type="button" id="btnLimpiar" class="btn-gym" style="background:#6c757d;justify-content:center;">
+                            <i class="fas fa-broom me-2"></i>Limpiar
+                        </button>
+                        <a href="/admin-panel/rutinas/" class="btn-gym" style="background:#6c757d;justify-content:center;">
+                            <i class="fas fa-times me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn-gym" style="justify-content:center;">
+                            <i class="fas fa-save me-2"></i>{% if es_crear %}Crear{% else %}Actualizar{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+}
+.search-result-item:hover {
+    background: #2a2a2a;
+}
+.add-from-api-btn {
+    background: var(--rojo);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.api-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #198754;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+}
+.selected-exercise-item {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+.selected-exercise-name {
+    color: #fff;
+    font-weight: 500;
+    font-size: 14px;
+}
+.selected-exercise-meta {
+    color: #888;
+    font-size: 11px;
+}
+.remove-selected-btn {
+    background: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+</style>
+
+<script>
+var ejercicioCounter = {{ ejercicios|length|default:0 }};
+var selectedExercisesFromAPI = [];
+var dias = [
+    {% for dia_val, dia_nombre in dias %}
+    {value: '{{ dia_val }}', label: '{{ dia_nombre }}'},
+    {% endfor %}
+];
+
+function prepararFormulario() {
+    var form = document.getElementById('rutinaForm');
+    var container = document.getElementById('ejercicios-container');
+    var cards = container.getElementsByClassName('ejercicio-card');
+    var count = cards.length;
+    
+    document.getElementById('ejercicio_count').value = count;
+    ejercicioCounter = count;
+    
+    var ejerciciosArray = [];
+    for (var i = 0; i < count; i++) {
+        var card = cards[i];
+        var inputs = card.getElementsByTagName('input');
+        var selects = card.getElementsByTagName('select');
+        
+        var nombre = '';
+        var descripcion = '';
+        var series = 3;
+        var repeticiones = '10-12';
+        var descanso = 60;
+        var dia = 'lunes';
+        var apiId = '';
+        
+        for (var j = 0; j < inputs.length; j++) {
+            var name = inputs[j].name || '';
+            if (name.indexOf('ejercicio_nombre_') !== -1) {
+                nombre = inputs[j].value;
+            } else if (name.indexOf('ejercicio_series_') !== -1) {
+                series = parseInt(inputs[j].value) || 3;
+            } else if (name.indexOf('ejercicio_reps_') !== -1) {
+                repeticiones = inputs[j].value || '10-12';
+            } else if (name.indexOf('ejercicio_descanso_') !== -1) {
+                descanso = (parseInt(inputs[j].value) || 1) * 60;
+            } else if (name.indexOf('ejercicio_api_id_') !== -1) {
+                apiId = inputs[j].value;
+            }
+        }
+        
+        for (var j = 0; j < selects.length; j++) {
+            var name = selects[j].name || '';
+            if (name.indexOf('ejercicio_dia_') !== -1) {
+                dia = selects[j].value || 'lunes';
+            }
+        }
+        
+        for (var j = 0; j < inputs.length; j++) {
+            var name = inputs[j].name || '';
+            if (name.indexOf('ejercicio_desc_') !== -1) {
+                descripcion = inputs[j].value || '';
+            }
+        }
+        
+        if (nombre) {
+            ejerciciosArray.push({
+                nombre: nombre,
+                descripcion: descripcion,
+                series: series,
+                repeticiones: repeticiones,
+                descanso: descanso,
+                dia: dia,
+                orden: i + 1,
+                api_id: apiId
+            });
+        }
+    }
+    
+    var jsonInput = document.getElementById('ejercicios_api');
+    jsonInput.value = JSON.stringify(ejerciciosArray);
+    
+    console.log('=== PREPARING FORM ===');
+    console.log('ejercicioCounter:', ejercicioCounter);
+    console.log('cards found:', count);
+    console.log('ejerciciosArray:', JSON.stringify(ejerciciosArray));
+    console.log('========================');
+    
+    return true;
+}
+
+// Agregar ejercicio manual
+function agregarNuevoEjercicio() {
+    var container = document.getElementById('ejercicios-container');
+    var div = document.createElement('div');
+    div.className = 'ejercicio-card';
+    div.style.cssText = 'background:#0a0a0a;border:1px solid #333;border-radius:10px;padding:15px;margin-bottom:15px;position:relative;';
+    
+    var optionsDias = '';
+    for (var i = 0; i < dias.length; i++) {
+        optionsDias += '<option value="' + dias[i].value + '">' + dias[i].label + '</option>';
+    }
+    
+    var html = '';
+    html += '<input type="hidden" name="ejercicio_api_id_' + ejercicioCounter + '" value="">';
+    html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:end;">';
+    html += '<div><label class="form-label">Ejercicio</label><input type="text" name="ejercicio_nombre_' + ejercicioCounter + '" class="form-input" placeholder="Nombre del ejercicio"></div>';
+    html += '<div><label class="form-label">Series</label><input type="number" name="ejercicio_series_' + ejercicioCounter + '" class="form-input" value="3" min="1"></div>';
+    html += '<div><label class="form-label">Reps</label><input type="text" name="ejercicio_reps_' + ejercicioCounter + '" class="form-input" value="10-12"></div>';
+    html += '<div><label class="form-label">Descanso(min)</label><input type="number" name="ejercicio_descanso_' + ejercicioCounter + '" class="form-input" value="1" min="0" max="30"></div>';
+    html += '</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 2fr auto;gap:10px;margin-top:10px;align-items:end;">';
+    html += '<div><label class="form-label">D&iacute;a</label><select name="ejercicio_dia_' + ejercicioCounter + '" class="form-input">' + optionsDias + '</select></div>';
+    html += '<div><label class="form-label">Descripci&oacute;n</label><input type="text" name="ejercicio_desc_' + ejercicioCounter + '" class="form-input" placeholder="Instrucciones..."></div>';
+    html += '<button type="button" class="btn-action btn-delete" onclick="eliminarEjercicio(this);" style="margin-bottom:5px;"><i class="fas fa-trash"></i></button>';
+    html += '</div>';
+    
+    div.innerHTML = html;
+    container.appendChild(div);
+    
+    ejercicioCounter++;
+    actualizarContador();
+}
+
+function eliminarEjercicio(btn) {
+    var card = btn.closest('.ejercicio-card');
+    if (card) {
+        card.remove();
+    }
+    actualizarContador();
+}
+
+function actualizarContador() {
+    var cards = document.querySelectorAll('.ejercicio-card');
+    document.getElementById('ejercicio_count').value = cards.length;
+}
+
+document.getElementById('btnLimpiar').onclick = function() {
+    var form = document.getElementById('rutinaForm');
+    
+    var inputs = form.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        if (!inputs[i].name || !inputs[i].name.match(/^ejercicio_/)) {
+            if (inputs[i].type === 'text') {
+                inputs[i].value = '';
+            }
+        }
+    }
+    
+    var textareas = form.getElementsByTagName('textarea');
+    for (var i = 0; i < textareas.length; i++) {
+        textareas[i].value = '';
+    }
+    
+    var selects = form.getElementsByTagName('select');
+    for (var i = 0; i < selects.length; i++) {
+        selects[i].selectedIndex = 0;
+    }
+    
+    document.getElementById('ejercicios-container').innerHTML = '';
+    ejercicioCounter = 0;
+    actualizarContador();
+};
+</script>

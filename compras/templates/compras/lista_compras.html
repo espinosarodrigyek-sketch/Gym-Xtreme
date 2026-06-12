@@ -1,0 +1,63 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-shopping-cart" style="margin-right:10px;color:var(--rojo);"></i>Compras a Proveedores</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="/compras/crear/" class="btn-gym"><i class="fas fa-plus"></i> Nueva Compra</a>
+                <a href="/compras/reporte/pdf/?{% if request.GET.id_compra %}id_compra={{ request.GET.id_compra }}&{% endif %}{% if request.GET.proveedor %}proveedor={{ request.GET.proveedor }}&{% endif %}{% if request.GET.fecha %}fecha={{ request.GET.fecha }}&{% endif %}{% if request.GET.total_min %}total_min={{ request.GET.total_min }}{% endif %}" class="btn-gym" style="background:#0d6efd;"><i class="fas fa-file-pdf"></i> PDF</a>
+                <a href="/compras/reporte/excel/?{% if request.GET.id_compra %}id_compra={{ request.GET.id_compra }}&{% endif %}{% if request.GET.proveedor %}proveedor={{ request.GET.proveedor }}&{% endif %}{% if request.GET.fecha %}fecha={{ request.GET.fecha }}&{% endif %}{% if request.GET.total_min %}total_min={{ request.GET.total_min }}{% endif %}" class="btn-gym" style="background:#198754;"><i class="fas fa-file-excel"></i> Excel</a>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}{% for message in messages %}<div class="alert-gym">{{ message }}</div>{% endfor %}{% endif %}
+
+    <div class="filter-bar">
+        <form method="GET" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+            <input type="text" name="id_compra" class="form-input" placeholder="ID Compra">
+            <select name="proveedor" class="form-input">
+                <option value="">Todos los proveedores</option>
+                {% for prov in proveedores %}
+                <option value="{{ prov.nombre }}" {% if request.GET.proveedor == prov.nombre %}selected{% endif %}>{{ prov.nombre }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" name="fecha" class="form-input">
+            <input type="number" name="total_min" class="form-input" placeholder="Total minimo">
+            <button class="btn-gym"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Registro de Compras</div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead>
+                    <tr><th>ID</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Costo Unit.</th><th>Fecha</th><th>Total</th><th>Acciones</th></tr>
+                </thead>
+                <tbody>
+                    {% for item in compras_con_detalles %}
+                    <tr>
+                        <td>{{ item.compra.id_compra }}</td>
+                        <td>{{ item.compra.proveedor.nombre }}</td>
+                        <td>{% if item.detalle %}{{ item.detalle.producto.nombre }}{% else %}-{% endif %}</td>
+                        <td>{% if item.detalle %}{{ item.detalle.cantidad }}{% else %}-{% endif %}</td>
+                        <td>{% if item.detalle %}{{ item.detalle.precio_unitario|cop }}{% else %}-{% endif %}</td>
+                        <td>{{ item.compra.fecha|date:"d/m/Y H:i" }}</td>
+                        <td style="color:var(--rojo);font-weight:700;">{{ item.compra.total|cop }}</td>
+                        <td>
+                            <a href="/compras/editar/{{ item.compra.id_compra }}/" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
+                            <a href="/compras/eliminar/{{ item.compra.id_compra }}/" class="btn-action btn-delete" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar?',text:'¿Seguro que deseas eliminar esta compra?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/compras/eliminar/{{ item.compra.id_compra }}/'});"><i class="fas fa-trash"></i></a>
+                            <a href="/compras/detalle/{{ item.compra.id_compra }}/" class="btn-action btn-sell"><i class="fas fa-eye"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" style="text-align:center;padding:30px;color:#666;">No hay compras registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

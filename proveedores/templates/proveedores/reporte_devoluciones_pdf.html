@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Devoluciones</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #DC3545; padding-bottom: 10px; }
+        .header h1 { margin: 0; color: #DC3545; }
+        .header p { margin: 5px 0 0; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #DC3545; color: white; padding: 10px; text-align: left; }
+        td { border: 1px solid #ddd; padding: 8px; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        .badge { padding: 3px 8px; border-radius: 3px; font-size: 10px; }
+        .badge-pendiente { background: #ffc107; color: #000; }
+        .badge-aprobada { background: #198754; color: white; }
+        .badge-rechazada { background: #dc3545; color: white; }
+        .badge-completada { background: #6c757d; color: white; }
+        .footer { margin-top: 20px; text-align: right; font-size: 10px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📦 Reporte de Devoluciones</h1>
+        <p>Gym Xtreme - {{ now|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Proveedor</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Respuesta</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for devolucion in devoluciones %}
+            <tr>
+                <td>#{{ devolucion.id }}</td>
+                <td>{{ devolucion.fecha_devolucion|date:"d/m/Y" }}</td>
+                <td>{{ devolucion.producto.nombre|default:"Sin producto" }}</td>
+                <td>{{ devolucion.cantidad }}</td>
+                <td>{{ devolucion.proveedor.nombre|default:"Sin proveedor" }}</td>
+                <td>
+                    {% if devolucion.motivo == 'dañado' %}Dañado
+                    {% elif devolucion.motivo == 'vencido' %}Vencido
+                    {% elif devolucion.motivo == 'error' %}Error
+                    {% else %}Otro{% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-{{ devolucion.estado }}">
+                        {% if devolucion.estado == 'pendiente' %}Pendiente
+                        {% elif devolucion.estado == 'aprobada' %}Aprobada
+                        {% elif devolucion.estado == 'rechazada' %}Rechazada
+                        {% else %}Completada{% endif %}
+                    </span>
+                </td>
+                <td>
+                    {% if devolucion.respuesta_proveedor %}
+                        {{ devolucion.respuesta_proveedor|truncatechars:30 }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center;">No hay devoluciones</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Total de devoluciones: {{ devoluciones|length }}</p>
+    </div>
+</body>
+</html>

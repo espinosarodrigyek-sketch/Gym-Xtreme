@@ -1,0 +1,182 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <h2><i class="fas fa-undo-alt" style="margin-right:10px;color:var(--rojo);"></i>Nueva Devolución</h2>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-gym {% if message.tags == 'success' %}success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-plus-circle" style="margin-right:8px;"></i>Registrar Devolución</div>
+        <div class="card-dark-body">
+            <form method="POST" enctype="multipart/form-data" style="max-width:700px;margin:0 auto;">
+                {% csrf_token %}
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                    <div>
+                        <label class="form-label">Proveedor *</label>
+                        {{ form.proveedor }}
+                    </div>
+                    <div>
+                        <label class="form-label">Producto *</label>
+                        {{ form.producto }}
+                        <small id="stock-info" style="color:#28a745;display:block;margin-top:5px;"></small>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                    <div>
+                        <label class="form-label">Cantidad *</label>
+                        {{ form.cantidad }}
+                        <small id="cantidad-info" style="color:#666;display:block;margin-top:5px;">Stock disponible: <span id="stock-display">-</span></small>
+                    </div>
+                    <div>
+                        <label class="form-label">Motivo de la Devolución *</label>
+                        {{ form.motivo }}
+                    </div>
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label class="form-label">Descripción Detallada *</label>
+                    {{ form.descripcion }}
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+                    <div>
+                        <label class="form-label">Imagen del Producto</label>
+                        {{ form.imagen }}
+                        <small style="color:#666;display:block;margin-top:5px;">Opcional: Sube una imagen del producto</small>
+                    </div>
+                    <div>
+                        <label class="form-label">Notas Internas</label>
+                        {{ form.notas_admin }}
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:15px;justify-content:center;margin-top:25px;">
+                    <button type="button" id="btnLimpiar" class="btn-gym" style="background:#6c757d;">
+                        <i class="fas fa-broom"></i> Limpiar
+                    </button>
+                    <a href="/proveedores/devoluciones/" class="btn-gym" style="background:#6c757d;">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn-gym">
+                        <i class="fas fa-paper-plane"></i> Crear y Enviar notification
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-dark" style="margin-top:20px;">
+        <div class="card-dark-header"><i class="fas fa-info-circle" style="margin-right:8px;"></i>Información</div>
+        <div class="card-dark-body">
+            <p style="color:#ccc;margin:0;">
+                <i class="fas fa-envelope" style="color:var(--rojo);margin-right:8px;"></i>
+                Al crear la devolución, se enviará automáticamente un correo electrónico al proveedor seleccionado con todos los detalles de la devolución.
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const proveedorSelect = document.getElementById('id_proveedor');
+    const productoSelect = document.getElementById('id_producto');
+    const cantidadInput = document.getElementById('id_cantidad');
+    const stockDisplay = document.getElementById('stock-display');
+    const cantidadInfo = document.getElementById('cantidad-info');
+    
+    const productosData = [];
+    
+    {% for proveedor in proveedores %}
+        {% for producto in proveedor.productos.all %}
+            productosData.push({
+                proveedorId: {{ proveedor.id_proveedor }},
+                id: {{ producto.id_producto }},
+                nombre: "{{ producto.nombre }}",
+                stock: {{ producto.stock_actual }}
+            });
+        {% endfor %}
+    {% endfor %}
+    
+    proveedorSelect.addEventListener('change', function() {
+        const proveedorId = this.value;
+        
+        while (productoSelect.options.length > 1) {
+            productoSelect.remove(productoSelect.options.length - 1);
+        }
+        
+        stockDisplay.textContent = '-';
+        
+        if (proveedorId) {
+            const productosFiltrados = productosData.filter(p => p.proveedorId == proveedorId);
+            productosFiltrados.forEach(function(producto) {
+                const option = document.createElement('option');
+                option.value = producto.id;
+                option.textContent = producto.nombre;
+                option.dataset.stock = producto.stock;
+                productoSelect.appendChild(option);
+            });
+        }
+    });
+    
+    productoSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const stock = selectedOption.dataset.stock || 0;
+        
+        if (stock) {
+            stockDisplay.textContent = stock;
+            cantidadInput.max = stock;
+            cantidadInfo.innerHTML = 'Stock disponible: <span id="stock-display" style="color:#28a745;font-weight:bold;">' + stock + '</span>';
+        } else {
+            stockDisplay.textContent = '-';
+            cantidadInput.removeAttribute('max');
+            cantidadInfo.innerHTML = 'Stock disponible: <span id="stock-display">-</span>';
+        }
+    });
+    
+    cantidadInput.addEventListener('input', function() {
+        const stock = parseInt(stockDisplay.textContent) || 0;
+        const cantidad = parseInt(this.value) || 0;
+        
+        if (stock > 0 && cantidad > stock) {
+            this.value = stock;
+            cantidadInfo.innerHTML = '<span style="color:#DC3545;">⚠️ Máximo ' + stock + ' unidades (stock disponible)</span>';
+        } else if (stock > 0) {
+            cantidadInfo.innerHTML = 'Stock disponible: <span id="stock-display" style="color:#28a745;font-weight:bold;">' + stock + '</span>';
+        }
+    });
+    
+    // Botón Limpiar
+    document.getElementById('btnLimpiar').addEventListener('click', function() {
+        // Limpiar selects
+        proveedorSelect.value = '';
+        while (productoSelect.options.length > 1) {
+            productoSelect.remove(productoSelect.options.length - 1);
+        }
+        
+        // Resetear stock display
+        stockDisplay.textContent = '-';
+        cantidadInput.removeAttribute('max');
+        cantidadInfo.innerHTML = 'Stock disponible: <span id="stock-display">-</span>';
+        
+        // Limpiar otros campos del formulario
+        document.getElementById('id_cantidad').value = '1';
+        document.getElementById('id_motivo').selectedIndex = 0;
+        document.getElementById('id_descripcion').value = '';
+        document.getElementById('id_notas_admin').value = '';
+        
+        // Si hay input file, limpiarlo
+        const imagenInput = document.getElementById('id_imagen');
+        if (imagenInput) imagenInput.value = '';
+    });
+});
+</script>

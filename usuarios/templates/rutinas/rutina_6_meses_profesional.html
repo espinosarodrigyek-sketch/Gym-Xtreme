@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina General - 6 Meses</title>
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 10px; color: #333; margin: 0; padding: 0;">
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; padding: 20px; text-align: center;">
+    <h1 style="font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 3px;">RUTINA TRANSFORMACIÓN</h1>
+    <p style="color: white; font-size: 11px; font-weight: bold; letter-spacing: 2px; margin: 0;">PROGRAMA 6 MESES - FULL BODY EVOLUTIVO</p>
+    
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 9px;">
+        <p style="margin: 3px 0;"><strong>Usuario:</strong> {{ usuario.username }}</p>
+        <p style="margin: 3px 0;"><strong>Plan:</strong> {{ plan.nombre }}</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div style="background: #1a1a1a; color: white; padding: 10px 20px; display: flex; justify-content: space-around;">
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">{{ duracion_real_dias }}</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Días</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">5</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Días/Semana</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">Upper/Lower</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Tipo</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">55 min</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Duración</div>
+    </div>
+</div>
+
+<!-- PROGRAMA -->
+<div style="padding: 15px;">
+    <div style="background: #ff4444; color: white; padding: 8px 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        PROGRAMA UPPER/LOWER - 6 FASES DE PROGRESIÓN
+    </div>
+    
+    <!-- FASE 1 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #ff6666; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 1 (MES 1): FUNDAMENTOS
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 1 - UPPER</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Press banca: 3x12 | Remo barra: 3x12 | Press militar: 3x12<br>
+                    Jalón al pecho: 3x12 | Press inclinado: 3x12<br>
+                    Curl bíceps: 3x12 | Extensión tríceps: 3x12
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 2 - LOWER</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Sentadilla: 3x12 | Peso muerto: 3x12 | Prensa: 3x12<br>
+                    Zancadas: 3x10 | Curl femoral: 3x12 | Gemelos: 3x15
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 3 - UPPER</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Press banca: 3x12 | Remo mancuernas: 3x12<br>
+                    Press inclinado: 3x12 | Elevaciones laterales: 3x15<br>
+                    Face pulls: 3x15 | Curl martillo: 3x12
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 2 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #cc0000; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 2 (MES 2): VOLUMEN
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 1 - UPPER A</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Press banca: 4x10 | Remo barra: 4x10 | Press militar: 4x10<br>
+                    Jalón al pecho: 3x12 | Press inclinado: 3x12
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 2 - LOWER A</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Sentadilla: 4x10 | Peso muerto: 4x10<br>
+                    Prensa: 3x12 | Zancadas: 3x12 | Hip thrust: 3x12
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 3 - UPPER B</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Press inclinado: 4x10 | Remo mancuernas: 4x10<br>
+                    Press militar: 4x10 | Face pulls: 4x15<br>
+                    Curl bíceps: 3x12 | Extensión tríceps: 3x12
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 3 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #1a1a1a; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 3 (MES 3): INTENSIDAD
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 1 - UPPER FUERZA</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Press banca: 5x6-8 | Remo barra: 5x6-8 | Press militar: 4x8<br>
+                    Jalón: 4x8 | Press inclinado: 4x8 | Face pulls: 4x12
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">DÍA 2 - LOWER FUERZA</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Sentadilla: 5x6-8 | Peso muerto: 5x5-6<br>
+                    Prensa: 4x10 | Zancadas: 4x10 | Hip thrust: 4x12
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0; background: #fff3f3; padding: 8px; border-left: 3px solid #ff4444;">
+                <strong style="font-size: 9px; color: #cc0000;">TÉCNICAS:</strong>
+                <p style="margin: 2px 0; font-size: 9px;">
+                    Rest-Pause en últimas series | Drop sets en aislamiento
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 4 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #333; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 4 (MES 4): PEAK
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #ff4444; font-size: 10px;">PUSH/PULL/LEGS SPLIT</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    <strong>Push:</strong> Banca + Inclinado + Militar + Lateral<br>
+                    <strong>Pull:</strong> Remo + Jalón + Face pulls + Brazos<br>
+                    <strong>Legs:</strong> Sentadilla + Muerto + Zancadas + Gemelos
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 10px;">Semana Tipo (6 días)</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Lun: Push | Mar: Pull | Mié: Legs<br>
+                    Jue: Push | Vie: Pull | Sáb: Legs
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 5 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #555; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 5 (MES 5): ARNOLD SPLIT
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 10px;">ARNOLD CLASSIC SPLIT (6 días)</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Lun: Pecho + Espalda | Mar: Piernas<br>
+                    Mié: Hombros + Brazos | Jue: Pecho + Espalda<br>
+                    Vie: Piernas | Sáb: Hombros + Brazos + Core
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 6 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #777; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 6 (MES 6): MANTENIMIENTO + DELOAD
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444; font-size: 10px;">SEMANA TIPO</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Lun: Full Upper | Mar: Full Lower<br>
+                    Mié: Descanso | Jue: Upper<br>
+                    Vie: Lower | Sáb: Full Body<br>
+                    <strong>Cada 4ta semana: Deload (50% volumen)</strong>
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+
+<!-- NUTRICION -->
+<div style="padding: 0 15px 15px 15px;">
+    <div style="background: #1a1a1a; color: white; padding: 8px 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        NUTRICIÓN 6 MESES
+    </div>
+    
+    <div style="display: flex; margin-top: 10px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px;">
+            <div style="font-size: 16px; font-weight: bold; color: #ff4444;">{{ perfil.peso|default:"70" }}g</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Proteína</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 16px; font-weight: bold; color: #ff4444;">250g</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Carbohidratos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 16px; font-weight: bold; color: #ff4444;">75g</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Grasas</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 10px; background: #fff3f3; padding: 10px; border-left: 3px solid #ff4444;">
+        <h4 style="font-size: 10px; text-transform: uppercase; margin: 0 0 6px 0;">SUPLEMENTOS</h4>
+        <p style="font-size: 9px; margin: 2px 0;">• Proteína whey: 25-30g post-entreno</p>
+        <p style="font-size: 9px; margin: 2px 0;">• Creatina: 5g/día</p>
+        <p style="font-size: 9px; margin: 2px 0;">• Cafeína: 200mg pre-entreno</p>
+    </div>
+    
+</div>
+
+<!-- FOOTER -->
+<div style="background: #1a1a1a; color: white; padding: 12px; text-align: center;">
+    <p style="font-size: 12px; font-weight: bold; color: #ff4444; margin: 0 0 4px 0; letter-spacing: 2px;">GYM FITNESS</p>
+    <p style="font-size: 7px; margin: 0; color: #888;">6 meses para transformar tu vida 💪🔥</p>
+</div>
+
+</body>
+</html>

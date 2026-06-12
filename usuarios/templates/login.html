@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GYM XTREME - Acceso</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --border: #334155;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg-primary);
+            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%),
+                url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920') center/cover no-repeat;
+            padding: 20px;
+            position: relative;
+        }
+
+        .auth-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Left Side - Branding - AZUL */
+        .auth-branding {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-branding::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10 L90 90 L10 90 Z" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></svg>');
+            animation: rotate 30s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .branding-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            border: 3px solid rgba(255,255,255,0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .branding-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-subtitle {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-features {
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .feature-item i {
+            width: 30px;
+            height: 30px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Right Side - Form */
+        .auth-form-side {
+            flex: 1;
+            background: var(--bg-secondary);
+            padding: 50px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            color: var(--text-primary);
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Toggle Tabs */
+        .auth-tabs {
+            display: flex;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .auth-tab:not(.active):hover {
+            color: var(--text-primary);
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Base form-control styling */
+        .form-control {
+            background: var(--bg-primary);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-control:focus {
+            background: var(--bg-primary);
+            border-color: var(--primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+            outline: none;
+        }
+
+        /* Login form specific input styling */
+        .login-form .form-control {
+            padding-left: 45px;
+        }
+
+        /* Register form specific input styling */
+        .register-form .form-control {
+            padding-left: 45px;
+        }
+
+        /* Input with icon */
+        .input-group-icon {
+            position: relative;
+        }
+
+        .input-group-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .input-group-icon.password-field .form-control {
+            padding-right: 45px;
+        }
+
+        .input-group-icon .btn-toggle-pass {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.2s ease;
+            z-index: 3;
+        }
+
+        .input-group-icon .btn-toggle-pass:hover {
+            color: var(--primary);
+        }
+
+        /* Remember */
+        .form-check-custom {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .form-check-custom .form-check-input {
+            background: var(--bg-primary);
+            border-color: var(--border);
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            accent-color: var(--primary);
+        }
+
+        .form-check-custom .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .form-check-custom .form-check-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Submit Button - AZUL */
+        .btn-submit-custom {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border: none;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-submit-custom:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45);
+        }
+
+        /* Switch Form */
+        .switch-form-custom {
+            text-align: center;
+            margin-top: 25px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .switch-form-custom a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .switch-form-custom a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Alerts */
+        .alert-custom {
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error-custom {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+
+        .alert-success-custom {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* Form Views */
+        .form-view-custom {
+            display: none;
+        }
+
+        .form-view-custom.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-wrapper {
+                flex-direction: column;
+                max-width: 450px;
+            }
+
+            .auth-branding {
+                padding: 40px 30px;
+            }
+
+            .branding-title {
+                font-size: 1.8rem;
+            }
+
+            .branding-features {
+                display: none;
+            }
+
+            .auth-form-side {
+                padding: 35px 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-section {
+                padding: 15px;
+            }
+
+            .auth-tabs {
+                flex-direction: row;
+            }
+
+            .form-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<section class="auth-section">
+    <div class="auth-wrapper">
+        <!-- Left Side - Branding -->
+        <div class="auth-branding">
+            <div class="branding-icon">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <h1 class="branding-title">GYM XTREME</h1>
+            <p class="branding-subtitle">Transforma tu cuerpo, cambia tu vida</p>
+
+            <div class="branding-features">
+                <div class="feature-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Equipamiento de última generación</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Horarios adaptados a ti</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <span>Comunidad fitness</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Salud y bienestar</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Form -->
+        <div class="auth-form-side">
+            <!-- Toggle Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchForm('login')" id="tabLogin">
+                    <i class="fas fa-sign-in-alt me-1"></i> Login
+                </button>
+                <button class="auth-tab" onclick="switchForm('register')" id="tabRegister">
+                    <i class="fas fa-user-plus me-1"></i> Registro
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div class="form-view-custom active" id="viewLogin">
+                <div class="form-header">
+                    <h2>¡Bienvenido!</h2>
+                    <p>Ingresa tus credenciales para continuar</p>
+                </div>
+
+                <form method="POST" action="{% url 'login' %}" class="login-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert-custom alert-error-custom" style="margin-bottom:15px;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <div class="input-group-icon">
+                            <i class="fas fa-user"></i>
+                            {{ form.username }}
+                        </div>
+                        {% if form.username.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.username.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <div class="input-group-icon password-field">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password }}
+                            <button type="button" class="btn-toggle-pass" onclick="togglePassword('id_password', 'loginEye')">
+                                <i class="fas fa-eye" id="loginEye"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.password.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-check-custom">
+                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Recordarme</label>
+                    </div>
+
+                    <button type="submit" class="btn-submit-custom">
+                        <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="switch-form-custom" style="margin-top:20px;">
+                    ¿No tienes cuenta?
+                    <a href="#" onclick="switchForm('register'); return false;">Regístrate aquí</a>
+                </div>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div class="form-view-custom{% if show_register %} active{% endif %}" id="viewRegister">
+                <div class="form-header">
+                    <h2>¡Únete!</h2>
+                    <p>Crea tu cuenta y comienza a transformar</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert-custom {% if message.tags == 'error' %}alert-error-custom{% else %}alert-success-custom{% endif %}">
+                        <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i> {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="{% url 'registro' %}" class="register-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div style="color:#ef4444;font-size:0.85rem;margin-bottom:10px;padding:8px 12px;background:rgba(239,68,68,0.1);border-radius:6px;">
+                            {% for error in form.non_field_errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}{% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <div class="input-group-icon">
+                            <i class="fas fa-user"></i>
+                            {{ form.username }}
+                        </div>
+                        {% if form.username.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.username.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Correo electrónico</label>
+                        <div class="input-group-icon">
+                            <i class="fas fa-envelope"></i>
+                            {{ form.email }}
+                        </div>
+                        {% if form.email.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.email.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <div class="input-group-icon password-field">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password }}
+                            <button type="button" class="btn-toggle-pass" onclick="togglePassword('id_password', 'registerEye')">
+                                <i class="fas fa-eye" id="registerEye"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.password.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Confirmar contraseña</label>
+                        <div class="input-group-icon password-field">
+                            <i class="fas fa-lock"></i>
+                            {{ form.password_confirm }}
+                            <button type="button" class="btn-toggle-pass" onclick="togglePassword('id_password_confirm', 'registerConfirmEye')">
+                                <i class="fas fa-eye" id="registerConfirmEye"></i>
+                            </button>
+                        </div>
+                        {% if form.password_confirm.errors %}
+                        <div style="color:#ef4444;font-size:0.8rem;margin-top:4px;padding-left:5px;">
+                            {% for error in form.password_confirm.errors %}
+                                <i class="fas fa-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn-submit-custom">
+                        <i class="fas fa-user-plus me-2"></i> Crear Cuenta
+                    </button>
+                </form>
+
+                <div class="switch-form-custom" style="margin-top:20px;">
+                    ¿Ya tienes cuenta?
+                    <a href="#" onclick="switchForm('login'); return false;">Inicia sesión aquí</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function switchForm(form) {
+        document.getElementById('tabLogin').classList.toggle('active', form === 'login');
+        document.getElementById('tabRegister').classList.toggle('active', form === 'register');
+        document.getElementById('viewLogin').classList.toggle('active', form === 'login');
+        document.getElementById('viewRegister').classList.toggle('active', form === 'register');
+    }
+
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    if (window.location.hash === '#register') {
+        switchForm('register');
+    }
+
+    {% if show_register %}
+    switchForm('register');
+    {% endif %}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const wrapper = document.querySelector('.auth-wrapper');
+        wrapper.style.opacity = '0';
+        wrapper.style.transform = 'translateY(20px)';
+
+        setTimeout(function() {
+            wrapper.style.transition = 'all 0.6s ease';
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
+
+</body>
+</html>

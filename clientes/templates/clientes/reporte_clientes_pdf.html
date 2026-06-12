@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load formato_cop %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 11px; }
+        h1 { text-align: center; font-size: 18px; }
+        h2 { font-size: 14px; margin-top: 20px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        .info { text-align: right; font-size: 10px; margin-bottom: 10px; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        th { background-color: #111; color: white; padding: 6px; font-size: 10px; text-align: left; }
+        td { border: 1px solid #ccc; padding: 5px; font-size: 10px; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .positivo { color: #198754; }
+        .negativo { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+<h1>Reporte de Clientes - Gym Xtreme</h1>
+
+<div class="info">
+    Generado: {{ now|date:"d/m/Y H:i" }}
+</div>
+
+<h2>Listado de Clientes</h2>
+{% if clientes_data %}
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Plan</th>
+        <th>Estado</th>
+        <th>Fecha Fin</th>
+    </tr>
+    {% for c in clientes_data %}
+    <tr>
+        <td>{{ c.usuario.id }}</td>
+        <td>{{ c.usuario.username }}</td>
+        <td>{{ c.usuario.first_name }} {{ c.usuario.last_name }}</td>
+        <td>{{ c.usuario.email }}</td>
+        <td>{{ c.perfil.telefono|default:"-" }}</td>
+        <td>{% if c.suscripcion_activa %}{{ c.suscripcion_activa.plan.nombre }}{% else %}Sin plan{% endif %}</td>
+        <td>{% if c.suscripcion_activa %}Activa{% else %}Sin suscripción{% endif %}</td>
+        <td>{% if c.suscripcion_activa %}{{ c.suscripcion_activa.fecha_fin|date:"d/m/Y" }}{% else %}-{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p style="color:#999;">No hay clientes registrados.</p>
+{% endif %}
+
+</body>
+</html>

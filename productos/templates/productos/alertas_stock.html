@@ -1,0 +1,75 @@
+{% load formato_cop %}
+{% include 'usuarios/partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-exclamation-triangle" style="margin-right:10px;color:#ffc107;"></i>Alertas de Stock</h2>
+            <a href="/productos/" class="btn-gym"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+    </div>
+
+    {% if productos_criticos or productos_bajos %}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:20px;">
+        
+        {% if productos_criticos %}
+        <div class="card-dark" style="border:2px solid #dc3545;">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#dc3545,#a71d2a);">
+                <i class="fas fa-times-circle" style="margin-right:8px;"></i>Stock Crítico (≤{{ stock_critico }})
+            </div>
+            <div style="padding:15px;">
+                <table class="table-dark-custom">
+                    <thead>
+                        <tr><th>Producto</th><th>Categoría</th><th>Stock</th><th>Acción</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos_criticos %}
+                        <tr style="background:rgba(220,53,69,0.1);">
+                            <td style="font-weight:600;color:#dc3545;">{{ p.nombre }}</td>
+                            <td>{{ p.categoria }}</td>
+                            <td style="font-weight:700;font-size:1.1rem;color:#dc3545;">{{ p.stock_actual }}</td>
+                            <td><a href="/productos/editar/{{ p.id_producto }}/" class="btn-gym" style="padding:5px 10px;font-size:0.8rem;">Comprar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if productos_bajos %}
+        <div class="card-dark" style="border:2px solid #ffc107;">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#ffc107,#cc9900);color:#000;">
+                <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i>Stock Bajo (≤{{ stock_minimo }})
+            </div>
+            <div style="padding:15px;">
+                <table class="table-dark-custom">
+                    <thead>
+                        <tr><th>Producto</th><th>Categoría</th><th>Stock</th><th>Acción</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos_bajos %}
+                        <tr style="background:rgba(255,193,7,0.1);">
+                            <td style="font-weight:600;color:#ffc107;">{{ p.nombre }}</td>
+                            <td>{{ p.categoria }}</td>
+                            <td style="font-weight:700;font-size:1.1rem;color:#ffc107;">{{ p.stock_actual }}</td>
+                            <td><a href="/productos/editar/{{ p.id_producto }}/" class="btn-gym" style="padding:5px 10px;font-size:0.8rem;background:#ffc107;color:#000;">Comprar</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% else %}
+    <div class="alert-gym success" style="border-left-color:#198754;">
+        <i class="fas fa-check-circle" style="font-size:1.5rem;color:#198754;"></i>
+        <div>
+            <strong>¡Todo bajo control!</strong><br>
+            No hay productos con stock bajo. El inventario está en niveles óptimos.
+        </div>
+    </div>
+    {% endif %}
+</div>

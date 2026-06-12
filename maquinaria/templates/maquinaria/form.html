@@ -1,0 +1,75 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+<div style="max-width:600px;margin:0 auto;">
+    <div class="card-dark">
+        <div class="card-dark-header" style="text-align:center;">
+            {% if maquina %}<i class="fas fa-edit" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>Editar Maquina
+            {% else %}<i class="fas fa-plus-circle" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>Nueva Maquina{% endif %}
+        </div>
+        <div class="card-dark-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-input" value="{{ maquina.nombre|default:'' }}" required>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Tipo</label>
+                        <select name="tipo" class="form-input" required>
+                            <option value="cardio" {% if maquina.tipo == 'cardio' %}selected{% endif %}>Cardio</option>
+                            <option value="fuerza" {% if maquina.tipo == 'fuerza' %}selected{% endif %}>Fuerza</option>
+                            <option value="funcional" {% if maquina.tipo == 'funcional' %}selected{% endif %}>Funcional</option>
+                            <option value="pesas" {% if maquina.tipo == 'pesas' %}selected{% endif %}>Pesas</option>
+                            <option value="accesorio" {% if maquina.tipo == 'accesorio' %}selected{% endif %}>Accesorio</option>
+                            <option value="otro" {% if maquina.tipo == 'otro' or not maquina %}selected{% endif %}>Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Proveedor</label>
+                        <select name="proveedor" class="form-input">
+                            <option value="">-- Seleccionar Proveedor --</option>
+                            {% for prov in proveedores %}
+                            <option value="{{ prov.id_proveedor }}" {% if maquina and maquina.proveedor_id == prov.id_proveedor %}selected{% endif %}>{{ prov.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-input">
+                            <option value="activo" {% if maquina.estado == 'activo' or not maquina %}selected{% endif %}>Activo</option>
+                            <option value="reparacion" {% if maquina.estado == 'reparacion' %}selected{% endif %}>En Reparacion</option>
+                            {% if maquina %}<option value="venta" {% if maquina.estado == 'venta' %}selected{% endif %}>En Venta</option>
+                            <option value="vendido" {% if maquina.estado == 'vendido' %}selected{% endif %}>Vendido</option>{% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Precio Compra (COP)</label>
+                        <input type="number" name="precio_compra" class="form-input" value="{{ maquina.precio_compra|default:'' }}" min="0" step="1000">
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Fecha Compra</label>
+                        <input type="date" name="fecha_compra" class="form-input" value="{{ maquina.fecha_compra|default:'' }}">
+                    </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Descripcion</label>
+                    <textarea name="descripcion" class="form-input" rows="3">{{ maquina.descripcion|default:'' }}</textarea>
+                </div>
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Imagen</label>
+                    <input type="file" name="imagen" class="form-input">
+                    {% if maquina and maquina.imagen %}<img src="{{ maquina.imagen.url }}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid var(--rojo);margin-top:8px;">{% endif %}
+                </div>
+                <button type="submit" class="btn-gym" style="width:100%;justify-content:center;padding:14px;"><i class="fas fa-save"></i> Guardar</button>
+                <a href="/maquinaria/" style="display:block;text-align:center;color:#666;margin-top:12px;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Volver</a>
+            </form>
+        </div>
+    </div>
+</div>
+</div>

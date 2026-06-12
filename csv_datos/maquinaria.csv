@@ -1,0 +1,11 @@
+nombre,descripcion,tipo,ubicacion,estado,precio_compra,fecha_compra,imagen
+Sentadilla Hack,Maquina de sentadilla hack - Regulacion de altura - Capacidad 250kg,Fuerza,Sala Pesas 1,activo,2800000,2023-01-15,sentadillahack.jpg
+Press Banca Plano,Maquina press banca plano - Soporte regulable - Capacidad 300kg,Fuerza,Sala Pesas 2,activo,2200000,2023-02-20,presbanca.jpg
+Peck Deck,Maquina para pecho pectorales - 5 posiciones - Flujo smoothness,Fuerza,Sala Pesas 3,activo,1950000,2023-03-10,peckdeck.jpg
+Caminadora Profesional,Caminadora comercial 4.0 HP - Velocidad 0.8-18 km/h - Inclinacion 15 porciento,Cardio,Sala Cardio 1,activo,4500000,2023-04-05,caminadora.jpg
+Bicicleta Spinning,Bicicleta spin con monitor digital - 40 niveles resistencia - Ajuste vertical y horizontal,Cardio,Sala Cardio 2,activo,1800000,2023-05-12,biciclitegym1.jpg
+Bicicleta Estatica,Bicicleta estatica magnetica - 8 niveles - Pantalla LCD - Pulso cardiaco,Cardio,Sala Cardio 3,activo,1500000,2023-06-15,bicicletagym2.jpg
+Caminadora 2,Caminadora Running Pro 3.5HP - Velocidad 1-16 km/h - 12 programas,Fuerza,Sala Cardio 4,activo,3800000,2023-07-18,caminadora2.jpg
+Caminadora 3,Caminadora semipro 2.5HP - Velocidad 1-14 km/h - 9 programas,Fuerza,Sala Cardio 5,activo,3200000,2023-08-20,caminadora3.jpg
+Smith Machine,Smith machine conecemtrico - 8 posiciones - Barras seguridad,Fuerza,Sala Pesas 4,activo,4200000,2023-09-22,smit1
+Smith Machine 2,Smith machine profesional - Guia itself - Capacidad 180kg,Fuerza,Sala Pesas 5,activo,4500000,2023-10-25,smit2.jpg

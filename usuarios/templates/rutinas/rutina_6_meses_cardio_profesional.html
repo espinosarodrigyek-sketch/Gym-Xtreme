@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina Cardio - 6 Meses</title>
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 10px; color: #333; margin: 0; padding: 0;">
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%); color: white; padding: 20px; text-align: center;">
+    <h1 style="font-size: 20px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 3px;">RUTINA CORREDOR</h1>
+    <p style="color: white; font-size: 11px; font-weight: bold; letter-spacing: 2px; margin: 0;">PROGRAMA CARDIO + RESISTENCIA - 6 MESES</p>
+    
+    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 9px;">
+        <p style="margin: 3px 0;"><strong>Usuario:</strong> {{ usuario.username }}</p>
+        <p style="margin: 3px 0;"><strong>Plan:</strong> {{ plan.nombre }}</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div style="background: #1a1a1a; color: white; padding: 10px 20px; display: flex; justify-content: space-around;">
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">{{ duracion_real_dias }}</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Días</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">5-6</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Días/Semana</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">45-90</div>
+        <div style="font-size: 7px; text-transform: uppercase;">Min/Sesión</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 16px; font-weight: bold;">120-160</div>
+        <div style="font-size: 7px; text-transform: uppercase;">FC (lpm)</div>
+    </div>
+</div>
+
+<!-- METAS -->
+<div style="padding: 15px; background: #fff5f5;">
+    <div style="background: #c92a2a; color: white; padding: 8px 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        METAS A 6 MESES
+    </div>
+    
+    <div style="display: flex; margin-top: 12px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px;">
+            <div style="font-size: 18px; font-weight: bold; color: #c92a2a;">10K</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Meta Carrera</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 18px; font-weight: bold; color: #c92a2a;">50 min</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Tiempo 10K</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 18px; font-weight: bold; color: #c92a2a;">5:00</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Min/Km Pace</div>
+        </div>
+    </div>
+</div>
+
+<!-- PROGRAMA -->
+<div style="padding: 15px;">
+    <div style="background: #ff6b6b; color: white; padding: 8px 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        PLAN DE ENTRENAMIENTO - 6 FASES
+    </div>
+    
+    <!-- FASE 1 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #ffcccc; color: #c92a2a; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 1 (MES 1): BASE CARDIO
+        </div>
+        <div style="padding: 10px;">
+            
+            <table style="width: 100%; border-collapse: collapse; font-size: 9px;">
+                <tr style="background: #f8f8f8;"><th style="padding: 6px;">DÍA</th><th>ACTIVIDAD</th><th>MIN</th><th>ZONA</th></tr>
+                <tr><td style="padding: 4px;"><strong>Lun</strong></td><td>Caminata rápida</td><td>30</td><td>Z1-2</td></tr>
+                <tr style="background: #f8f8f8;"><td style="padding: 4px;"><strong>Mar</strong></td><td>Trote suave</td><td>25</td><td>Z2</td></tr>
+                <tr><td style="padding: 4px;"><strong>Mié</strong></td><td>Circuito funcional</td><td>30</td><td>Z2-3</td></tr>
+                <tr style="background: #f8f8f8;"><td style="padding: 4px;"><strong>Jue</strong></td><td>Descanso activo</td><td>20</td><td>Z1</td></tr>
+                <tr><td style="padding: 4px;"><strong>Vie</strong></td><td>Trote suave</td><td>25</td><td>Z2</td></tr>
+            </table>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 2 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #ff9999; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 2 (MES 2): CONSTRUCCIÓN
+        </div>
+        <div style="padding: 10px;">
+            
+            <table style="width: 100%; border-collapse: collapse; font-size: 9px;">
+                <tr style="background: #f8f8f8;"><th style="padding: 6px;">DÍA</th><th>ACTIVIDAD</th><th>MIN</th><th>ZONA</th></tr>
+                <tr><td style="padding: 4px;"><strong>Lun</strong></td><td>Trote continuo</td><td>35</td><td>Z2</td></tr>
+                <tr style="background: #f8f8f8;"><td style="padding: 4px;"><strong>Mar</strong></td><td>HIIT 1</td><td>25</td><td>Z3-4</td></tr>
+                <tr><td style="padding: 4px;"><strong>Mié</strong></td><td>Fuerza piernas</td><td>40</td><td>Z2</td></tr>
+                <tr style="background: #f8f8f8;"><td style="padding: 4px;"><strong>Jue</strong></td><td>Trote continuo</td><td>35</td><td>Z2</td></tr>
+                <tr><td style="padding: 4px;"><strong>Vie</strong></td><td>Spinning</td><td>35</td><td>Z2-3</td></tr>
+                <tr style="background: #f8f8f8;"><td style="padding: 4px;"><strong>Sáb</strong></td><td>Trote largo</td><td>40</td><td>Z2</td></tr>
+            </table>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 3 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #c92a2a; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 3 (MES 3): 5K OBJETIVO
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #c92a2a; font-size: 10px;">SEMANA TIPO</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    Lun: Trote Z2 | Mar: Intervalos 400m<br>
+                    Mié: Fuerza | Jue: Trote Z2<br>
+                    Vie: HIIT | Sáb: Trote Z2<br>
+                    <strong>DOMINGO: 5K Time Trial</strong>
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 4 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #1a1a1a; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 4 (MES 4): VOLUMEN
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #c92a2a; font-size: 10px;">AUMENTO PROGRESIVO</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    • Semanas 1-2: +10% volumen<br>
+                    • Semanas 3-4: +10% más<br>
+                    • HIIT: 2x semana<br>
+                    • Trote largo: 60 min
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 5 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #333; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 5 (MES 5): INTENSIDAD
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 8px;">
+                <strong style="color: #c92a2a; font-size: 10px;">ENTRENAMIENTOS CLAVE</strong>
+                <p style="margin: 3px 0; font-size: 9px;">
+                    <strong>Tempo runs:</strong> 30 min al 85%<br>
+                    <strong>Intervalos:</strong> 8x800m @ 5K pace<br>
+                    <strong>Fartlek:</strong> 40 min terreno variable<br>
+                    <strong>Long run:</strong> 75 min Z2
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- FASE 6 -->
+    <div style="margin-top: 12px; border: 1px solid #ddd; border-radius: 6px; overflow: hidden;">
+        <div style="background: #555; color: white; padding: 8px 12px; font-weight: bold; font-size: 10px;">
+            FASE 6 (MES 6): TAPERING + 10K
+        </div>
+        <div style="padding: 10px;">
+            
+            <div style="margin-bottom: 0; background: #fff5f5; padding: 8px; border-left: 3px solid #c92a2a;">
+                <strong style="font-size: 9px; color: #c92a2a;">SEMANAS 1-2:</strong>
+                <p style="margin: 2px 0; font-size: 9px;">Reducir volumen 40%, mantener intensidad</p>
+                <strong style="font-size: 9px; color: #c92a2a;">SEMANA 3:</strong>
+                <p style="margin: 2px 0; font-size: 9px;">Test 10K: objectif sub 55 min</p>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+
+<!-- NUTRICION -->
+<div style="padding: 0 15px 15px 15px;">
+    <div style="background: #1a1a1a; color: white; padding: 8px 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        NUTRICIÓN DEL CORREDOR
+    </div>
+    
+    <div style="display: flex; margin-top: 10px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px;">
+            <div style="font-size: 16px; font-weight: bold; color: #c92a2a;">3-4L</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Agua</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 16px; font-weight: bold; color: #c92a2a;">55%</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Carbohidratos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 10px; border-left: none;">
+            <div style="font-size: 16px; font-weight: bold; color: #c92a2a;">20%</div>
+            <div style="font-size: 8px; text-transform: uppercase; color: #666;">Proteína</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 10px; background: #fff5f5; padding: 10px; border-left: 3px solid #c92a2a;">
+        <h4 style="font-size: 10px; text-transform: uppercase; margin: 0 0 6px 0;">ANTES/DESPUÉS</h4>
+        <p style="font-size: 9px; margin: 2px 0;">• 2-3h antes: carbohidratos complejos</p>
+        <p style="font-size: 9px; margin: 2px 0;">• 30-60 min post: whey + fruta</p>
+        <p style="font-size: 9px; margin: 2px 0;">• Beta-alanina + Beetroota para rendimiento</p>
+    </div>
+    
+</div>
+
+<!-- FOOTER -->
+<div style="background: #1a1a1a; color: white; padding: 12px; text-align: center;">
+    <p style="font-size: 12px; font-weight: bold; color: #ff6b6b; margin: 0 0 4px 0; letter-spacing: 2px;">GYM FITNESS</p>
+    <p style="font-size: 7px; margin: 0; color: #888;">Cada km te acerca a tu meta 🏃‍♂️❤️</p>
+</div>
+
+</body>
+</html>

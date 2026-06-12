@@ -1,0 +1,150 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-undo-alt" style="margin-right:10px;color:var(--rojo);"></i>Detalle de Devolución #{{ devolucion.id }}</h2>
+            <div style="display:flex;gap:10px;">
+                {% if devolucion.estado != 'pendiente' %}
+                <a href="/proveedores/devoluciones/{{ devolucion.id }}/eliminar/" class="btn-gym" style="background:#dc3545;" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar devolución?',text:'¿Estás seguro de eliminar esta devolución?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/proveedores/devoluciones/{{ devolucion.id }}/eliminar/'});">
+                    <i class="fas fa-trash"></i> Eliminar
+                </a>
+                {% endif %}
+                <a href="/proveedores/devoluciones/" class="btn-gym" style="background:#6c757d;">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-gym {% if message.tags == 'success' %}success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+        <!-- Información Principal -->
+        <div>
+            <div class="card-dark">
+                <div class="card-dark-header"><i class="fas fa-box" style="margin-right:8px;"></i>Información del Producto</div>
+                <div class="card-dark-body">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <div>
+                            <label class="form-label">Producto</label>
+                            <p style="color:white;font-size:1.1rem;margin:5px 0;">{{ devolucion.producto_nombre }}</p>
+                        </div>
+                        <div>
+                            <label class="form-label">Cantidad</label>
+                            <p style="color:white;font-size:1.1rem;margin:5px 0;">{{ devolucion.cantidad }} unidad(es)</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:15px;">
+                        <label class="form-label">Motivo (Gimnasio)</label>
+                        {% if devolucion.motivo == 'dañado' %}
+                        <span class="badge-reparacion">Producto Dañado</span>
+                        {% elif devolucion.motivo == 'vencido' %}
+                        <span class="badge-venta">Producto Vencido</span>
+                        {% elif devolucion.motivo == 'error' %}
+                        <span class="badge-activo">Error en el Pedido</span>
+                        {% else %}
+                        <span class="badge-vendido">Otro Motivo</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div style="margin-top:15px;">
+                        <label class="form-label">Descripción</label>
+                        <p style="color:#ccc;margin:5px 0;">{{ devolucion.descripcion }}</p>
+                    </div>
+
+                    {% if devolucion.imagen %}
+                    <div style="margin-top:15px;">
+                        <label class="form-label">Imagen Adjunta</label>
+                        <img src="{{ devolucion.imagen.url }}" style="max-width:300px;border-radius:10px;margin-top:10px;">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Respuesta del Proveedor -->
+            {% if devolucion.respuesta_proveedor %}
+            <div class="card-dark" style="margin-top:20px; border: 2px solid var(--rojo);">
+                <div class="card-dark-header" style="background: var(--rojo);">
+                    <i class="fas fa-reply" style="margin-right:8px;"></i>Respuesta del Proveedor
+                </div>
+                <div class="card-dark-body">
+                    <div style="margin-bottom:10px;">
+                        <span style="color:#888;font-size:0.85rem;">Respuesta:</span>
+                        {% if devolucion.estado == 'aprobada' %}
+                        <span class="badge-activo" style="background: rgba(25,135,84,0.2);color:#198754;">✅ Aprobada</span>
+                        {% else %}
+                        <span class="badge-reparacion" style="background: rgba(220,53,69,0.2);color:#dc3545;">❌ Rechazada</span>
+                        {% endif %}
+                    </div>
+                    <label class="form-label">Motivo del proveedor:</label>
+                    <p style="color:#fff;margin:5px 0;background:#111;padding:15px;border-radius:10px;">
+                        {{ devolucion.respuesta_proveedor }}
+                    </p>
+                    {% if devolucion.fecha_respuesta %}
+                    <p style="color:#666;font-size:0.8rem;margin:0;">
+                        Respondido el: {{ devolucion.fecha_respuesta|date:"d/m/Y H:i" }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if devolucion.notas_admin %}
+            <div class="card-dark" style="margin-top:20px;">
+                <div class="card-dark-header"><i class="fas fa-sticky-note" style="margin-right:8px;"></i>Notas del Administrador</div>
+                <div class="card-dark-body">
+                    <p style="color:#ccc;margin:0;">{{ devolucion.notas_admin }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div>
+            <div class="card-dark">
+                <div class="card-dark-header"><i class="fas fa-truck" style="margin-right:8px;"></i>Proveedor</div>
+                <div class="card-dark-body">
+                    <p style="color:white;font-weight:600;margin:0 0 10px;">{{ devolucion.proveedor.nombre }}</p>
+                    <p style="color:#888;font-size:0.85rem;margin:0 0 5px;">
+                        <i class="fas fa-envelope"></i> {{ devolucion.proveedor.email }}
+                    </p>
+                    <p style="color:#888;font-size:0.85rem;margin:0 0 5px;">
+                        <i class="fas fa-phone"></i> {{ devolucion.proveedor.telefono }}
+                    </p>
+                    <p style="color:#888;font-size:0.85rem;margin:0;">
+                        <i class="fas fa-map-marker-alt"></i> {{ devolucion.proveedor.direccion }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card-dark" style="margin-top:20px;">
+                <div class="card-dark-header"><i class="fas fa-clock" style="margin-right:8px;"></i>Estado</div>
+                <div class="card-dark-body">
+                    <div style="margin-bottom:15px;">
+                        {% if devolucion.estado == 'pendiente' %}
+                        <span style="color:#ffc107;font-size:1.1rem;font-weight:bold;">⏳ Pendiente</span>
+                        <p style="color:#666;font-size:0.8rem;margin:10px 0 0;">Esperando respuesta del proveedor</p>
+                        {% elif devolucion.estado == 'aprobada' %}
+                        <span style="color:#198754;font-size:1.1rem;font-weight:bold;">✅ Aprobada</span>
+                        {% elif devolucion.estado == 'rechazada' %}
+                        <span style="color:#dc3545;font-size:1.1rem;font-weight:bold;">❌ Rechazada</span>
+                        {% else %}
+                        <span style="color:#6c757d;font-size:1.1rem;font-weight:bold;">✔ Completada</span>
+                        {% endif %}
+                    </div>
+                    <p style="color:#888;font-size:0.85rem;margin:0;">
+                        <i class="fas fa-calendar"></i> Creado: {{ devolucion.fecha_devolucion|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

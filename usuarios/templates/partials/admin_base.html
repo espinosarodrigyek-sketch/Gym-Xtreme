@@ -1,0 +1,562 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-light: rgba(59, 130, 246, 0.15);
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --success: #22c55e;
+    --success-light: rgba(34, 197, 94, 0.15);
+    --warning: #f59e0b;
+    --warning-light: rgba(245, 158, 11, 0.15);
+    --danger: #ef4444;
+    --danger-light: rgba(239, 68, 68, 0.15);
+    --rojo: #3b82f6;
+    --rojo-gym: #3b82f6;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.4);
+    --transition: all 0.2s ease;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    z-index: 1000;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    border-left: 1px solid var(--border);
+}
+
+.sidebar.open { transform: translateX(0); }
+
+.sidebar-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    padding: 20px;
+    text-align: center;
+}
+
+.sidebar-header h4 {
+    margin: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 1.1rem;
+}
+
+.sidebar-header i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.sidebar-menu { padding: 10px 0; }
+
+.sidebar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 13px 20px;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+    font-size: 0.9rem;
+    gap: 10px;
+}
+
+.sidebar a:hover {
+    background: var(--primary-light);
+    color: var(--text-primary);
+    border-left-color: var(--primary);
+}
+
+.sidebar a.active-link {
+    background: var(--primary-light);
+    color: var(--text-primary);
+    border-left-color: var(--primary);
+}
+
+.sidebar a i { width: 18px; text-align: center; font-size: 0.95rem; }
+
+.sidebar .logout-box {
+    margin-top: 15px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+
+.sidebar .logout-box a:hover {
+    background: var(--danger-light);
+}
+
+/* ===== SUBMENU ===== */
+.submenu { display: none; padding-left: 15px; }
+.submenu.open { display: block; }
+.submenu a { padding: 10px 20px; font-size: 0.85rem; }
+.submenu a:hover { background: var(--primary-light); }
+
+/* ===== TOGGLE BUTTON ===== */
+.sidebar-toggle {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    transition: var(--transition);
+}
+
+.sidebar-toggle:hover {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+/* ===== OVERLAY ===== */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    display: none;
+}
+
+.sidebar-overlay.show { display: block; }
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    padding: 25px;
+    min-height: 100vh;
+    padding-right: 30px;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    background: var(--bg-secondary);
+    padding: 20px 25px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+}
+
+.page-header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+}
+
+/* ===== CARDS ===== */
+.card-dark {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+.card-dark:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-dark-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+    padding: 15px 20px;
+    font-weight: 600;
+    color: white;
+}
+
+.card-dark-body { padding: 20px; }
+
+/* ===== TABLE ===== */
+.table-dark-custom {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-dark-custom thead th {
+    background: var(--bg-primary);
+    color: var(--text-muted);
+    padding: 14px 15px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+}
+
+.table-dark-custom tbody td {
+    padding: 14px 15px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.table-dark-custom tbody tr:hover {
+    background: var(--bg-tertiary);
+}
+
+/* ===== BADGES ===== */
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-activo {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.badge-reparacion {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.badge-venta {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.badge-vendido {
+    background: rgba(148, 163, 184, 0.2);
+    color: var(--text-muted);
+}
+
+.badge-stock-bajo {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.badge-stock-ok {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+/* ===== BUTTONS ===== */
+.btn-gym {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
+
+.btn-gym:hover {
+    background: var(--primary-hover);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+.btn-action {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-edit {
+    background: var(--warning-light);
+    color: var(--warning);
+}
+
+.btn-edit:hover {
+    background: var(--warning);
+    color: #000;
+}
+
+.btn-delete {
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+.btn-delete:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-sell {
+    background: var(--success-light);
+    color: var(--success);
+}
+
+.btn-sell:hover {
+    background: var(--success);
+    color: #fff;
+}
+
+.btn-view {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.btn-view:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ===== FORMS ===== */
+.form-input {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    padding: 12px 15px;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.form-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+select.form-input option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* ===== ALERTS ===== */
+.alert-gym {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert-gym.success {
+    border-left-color: var(--success);
+    background: var(--success-light);
+}
+
+.alert-gym.warning {
+    border-left-color: var(--warning);
+    color: var(--warning);
+    background: var(--warning-light);
+}
+
+.alert-gym.error {
+    border-left-color: var(--danger);
+    background: var(--danger-light);
+    color: var(--danger);
+}
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+.filter-bar .form-input {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+}
+
+.filter-bar .btn-gym {
+    padding: 10px 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* ===== TOOLTIP ===== */
+.btn-action[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+}
+</style>
+
+<!-- SWEETALERT2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- BOTON HAMBURGUESA -->
+<button class="sidebar-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars" id="menuIcon"></i>
+</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <i class="fas fa-dumbbell"></i>
+        <h4>Admin</h4>
+    </div>
+    <div class="sidebar-menu">
+        <a href="/admin-panel/">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="/panel/clientes/">
+            <i class="fas fa-users"></i> Clientes
+        </a>
+        <a href="/admin-panel/planes/">
+            <i class="fas fa-dumbbell"></i> Planes
+        </a>
+        <a href="/admin-panel/planes/crear/">
+            <i class="fas fa-plus-circle"></i> Crear Plan
+        </a>
+
+        <a href="javascript:void(0)" onclick="toggleSubmenu(this)" style="position:relative;">
+            <i class="fas fa-box"></i> Inventario
+            <i class="fas fa-chevron-down" style="margin-left:auto;font-size:11px;transition:transform 0.3s;"></i>
+        </a>
+        <div class="submenu" id="submenuInv">
+            <a href="/productos/"><i class="fas fa-box-open"></i> Productos</a>
+            <a href="/productos/alertas/"><i class="fas fa-exclamation-triangle" style="color:var(--warning);"></i> Alertas Stock</a>
+            <a href="/proveedores/"><i class="fas fa-truck"></i> Proveedores</a>
+            <a href="/proveedores/devoluciones/"><i class="fas fa-undo-alt"></i> Devoluciones</a>
+            <a href="/compras/"><i class="fas fa-shopping-cart"></i> Compras</a>
+            <a href="/maquinaria/"><i class="fas fa-cogs"></i> Maquinaria</a>
+        </div>
+
+        <a href="/ventas/">
+            <i class="fas fa-cash-register"></i> Ventas
+        </a>
+
+        <a href="javascript:void(0)" onclick="toggleSubmenu(this)" style="position:relative;">
+            <i class="fas fa-database"></i> Carga Masiva
+            <i class="fas fa-chevron-down" style="margin-left:auto;font-size:11px;transition:transform 0.3s;"></i>
+        </a>
+        <div class="submenu" id="submenuCarga">
+            <a href="/admin-panel/carga-masiva/"><i class="fas fa-upload"></i> Subir Datos</a>
+            <a href="/admin-panel/eliminar-carga-masiva/"><i class="fas fa-trash-alt"></i> Eliminar Datos</a>
+        </div>
+
+        <a href="/admin-panel/rutinas/">
+            <i class="fas fa-running"></i> Rutinas
+        </a>
+        <a href="/admin-panel/rutinas/crear/">
+            <i class="fas fa-plus-circle"></i> Crear Rutina
+        </a>
+
+        <a href="/admin-panel/economia/">
+            <i class="fas fa-chart-pie"></i> Economia
+        </a>
+        {% if is_superuser %}
+        <a href="/admin-panel/crear-admin/">
+            <i class="fas fa-user-plus"></i> Crear Admin
+        </a>
+        {% endif %}
+
+        <div class="logout-box">
+            <a href="/home/"><i class="fas fa-home"></i> Volver al Inicio</a>
+            <a href="/logout/"><i class="fas fa-sign-out-alt"></i> Cerrar Sesion</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+    const i = document.getElementById('menuIcon');
+    i.classList.toggle('fa-bars');
+    i.classList.toggle('fa-times');
+}
+
+function toggleSubmenu(el) {
+    const sub = el.nextElementSibling;
+    const arrow = el.querySelector('.fa-chevron-down');
+    sub.classList.toggle('open');
+    arrow.style.transform = sub.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+}
+
+// Confirmar eliminación con SweetAlert2
+function confirmarEliminar(mensaje) {
+    return Swal.fire({
+        title: '¿Estás seguro?',
+        text: mensaje || 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#334155',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#1e293b',
+        color: '#ffffff'
+    });
+}
+</script>

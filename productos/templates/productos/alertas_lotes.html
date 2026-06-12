@@ -1,0 +1,324 @@
+{% include 'partials/admin_base.html' %}
+{% load formato_cop %}
+
+<div class="main-content">
+    <div style="max-width:1400px;margin:0 auto;padding:20px;">
+        
+        <!-- Header -->
+        <div class="card-dark" style="margin-bottom:30px;">
+            <div class="card-dark-header" style="text-align:center;">
+                <i class="fas fa-bell" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                <h1 style="margin:0;font-size:1.8rem;">Sistema de Alertas de Lotes</h1>
+                <p style="margin:10px 0 0;color:#888;font-size:1rem;">
+                    Monitoreo de lotes próximos a vencer y gestión de inventario
+                </p>
+            </div>
+            
+            {% if total_alertas == 0 %}
+            <div style="text-align:center;padding:30px;">
+                <div style="background:#1a5c1a;padding:20px 40px;border-radius:10px;display:inline-block;">
+                    <i class="fas fa-check-circle" style="font-size:2.5rem;color:#2ecc71;display:block;margin-bottom:10px;"></i>
+                    <h2 style="margin:0;color:#2ecc71;font-size:1.5rem;">¡Todo en Orden!</h2>
+                    <p style="margin:10px 0 0;color:#888;font-size:1rem;">
+                        No hay lotes próximos a vencer en este momento.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Botones de acción -->
+        <div style="display:flex;gap:15px;margin-bottom:30px;flex-wrap:wrap;">
+            <a href="{% url 'lista_productos' %}" class="btn-gym" style="padding:12px 20px;">
+                <i class="fas fa-boxes"></i> Productos
+            </a>
+            <a href="{% url 'reporte_alertas_pdf' %}" class="btn-gym" style="padding:12px 20px;background:#28a745;">
+                <i class="fas fa-file-pdf"></i> PDF Alertas
+            </a>
+            <a href="{% url 'reporte_alertas_excel' %}" class="btn-gym" style="padding:12px 20px;background:#28a745;">
+                <i class="fas fa-file-excel"></i> Excel Alertas
+            </a>
+            {% if total_alertas > 0 %}
+            <button onclick="confirmarLimpiarAlertas()" class="btn-gym" style="padding:12px 20px;background:#dc3545;border:none;cursor:pointer;">
+                <i class="fas fa-trash-alt"></i> Limpiar alertas
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- Contador de Alertas -->
+        {% if total_alertas > 0 %}
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:30px;">
+            <div style="background:#3a1a1a;padding:20px;border-radius:8px;text-align:center;border-left:4px solid #e74c3c;">
+                <div style="font-size:2rem;font-weight:bold;color:#e74c3c;">{{ total_criticas }}</div>
+                <div style="color:#888;font-size:0.9rem;">Críticas (≤7 días)</div>
+            </div>
+            <div style="background:#3a2a1a;padding:20px;border-radius:8px;text-align:center;border-left:4px solid #e67e22;">
+                <div style="font-size:2rem;font-weight:bold;color:#e67e22;">{{ total_altas }}</div>
+                <div style="color:#888;font-size:0.9rem;">Altas (8-14 días)</div>
+            </div>
+            <div style="background:#3a3a1a;padding:20px;border-radius:8px;text-align:center;border-left:4px solid #f1c40f;">
+                <div style="font-size:2rem;font-weight:bold;color:#f1c40f;">{{ total_medias }}</div>
+                <div style="color:#888;font-size:0.9rem;">Medias (15-30 días)</div>
+            </div>
+            <div style="background:#1a3a1a;padding:20px;border-radius:8px;text-align:center;border-left:4px solid #2ecc71;">
+                <div style="font-size:2rem;font-weight:bold;color:#2ecc71;">{{ total_bajas }}</div>
+                <div style="color:#888;font-size:0.9rem;">Bajas (>30 días)</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ALERTAS CRÍTICAS (≤ 7 días) -->
+        {% if total_criticas > 0 %}
+        <div class="card-dark" style="margin-bottom:30px;border-left:5px solid #e74c3c;">
+            <div class="card-dark-header" style="background:#e74c3c;color:#fff;padding:15px;">
+                <h2 style="margin:0;font-size:1.3rem;">
+                    <i class="fas fa-exclamation-circle"></i> 🔴 ALERTAS CRÍTICAS (≤ 7 días)
+                </h2>
+                <p style="margin:5px 0 0;font-size:0.9rem;opacity:0.9;">{{ total_criticas }} producto(s) en estado crítico</p>
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;gap:15px;">
+                    {% for alerta in alertas_criticas %}
+                    <div style="background:#3a1a1a;border:1px solid #e74c3c;border-radius:8px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <span style="background:#e74c3c;color:#fff;padding:5px 10px;border-radius:4px;font-size:0.8rem;font-weight:bold;">CRÍTICO</span>
+                                <span style="color:#e74c3c;font-weight:bold;">{{ alerta.dias_restantes }} días</span>
+                            </div>
+                            <h3 style="margin:0 0 10px;color:#fff;font-size:1.1rem;">{{ alerta.producto.nombre }}</h3>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:10px 0;">
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Lote</p>
+                                    <p style="color:#e74c3c;font-size:1rem;margin:5px 0 0;font-weight:bold;">{{ alerta.numero_lote }}</p>
+                                </div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Cantidad</p>
+                                    <p style="color:#fff;font-size:1rem;margin:5px 0 0;font-weight:bold;">{{ alerta.cantidad }} uds</p>
+                                </div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Vencimiento</p>
+                                    <p style="color:#e74c3c;font-size:1rem;margin:5px 0 0;font-weight:bold;">{{ alerta.fecha_vencimiento|date:"d/m/Y" }}</p>
+                                </div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Fabricación</p>
+                                    <p style="color:#e74c3c;font-size:1rem;margin:5px 0 0;font-weight:bold;">
+                                        {% if alerta.fecha_fabricacion %}{{ alerta.fecha_fabricacion|date:"d/m/Y" }}{% else %}-{% endif %}
+                                    </p>
+                                </div>
+                                {% if alerta.fecha_compra %}
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Compra</p>
+                                    <p style="color:#fff;font-size:0.9rem;margin:5px 0 0;">{{ alerta.fecha_compra|date:"d/m/Y" }}</p>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Precio</p>
+                                    <p style="color:#fff;font-size:1rem;margin:5px 0 0;font-weight:bold;">{{ alerta.precio_unitario_fmt }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <a href="{% url 'detalle_producto' alerta.producto.id_producto %}" style="padding:8px 12px;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:0.85rem;text-decoration:none;text-align:center;white-space:nowrap;">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ALERTAS ALTAS (8-14 días) -->
+        {% if total_altas > 0 %}
+        <div class="card-dark" style="margin-bottom:30px;border-left:5px solid #e67e22;">
+            <div class="card-dark-header" style="background:#e67e22;color:#fff;padding:15px;">
+                <h2 style="margin:0;font-size:1.3rem;">
+                    <i class="fas fa-exclamation-triangle"></i> 🟠 ALERTAS ALTAS (8-14 días)
+                </h2>
+                <p style="margin:5px 0 0;font-size:0.9rem;opacity:0.9;">{{ total_altas }} producto(s) próximo(s) a vencer</p>
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;gap:15px;">
+                    {% for alerta in alertas_altas %}
+                    <div style="background:#3a2a1a;border:1px solid #e67e22;border-radius:8px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <span style="background:#e67e22;color:#fff;padding:5px 10px;border-radius:4px;font-size:0.8rem;font-weight:bold;">ALTA</span>
+                                <span style="color:#e67e22;font-weight:bold;">{{ alerta.dias_restantes }} días</span>
+                            </div>
+                            <h3 style="margin:0 0 10px;color:#fff;font-size:1.1rem;">{{ alerta.producto.nombre }}</h3>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:10px 0;">
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Lote</p><p style="color:#0d6efd;font-size:1rem;margin:5px 0 0;">{{ alerta.numero_lote }}</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Cantidad</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.cantidad }} uds</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Vencimiento</p><p style="color:#ff9800;font-size:1rem;margin:5px 0 0;">{{ alerta.fecha_vencimiento|date:"d/m/Y" }}</p></div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;">Fabricación</p>
+                                    <p style="color:#ff9800;font-size:1rem;margin:5px 0 0;">
+                                        {% if alerta.fecha_fabricacion %}{{ alerta.fecha_fabricacion|date:"d/m/Y" }}{% else %}-{% endif %}
+                                    </p>
+                                </div>
+                                {% if alerta.fecha_compra %}<div><p style="color:#888;font-size:0.85rem;margin:0;">Compra</p><p style="color:#fff;font-size:0.9rem;margin:5px 0 0;">{{ alerta.fecha_compra|date:"d/m/Y" }}</p></div>{% endif %}
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Precio</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.precio_unitario_fmt }}</p></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <a href="{% url 'detalle_producto' alerta.producto.id_producto %}" style="padding:8px 12px;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:0.85rem;text-decoration:none;text-align:center;white-space:nowrap;">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ALERTAS MEDIAS (15-30 días) -->
+        {% if total_medias > 0 %}
+        <div class="card-dark" style="margin-bottom:30px;border-left:5px solid #f1c40f;">
+            <div class="card-dark-header" style="background:#f1c40f;color:#000;padding:15px;">
+                <h2 style="margin:0;font-size:1.3rem;">
+                    <i class="fas fa-info-circle"></i> 🟡 ALERTAS MEDIAS (15-30 días)
+                </h2>
+                <p style="margin:5px 0 0;font-size:0.9rem;opacity:0.9;">{{ total_medias }} producto(s) próximo(s) a vencer</p>
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;gap:15px;">
+                    {% for alerta in alertas_medias %}
+                    <div style="background:#3a3a1a;border:1px solid #f1c40f;border-radius:8px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <span style="background:#f1c40f;color:#000;padding:5px 10px;border-radius:4px;font-size:0.8rem;font-weight:bold;">MEDIA</span>
+                                <span style="color:#f1c40f;font-weight:bold;">{{ alerta.dias_restantes }} días</span>
+                            </div>
+                            <h3 style="margin:0 0 10px;color:#fff;font-size:1.1rem;">{{ alerta.producto.nombre }}</h3>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:10px 0;">
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Lote</p><p style="color:#0d6efd;font-size:1rem;margin:5px 0 0;">{{ alerta.numero_lote }}</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Cantidad</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.cantidad }} uds</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Vencimiento</p><p style="color:#f1c40f;font-size:1rem;margin:5px 0 0;">{{ alerta.fecha_vencimiento|date:"d/m/Y" }}</p></div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;">Fabricación</p>
+                                    <p style="color:#f1c40f;font-size:1rem;margin:5px 0 0;">
+                                        {% if alerta.fecha_fabricacion %}{{ alerta.fecha_fabricacion|date:"d/m/Y" }}{% else %}-{% endif %}
+                                    </p>
+                                </div>
+                                {% if alerta.fecha_compra %}<div><p style="color:#888;font-size:0.85rem;margin:0;">Compra</p><p style="color:#fff;font-size:0.9rem;margin:5px 0 0;">{{ alerta.fecha_compra|date:"d/m/Y" }}</p></div>{% endif %}
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Precio</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.precio_unitario_fmt }}</p></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <a href="{% url 'detalle_producto' alerta.producto.id_producto %}" style="padding:8px 12px;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:0.85rem;text-decoration:none;text-align:center;white-space:nowrap;">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ALERTAS BAJAS (> 30 días) -->
+        {% if total_bajas > 0 %}
+        <div class="card-dark" style="margin-bottom:30px;border-left:5px solid #2ecc71;">
+            <div class="card-dark-header" style="background:#2ecc71;color:#000;padding:15px;">
+                <h2 style="margin:0;font-size:1.3rem;">
+                    <i class="fas fa-check-circle"></i> 🟢 ALERTAS BAJAS (> 30 días)
+                </h2>
+                <p style="margin:5px 0 0;font-size:0.9rem;opacity:0.9;">{{ total_bajas }} producto(s) próximo(s) a vencer</p>
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;gap:15px;">
+                    {% for alerta in alertas_bajas %}
+                    <div style="background:#1a3a1a;border:1px solid #2ecc71;border-radius:8px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start;">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <span style="background:#2ecc71;color:#000;padding:5px 10px;border-radius:4px;font-size:0.8rem;font-weight:bold;">BAJA</span>
+                                <span style="color:#2ecc71;font-weight:bold;">{{ alerta.dias_restantes }} días</span>
+                            </div>
+                            <h3 style="margin:0 0 10px;color:#fff;font-size:1.1rem;">{{ alerta.producto.nombre }}</h3>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin:10px 0;">
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Lote</p><p style="color:#0d6efd;font-size:1rem;margin:5px 0 0;">{{ alerta.numero_lote }}</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Cantidad</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.cantidad }} uds</p></div>
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Vencimiento</p><p style="color:#2ecc71;font-size:1rem;margin:5px 0 0;">{{ alerta.fecha_vencimiento|date:"d/m/Y" }}</p></div>
+                                <div>
+                                    <p style="color:#888;font-size:0.85rem;margin:0;">Fabricación</p>
+                                    <p style="color:#2ecc71;font-size:1rem;margin:5px 0 0;">
+                                        {% if alerta.fecha_fabricacion %}{{ alerta.fecha_fabricacion|date:"d/m/Y" }}{% else %}-{% endif %}
+                                    </p>
+                                </div>
+                                {% if alerta.fecha_compra %}<div><p style="color:#888;font-size:0.85rem;margin:0;">Compra</p><p style="color:#fff;font-size:0.9rem;margin:5px 0 0;">{{ alerta.fecha_compra|date:"d/m/Y" }}</p></div>{% endif %}
+                                <div><p style="color:#888;font-size:0.85rem;margin:0;">Precio</p><p style="color:#fff;font-size:1rem;margin:5px 0 0;">{{ alerta.precio_unitario_fmt }}</p></div>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <a href="{% url 'detalle_producto' alerta.producto.id_producto %}" style="padding:8px 12px;background:#0d6efd;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:0.85rem;text-decoration:none;text-align:center;white-space:nowrap;">
+                                <i class="fas fa-eye"></i> Ver
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+function confirmarLimpiarAlertas() {
+    const mensaje = `⚠️ ADVERTENCIA\n\n` +
+        `Esta acción eliminará TODAS las alertas de lotes registradas.\n\n` +
+        `Esta acción NO se puede deshacer.\n\n` +
+        `¿Estás seguro de que deseas continuar?\n\n` +
+        `Escribe "LIMPIAR" para confirmar:`;
+    
+    const respuesta = prompt(mensaje);
+    
+    if (respuesta === 'LIMPIAR') {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{% url "limpiar_alertas" %}';
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfToken) {
+            form.appendChild(csrfToken.cloneNode(true));
+        } else {
+            // Si no encuentra el token en el DOM, créalo manualmente
+            const token = document.createElement('input');
+            token.type = 'hidden';
+            token.name = 'csrfmiddlewaretoken';
+            token.value = getCookie('csrftoken');
+            form.appendChild(token);
+        }
+        
+        const confirmInput = document.createElement('input');
+        confirmInput.type = 'hidden';
+        confirmInput.name = 'confirmacion';
+        confirmInput.value = 'si';
+        form.appendChild(confirmInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    } else {
+        alert('❌ Acción cancelada.');
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>

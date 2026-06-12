@@ -1,0 +1,23 @@
+username,email,password,first_name,last_name,rol,telefono,direccion
+juan_carlos,juan@gym.com,juancarlos123,Juan,Carlos,cliente,3151234567,Calle 10 #45
+maria_gomez,maria@gym.com,mariagomez123,María,Gómez,cliente,3152345678,Av. Principal #12
+carlos_ruiz,carlos@gym.com,carlosruiz123,Carlos,Ruiz,cliente,3153456789,Calle 20 #78
+ana_martinez,ana@gym.com,anamartinez123,Ana,Martínez,cliente,3154567890,Calle 30 #23
+luis_fernandez,luis@gym.com,luisfernandez123,Luis,Fernández,cliente,3155678901,Av. Central #56
+sofia_lopez,sofia@gym.com,sofialopez123,Sofia,López,cliente,3156789012,Calle 40 #90
+diego_sanchez,diego@gym.com,diegosanchez123,Diego,Sánchez,cliente,3157890123,Av. Norte #34
+isabella_romero,isabella@gym.com,isabellaromero123,Isabella,Romero,cliente,3158901234,Calle 50 #67
+mateo_diaz,mateo@gym.com,mateodiaz123,Mateo,Díaz,cliente,3159012345,Calle 60 #12
+valentina_cruz,valentina@gym.com,valentinacruz123,Valentina,Cruz,cliente,3160123456,Av. Sur #89
+gabriel_morales,gabriel@gym.com,gabrielmorales123,Gabriel,Morales,cliente,3161234567,Calle 70 #45
+camila_hernandez,camila@gym.com,camilahernandez123,Camila,Hernández,cliente,3162345678,Calle 80 #23
+santiago_castillo,santiago@gym.com,santiagocastillo123,Santiago,Castillo,cliente,3163456789,Av. Este #56
+emily_gonzalez,emily@gym.com,emilygonzalez123,Emily,González,cliente,3164567890,Calle 90 #78
+benjamin_ortiz,benjamin@gym.com,benjaminortiz123,Benjamin,Ortiz,cliente,3165678901,Av. Oeste #12
+agustin_rivera,agustin@gym.com,agustinrivera123,Agustín,Rivera,cliente,3166789012,Calle 100 #34
+emma_jimenez,emma@gym.com,emmajimenez123,Emma,Jiménez,cliente,3167890123,Calle 110 #67
+thiago_nunez,thiago@gym.com,thiagohnunez123,Thiago,Núñez,cliente,3168901234,Calle 120 #90
+mía_rodriguez,mia@gym.com,muarodriguez123,Mía,Rodríguez,cliente,3169012345,Av. 5 #23
+noah_mendoza,noah@gym.com,noahmendoza123,Noah,Mendoza,cliente,3170123456,Calle 130 #56
+admin_master,admin@gym.com,admin123,Admin,Master,admin,3100000000,Calle Admin #1
+supervisor,sadmin@gym.com,super123,Super,Visor,admin,3101111111,Calle Admin #2

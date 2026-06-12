@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load formato_cop %}
+
+{% block content %}
+<div class="main-content">
+    <div style="max-width:1200px;margin:0 auto;padding:20px;">
+
+        <!-- Header del Producto -->
+        <div class="card-dark" style="margin-bottom:30px;">
+            <div class="card-dark-header" style="text-align:center;display:flex;align-items:center;justify-content:center;gap:15px;">
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+                {% endif %}
+                <div style="text-align:left;">
+                    <h1 style="margin:0;font-size:1.8rem;">{{ producto.nombre }}</h1>
+                    <p style="margin:5px 0 0;color:#888;font-size:0.9rem;">{{ producto.descripcion }}</p>
+                </div>
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+                    <div style="padding:15px;background:#0a0a0a;border-radius:8px;border-left:4px solid #2ecc71;">
+                        <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Categoría</p>
+                        <p style="color:#fff;font-size:1.1rem;font-weight:bold;margin:5px 0 0;">{{ producto.categoria.nombre|default:"Sin categoría" }}</p>
+                    </div>
+                    <div style="padding:15px;background:#0a0a0a;border-radius:8px;border-left:4px solid #0d6efd;">
+                        <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Precio Costo</p>
+                        <p style="color:#fff;font-size:1.1rem;font-weight:bold;margin:5px 0 0;">{{ producto.precio_costo|cop }}</p>
+                    </div>
+                    <div style="padding:15px;background:#0a0a0a;border-radius:8px;border-left:4px solid #ffc107;">
+                        <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Precio Venta</p>
+                        <p style="color:#fff;font-size:1.1rem;font-weight:bold;margin:5px 0 0;">{{ producto.precio_venta|cop }}</p>
+                    </div>
+                    {% if ultimo_lote %}
+                    <div style="padding:15px;background:#0a0a0a;border-radius:8px;border-left:4px solid #e83e8c;">
+                        <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Última Compra</p>
+                        <p style="color:#fff;font-size:1.1rem;font-weight:bold;margin:5px 0 0;">
+                            {{ ultimo_lote.fecha_compra|date:"d/m/Y" }}
+                        </p>
+                        <p style="color:#888;font-size:0.8rem;margin:0;">Lote: {{ ultimo_lote.numero_lote }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de Lotes -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:30px;">
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Total Lotes</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#2ecc71;margin:10px 0 0;">{{ cantidad_lotes }}</p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Disponibles</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#0d6efd;margin:10px 0 0;">{{ lotes_disponibles|length }}</p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Stock Total</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#ffc107;margin:10px 0 0;">{{ total_stock_lotes }}</p>
+                </div>
+            </div>
+            <div class="card-dark">
+                <div class="card-dark-body" style="text-align:center;padding:25px;">
+                    <p style="color:#888;font-size:0.85rem;margin:0;text-transform:uppercase;">Vencidos</p>
+                    <p style="font-size:2.5rem;font-weight:bold;color:#ff6b6b;margin:10px 0 0;">{{ lotes_vencidos|length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Lotes -->
+        <div class="card-dark">
+            <div class="card-dark-header" style="display:flex;justify-content:space-between;align-items:center;">
+                <h2 style="margin:0;">
+                    <i class="fas fa-boxes" style="margin-right:10px;"></i>
+                    Lotes Registrados
+                </h2>
+                <a href="{% url 'crear_compra' %}" class="btn-gym" style="font-size:0.9rem;padding:8px 15px;">
+                    <i class="fas fa-plus"></i> Nuevo Lote
+                </a>
+            </div>
+            <div class="card-dark-body">
+                {% if lotes %}
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #333;">
+                                    <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Nº Lote</th>
+                                    <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Cantidad</th>
+                                    <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Precio Unit.</th>
+                                    <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Fecha Compra</th>
+                                    {% if producto.categoria and producto.categoria.es_consumible %}
+                                        <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Fecha Fabricación</th>
+                                        <th style="text-align:left;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Fecha Vencimiento</th>
+                                    {% endif %}
+                                    <th style="text-align:center;padding:12px;color:#888;font-weight:bold;font-size:0.9rem;">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lote in lotes %}
+                                <tr style="border-bottom:1px solid #222;">
+                                    <td style="padding:12px;color:#fff;">
+                                        <strong>{{ lote.numero_lote }}</strong>
+                                        {% if lote.numero_lote_fabricante %}
+                                            <br><small style="color:#888;">Fab: {{ lote.numero_lote_fabricante }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td style="padding:12px;color:#fff;">
+                                        {{ lote.cantidad }} uds
+                                    </td>
+                                    <td style="padding:12px;color:#fff;">
+                                         {{ lote.precio_unitario|cop_raw }}
+                                    </td>
+                                    <td style="padding:12px;color:#fff;">
+                                        {% if lote.fecha_compra %}
+                                            {{ lote.fecha_compra|date:"d/m/Y" }}
+                                        {% else %}
+                                            <span style="color:#666;">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if producto.categoria and producto.categoria.es_consumible %}
+                                        <td style="padding:12px;color:#fff;">
+                                            {% if lote.fecha_fabricacion %}
+                                                {{ lote.fecha_fabricacion|date:"d/m/Y" }}
+                                            {% else %}
+                                                <span style="color:#666;">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td style="padding:12px;color:#fff;">
+                                            {% if lote.fecha_vencimiento %}
+                                                {{ lote.fecha_vencimiento|date:"d/m/Y" }}
+                                            {% else %}
+                                                <span style="color:#666;">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                    {% endif %}
+                                    <td style="padding:12px;text-align:center;">
+                                        <span style="padding:4px 12px;border-radius:20px;font-size:0.85rem;font-weight:bold;
+                                            {% if lote.estado == 'disponible' %}
+                                                background:#1a5c1a;color:#4ade80;
+                                            {% elif lote.estado == 'agotado' %}
+                                                background:#5c1a1a;color:#f87171;
+                                            {% elif lote.estado == 'vencido' %}
+                                                background:#5c1a1a;color:#ff6b6b;
+                                            {% endif %}
+                                        ">
+                                            {{ lote.get_estado_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div style="text-align:center;padding:40px;color:#666;">
+                        <i class="fas fa-inbox" style="font-size:3rem;display:block;margin-bottom:15px;"></i>
+                        <p style="font-size:1rem;margin:0;">No hay lotes registrados para este producto.</p>
+                        <p style="font-size:0.9rem;color:#555;margin:10px 0 0;">
+                            Los lotes se crean automáticamente cuando se registra una compra.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Lotes Vencidos (solo para consumibles) -->
+        {% if producto.categoria and producto.categoria.es_consumible and lotes_vencidos %}
+        <div class="card-dark" style="margin-top:30px;">
+            <div class="card-dark-header" style="background:#5c1a1a;">
+                <h2 style="margin:0;color:#ff6b6b;">
+                    <i class="fas fa-exclamation-circle" style="margin-right:10px;"></i>
+                    Lotes Vencidos ({{ lotes_vencidos|length }})
+                </h2>
+            </div>
+            <div class="card-dark-body">
+                <div style="overflow-x:auto;">
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:2px solid #333;">
+                                <th style="text-align:left;padding:12px;color:#888;">Nº Lote</th>
+                                <th style="text-align:left;padding:12px;color:#888;">Fecha Vencimiento</th>
+                                <th style="text-align:left;padding:12px;color:#888;">Cantidad Restante</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lote in lotes_vencidos %}
+                            <tr style="border-bottom:1px solid #222;background:#2a1a1a;">
+                                <td style="padding:12px;color:#ff6b6b;font-weight:bold;">{{ lote.numero_lote }}</td>
+                                <td style="padding:12px;color:#ff6b6b;">{{ lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                                <td style="padding:12px;color:#ff6b6b;">{{ lote.cantidad }} uds</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Botones de Acción -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:30px;">
+            <a href="{% url 'lista_productos' %}" class="btn-gym" style="display:flex;align-items:center;justify-content:center;padding:12px;background:#6c757d;text-decoration:none;">
+                <i class="fas fa-arrow-left" style="margin-right:10px;"></i>
+                Volver a Productos
+            </a>
+            <a href="{% url 'editar_producto' producto.id_producto %}" class="btn-gym" style="display:flex;align-items:center;justify-content:center;padding:12px;text-decoration:none;">
+                <i class="fas fa-edit" style="margin-right:10px;"></i>
+                Editar Producto
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+     tr:hover {
+         background: #111 !important;
+     }
+ </style>
+
+{% endblock %}

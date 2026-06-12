@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Gym Xtreme - Plan Profesional{% endblock %}
+
+{% block content %}
+<style>
+.rutina-container {
+    max-width: 1000px;
+    margin: auto;
+    font-family: 'Arial', sans-serif;
+}
+
+.header {
+    background: linear-gradient(135deg, #000, #1f1f1f);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.badge-custom {
+    background: #ff4d4d;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+ul li {
+    margin-bottom: 5px;
+}
+</style>
+
+<div class="rutina-container">
+
+    <!-- HEADER -->
+    <div class="header mb-4">
+        <h1>🏋️ GYM XTREME</h1>
+        <h3>Plan Híbrido: Masa Muscular + Definición</h3>
+        <p>Duración: 4 Semanas | Nivel: Intermedio - Avanzado</p>
+    </div>
+
+    <div class="row">
+
+        <!-- SEMANA 1-2 -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    📅 Semana 1-2: Adaptación & Técnica
+                </div>
+                <div class="card-body">
+
+                    <h6>🦵 Día 1: Tren Inferior</h6>
+                    <ul>
+                        <li>Sentadilla libre — 4x10</li>
+                        <li>Peso muerto rumano — 4x10</li>
+                        <li>Prensa inclinada — 3x12</li>
+                        <li>Zancadas caminando — 3x12 c/pierna</li>
+                        <li>Elevaciones de talón — 4x15</li>
+                        <li><span class="badge-custom">Cardio:</span> 15 min caminata inclinada</li>
+                    </ul>
+
+                    <h6>💪 Día 2: Tren Superior</h6>
+                    <ul>
+                        <li>Press de banca — 4x10</li>
+                        <li>Press militar — 4x10</li>
+                        <li>Remo con barra — 4x10</li>
+                        <li>Jalón al pecho — 3x12</li>
+                        <li>Fondos — 3x10</li>
+                        <li><span class="badge-custom">Cardio:</span> 20 min moderado</li>
+                    </ul>
+
+                    <h6>🧘 Día 3: Recuperación</h6>
+                    <ul>
+                        <li>Caminata 30 min</li>
+                        <li>Movilidad + estiramientos</li>
+                        <li>Core ligero</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SEMANA 3-4 -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    🔥 Semana 3-4: Intensidad & Quema
+                </div>
+                <div class="card-body">
+
+                    <h6>⚡ Día 1: Inferior Potente</h6>
+                    <ul>
+                        <li>Sentadilla pesada — 4x8</li>
+                        <li>Peso muerto sumo — 4x8</li>
+                        <li>Hip thrust — 4x10</li>
+                        <li>Sentadilla búlgara — 3x10</li>
+                        <li>Abducciones — 3x15</li>
+                        <li><span class="badge-custom">HIIT:</span> 20 min</li>
+                    </ul>
+
+                    <h6>⚡ Día 2: Superior Potente</h6>
+                    <ul>
+                        <li>Press inclinado — 4x8</li>
+                        <li>Press Arnold — 4x10</li>
+                        <li>Dominadas — 4x8</li>
+                        <li>Remo mancuerna — 4x10</li>
+                        <li>Curl martillo — 3x12</li>
+                        <li><span class="badge-custom">Cardio:</span> 25 min</li>
+                    </ul>
+
+                    <h6>🔥 Día 3: Core + Cardio</h6>
+                    <ul>
+                        <li>Plancha — 4x45 seg</li>
+                        <li>Mountain climbers — 4x30 seg</li>
+                        <li>Abdominal bicicleta — 3x20</li>
+                        <li>30 min cardio variado</li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- NUTRICIÓN -->
+    <div class="card mt-4">
+        <div class="card-header bg-warning">
+            📋 Guía Nutricional
+        </div>
+        <div class="card-body">
+            <ul>
+                <li>Proteína: 1.8 – 2g por kg</li>
+                <li>Carbohidratos: 3 – 4g por kg</li>
+                <li>Grasas saludables: 0.8 – 1g por kg</li>
+                <li>Déficit calórico ligero (300-500 kcal)</li>
+                <li>Agua: 3 – 4 litros diarios</li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

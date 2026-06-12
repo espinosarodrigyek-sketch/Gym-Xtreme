@@ -1,0 +1,4 @@
+username,email,password,first_name,last_name,cedula,tarjeta,telefono,direccion,edad,rol
+admin1,admin1@ gym.com,admin123,Admin,Principal,123456789,1001,3001111111,Calle Admin 1,35,admin
+admin2,admin2@ gym.com,admin123,Super,Usuario,987654321,1002,3002222222,Calle Admin 2,40,superadmin
+empleado1,empleado1@ gym.com,empleado123,Empleado,Test,555555555,2001,3003333333,Calle Empleado,28,admin

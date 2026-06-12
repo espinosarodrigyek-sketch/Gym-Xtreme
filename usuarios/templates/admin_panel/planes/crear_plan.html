@@ -1,0 +1,98 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+<div style="max-width:600px;margin:0 auto;">
+    <div class="card-dark">
+        <div class="card-dark-header" style="text-align:center;">
+            <i class="fas fa-plus-circle" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>
+            Crear Nuevo Plan
+        </div>
+        <div class="card-dark-body">
+            {% if messages %}{% for message in messages %}<div class="alert-gym">{{ message }}</div>{% endfor %}{% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Nombre del Plan</label>
+                    <input type="text" name="nombre" class="form-input" placeholder="Ej: Plan Premium" required>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Tipo de Rutina</label>
+                    <select name="tipo" id="tipoSelect" class="form-input" required>
+                        <option value="">Selecciona el tipo</option>
+                        <option value="1_dia">1 Dia</option>
+                        <option value="1_mes">1 Mes</option>
+                        <option value="6_meses">6 Meses</option>
+                        <option value="1_ano">1 Ano</option>
+                        <option value="personalizado">Personalizado</option>
+                    </select>
+                </div>
+
+                <div id="customDuration" style="display:none;margin-bottom:18px;">
+                    <label class="form-label">Duración Personalizada</label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <input type="number" name="duracion_meses_personalizado" id="duracionMeses" class="form-input" min="0" max="36" placeholder="Meses">
+                        <input type="number" name="duracion_dias_extra" id="duracionDiasExtra" class="form-input" min="0" max="30" placeholder="Días extra">
+                    </div>
+                    <small style="color:#666;">Ingresa los meses y opcionalmente días adicionales</small>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Precio (COP)</label>
+                    <input type="number" name="precio" id="duracionDiasInput" class="form-input" min="0" step="100" placeholder="Ej: 50000" required>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Duracion (dias)</label>
+                    <input type="number" name="duracion_dias" id="duracionDiasField" class="form-input" min="1" placeholder="Se calcula automaticamente" required>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Descripcion</label>
+                    <textarea name="descripcion" class="form-input" rows="3" placeholder="Describe los beneficios..."></textarea>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label class="form-label">Imagen</label>
+                    <input type="file" name="imagen" class="form-input">
+                </div>
+
+                <button type="submit" class="btn-gym" style="width:100%;justify-content:center;padding:14px;">
+                    <i class="fas fa-save"></i> Guardar Plan
+                </button>
+                <a href="/admin-panel/planes/" style="display:block;text-align:center;color:#666;margin-top:12px;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Volver a la Lista</a>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+const tipoSelect=document.getElementById('tipoSelect');
+const customDuration=document.getElementById('customDuration');
+const duracionDiasField=document.getElementById('duracionDiasField');
+const duraciones={'1_dia':1,'1_mes':30,'6_meses':180,'1_ano':365};
+
+tipoSelect.addEventListener('change',function(){
+    if(this.value==='personalizado'){
+        customDuration.style.display='block';
+        duracionDiasField.removeAttribute('required');
+        duracionDiasField.value='0';
+    }else{
+        customDuration.style.display='none';
+        duracionDiasField.setAttribute('required','');
+        if(duraciones[this.value])duracionDiasField.value=duraciones[this.value];
+    }
+});
+
+function actualizarDuracionPersonalizada(){
+    const meses=parseInt(document.getElementById('duracionMeses').value)||0;
+    const diasExtra=parseInt(document.getElementById('duracionDiasExtra').value)||0;
+    const totalDias=(meses*30)+diasExtra;
+    duracionDiasField.value=totalDias;
+}
+
+document.getElementById('duracionMeses').addEventListener('input',actualizarDuracionPersonalizada);
+document.getElementById('duracionDiasExtra').addEventListener('input',actualizarDuracionPersonalizada);
+</script>

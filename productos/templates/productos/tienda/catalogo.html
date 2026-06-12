@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load formato_cop %}
+
+{% block content %}
+<style>
+
+/* 🔥 AISLAMOS TODO */
+.mi-tienda .btn-primary {
+    background-color: #0D6EFD !important;
+    border: none !important;
+    color: white !important;
+}
+
+.mi-tienda .card {
+    border-radius: 15px;
+    transition: 0.3s;
+    background-color: #1e1e2e !important;
+}
+
+.mi-tienda .card:hover {
+    transform: scale(1.02);
+}
+
+.mi-tienda .text-success {
+    color: #0D6EFD !important;
+    font-size: 1.1rem;
+}
+
+.mi-tienda .btn-outline-primary {
+    border: 2px solid #0D6EFD !important;
+    color: #0D6EFD !important;
+    background-color: transparent;
+}
+
+.mi-tienda .btn-outline-primary:hover,
+.mi-tienda .btn-outline-primary.active {
+    background-color: #0D6EFD !important;
+    color: white !important;
+}
+
+.mi-tienda .btn-outline-dark {
+    border: 2px solid #111 !important;
+    color: #111 !important;
+}
+
+.mi-tienda h5 {
+    color: #FFFFFF !important;
+    font-weight: 600;
+    font-size: 1rem;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mi-tienda .card-body {
+    background-color: #1e1e2e;
+}
+
+.mi-tienda .text-muted {
+    color: #aaa !important;
+}
+
+</style>
+
+<div class="container mt-5 mi-tienda">
+
+<center><h2 class="text-center mb-4" style="color: #FFFFFF;">Nuestros Productos</h2></center>
+
+<!-- MENSAJES -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- FILTRO -->
+<center><div class="mb-4 d-flex flex-wrap justify-content-center gap-2">
+
+<a href="{% url 'catalogo' %}" class="btn btn-outline-primary btn-sm {% if not request.GET.categoria %}active{% endif %}">
+Todos
+</a>
+
+{% for cat in categorias %}
+ <a href="?categoria={{ cat.nombre }}" class="btn btn-outline-primary btn-sm {% if categoria_seleccionada == cat.nombre %}active{% endif %}">
+     {{ cat.nombre }} ({{ cat.total }})
+ </a>
+{% endfor %}
+
+</div></center>
+
+<div class="row">
+
+{% for item in productos %}
+
+<div class="col-md-3 mb-4">
+<div class="card shadow-sm h-100{% if item.stock_disponible <= 0 or item.esta_vencido %} opacity-75{% endif %}" style="{% if item.esta_vencido %}border: 2px solid #ff6b6b;{% endif %}">
+
+{% if item.producto.imagen %}
+<img src="{{ item.producto.imagen.url }}"
+class="card-img-top"
+style="height:200px; object-fit:cover;{% if item.esta_vencido %}filter: grayscale(100%);{% endif %}">
+{% endif %}
+
+{% if item.esta_vencido %}
+<div style="position: absolute; top: 10px; right: 10px; background: #ff6b6b; color: white; padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 0.8rem;">
+🔴 VENCIDO
+</div>
+{% endif %}
+
+<div class="card-body text-center" style="background-color: #1e1e2e; color: #FFFFFF;">
+
+<h5 style="color: #FFFFFF !important;">{{ item.producto.nombre }}</h5>
+<p class="text-success fw-bold" style="color: #0d6efd !important; font-size: 1.1rem;">
+{{ item.producto.precio_venta|cop }}
+</p>
+
+{% if item.stock_disponible > 0 and not item.esta_vencido %}
+<p class="text-muted" style="color: #aaa !important;">
+Stock: {{ item.stock_disponible }}
+</p>
+
+{% if user.is_authenticated %}
+<form action="{% url 'agregar_carrito' item.producto.id_producto %}" method="POST">
+{% csrf_token %}
+
+<div class="d-flex justify-content-center align-items-center mb-2">
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="restarCantidad(this)">-</button>
+<input type="number" name="cantidad" value="1" min="1" max="{{ item.stock_disponible }}" class="form-control text-center mx-2" style="width:60px">
+<button type="button" class="btn btn-outline-secondary btn-sm" onclick="sumarCantidad(this)">+</button>
+</div>
+
+<button type="submit" class="btn btn-primary w-100">Agregar al carrito</button>
+</form>
+{% else %}
+<a href="{% url 'login' %}" class="btn btn-outline-danger w-100"><i class="fas fa-sign-in-alt me-2"></i>Iniciar sesion para comprar</a>
+{% endif %}
+
+{% elif item.esta_vencido %}
+<p class="text-danger fw-bold"><i class="fas fa-exclamation-circle"></i> PRODUCTO VENCIDO</p>
+<p style="font-size: 0.85rem; color: #ff6b6b;">Este producto ya pasó su fecha de vencimiento y no está disponible para compra.</p>
+<button class="btn btn-secondary w-100" disabled>No disponible</button>
+
+{% else %}
+<p class="text-danger fw-bold"><i class="fas fa-exclamation-triangle"></i> Sin stock</p>
+<button class="btn btn-secondary w-100" disabled>Agotado</button>
+{% endif %}
+
+</div>
+</div>
+</div>
+
+{% empty %}
+<div class="col-12"><p class="text-center">No hay productos disponibles.</p></div>
+{% endfor %}
+
+</div>
+</div>
+
+<script>
+function sumarCantidad(btn){
+let input = btn.parentElement.querySelector("input")
+let max = parseInt(input.max)
+let valor = parseInt(input.value)
+if(valor < max){ input.value = valor + 1 }
+}
+
+function restarCantidad(btn){
+let input = btn.parentElement.querySelector("input")
+let valor = parseInt(input.value)
+if(valor > 1){ input.value = valor - 1 }
+}
+</script>
+{% endblock %}

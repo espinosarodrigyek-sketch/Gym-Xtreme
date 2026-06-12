@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rutinas - GYM{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="text-white fw-bold" style="font-size: 2.5rem;">Rutinas Personalizadas</h1>
+        <p class="text-white-50">Elige la rutina que mejor se adapte a tus objetivos</p>
+        <div style="width: 80px; height: 4px; background: #0d6efd; margin: 15px auto; border-radius: 2px;"></div>
+    </div>
+
+    <!-- Frase motivacional -->
+    {% if frase_motivacional %}
+    <div class="card mb-5 border-0" style="background: linear-gradient(135deg, #0d6efd, #084298); border-radius: 15px;">
+        <div class="card-body text-center py-4">
+            <i class="fas fa-quote-left fa-2x mb-3 text-white-50"></i>
+            <h5 class="text-white fw-bold mb-2" style="font-style: italic;">
+                "{{ frase_motivacional.frase }}"
+            </h5>
+            <small class="text-white-50">- {{ frase_motivacional.autor }}</small>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Grid de Rutinas -->
+    <div class="row" id="rutinasGrid">
+        {% if usar_db %}
+            {% for rutina in rutinas %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-0 rutina-card" style="background: #1A1A1A; border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                    <!-- Header de la card -->
+                    <div class="card-header border-0 text-center py-4" style="background: linear-gradient(135deg, #0d6efd, #084298);">
+                        <i class="fas fa-dumbbell fa-3x text-white"></i>
+                        {% if rutina.es_predeterminada %}
+                        <span class="position-absolute top-0 end-0 badge bg-warning m-2" style="font-size: 0.65rem;">
+                            <i class="fas fa-star me-1"></i>Sistema
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-white fw-bold mb-2">{{ rutina.nombre }}</h5>
+                        <p class="card-text text-white-50 mb-2" style="font-size: 0.85rem;">{{ rutina.descripcion|truncatechars:80 }}</p>
+                        
+                        <div class="mb-3">
+                            <span class="badge bg-{% if rutina.nivel == 'principiante' %}success{% elif rutina.nivel == 'intermedio' %}warning{% else %}primary{% endif %} me-1">
+                                {{ rutina.get_nivel_display }}
+                            </span>
+                            <span class="badge bg-secondary me-1">
+                                {{ rutina.duracion_dias }} días
+                            </span>
+                            <span class="badge bg-info">
+                                {{ rutina.num_ejercicios }} ejercicios
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'ver_rutina_detalle' rutina_id=rutina.id %}" 
+                               class="btn btn-outline-primary rutina-btn">
+                                <i class="fas fa-eye me-2"></i>Ver
+                            </a>
+                            {% if next_url %}
+                            <a href="{% url 'seleccionar_rutina' rutina_id=rutina.id %}?next={{ next_url|urlencode }}" 
+                               class="btn btn-success rutina-btn">
+                                <i class="fas fa-check me-2"></i>Elegir
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert" style="background: #1A1A1A; border: 1px solid #333; border-radius: 15px;">
+                    <i class="fas fa-info-circle fa-2x text-white-50 mb-3"></i>
+                    <p class="text-white-50">No hay rutinas disponibles actualmente.</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for rutina in rutinas %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 border-0 rutina-card" style="background: #1A1A1A; border-radius: 15px; overflow: hidden; transition: all 0.3s ease;">
+                    <div class="card-header border-0 text-center py-4" style="background: linear-gradient(135deg, #0d6efd, #084298);">
+                        <i class="fas {{ rutina.icono }} fa-3x text-white"></i>
+                    </div>
+                    
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-white fw-bold mb-3">{{ rutina.nombre }}</h5>
+                        <p class="card-text text-white-50 mb-4">{{ rutina.descripcion }}</p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'ver_rutina_detalle_legacy' objetivo=rutina.objetivo duracion='1_mes' %}" 
+                               class="btn btn-outline-primary btn-sm rutina-btn">
+                                <i class="fas fa-calendar-day me-2"></i>1 Mes
+                            </a>
+                            <a href="{% url 'ver_rutina_detalle_legacy' objetivo=rutina.objetivo duracion='6_meses' %}" 
+                               class="btn btn-outline-primary btn-sm rutina-btn">
+                                <i class="fas fa-calendar-week me-2"></i>6 Meses
+                            </a>
+                            <a href="{% url 'ver_rutina_detalle_legacy' objetivo=rutina.objetivo duracion='1_ano' %}" 
+                               class="btn btn-outline-primary btn-sm rutina-btn">
+                                <i class="fas fa-calendar-alt me-2"></i>1 Año
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Botones de navegacion -->
+    <div class="text-center mt-5 pb-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i>Volver al inicio
+        </a>
+         <a href="{% url 'planes:ver_planes' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart me-1"></i>Adquirir Plan
+        </a>
+    </div>
+</div>
+
+<style>
+    .rutina-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.2);
+    }
+    
+    .rutina-btn {
+        border-width: 2px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .rutina-btn:hover {
+        background-color: #0d6efd;
+        color: white;
+        transform: scale(1.02);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.rutina-card');
+        cards.forEach(function(card, index) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            setTimeout(function() {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}

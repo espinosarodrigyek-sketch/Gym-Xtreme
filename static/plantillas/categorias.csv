@@ -1,0 +1,11 @@
+nombre,descripcion,categoria_id,precio_costo,precio_venta,stock_actual,stock_minimo,estado
+Proteina Whey,Suplemento nutricional proteina,1,25000,45000,50,10,activo
+Creatina Monohidrato,Suplemento para fuerza,1,18000,32000,30,15,activo
+Pre-Workout,Pre-entrenamiento estimulante,1,22000,38000,25,10,activo
+Barras Proteicas,Barras energeticas proteicas,2,3500,6000,100,20,activo
+Guantes Gym,Proteccion para manos,3,12000,22000,40,15,activo
+Cinturon Levantamiento,Cinturon para Pesas,3,35000,55000,15,5,activo
+Camiseta Sport,Camiseta deportiva algodon,4,25000,45000,30,10,activo
+Leggings Fitness,Pantalon deportivo mujer,4,35000,55000,25,10,activo
+Zapatillas Running,Zapatillas para correr,5,85000,120000,20,8,activo
+Banda Elastica,Bandas de resistencia ejercicio,3,8000,15000,60,20,activo

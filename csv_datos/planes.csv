@@ -1,0 +1,11 @@
+nombre,tipo,precio,descripcion,duracion_dias,imagen
+Plan Xtreme Diario,1_dia,15000,"Acceso completo por un día a todas las instalaciones del gimnasio. Incluye zonas de musculación, cardio y entrenamiento funcional, brindando una experiencia integral para mantener tu rendimiento físico sin compromiso a largo plazo.",1,logo1.jpg
+Plan Xtreme Semanal,7_dias,45000,"Acceso ilimitado durante 7 días a todas las áreas del gimnasio. Incluye clases grupales y espacios especializados, ideal para quienes buscan constancia en un periodo corto de tiempo.",7,logo13.jpg
+Plan Base Mensual,1_mes,95000,"Plan mensual orientado al entrenamiento independiente. Incluye acceso a zonas de pesas y cardio con equipos de alta calidad, perfecto para desarrollar disciplina y progreso continuo.",30,logo14.jpg
+Plan Xtreme Premium,1_mes,145000,"Acceso total durante 30 días a todas las instalaciones y clases grupales ilimitadas. Diseñado para usuarios que buscan una experiencia completa y resultados óptimos.",30,plan5.jpg
+Plan Pro Trimestral,3_mes,350000,"Plan de 3 meses con tarifa preferencial que incluye acceso total a todas las áreas y clases dirigidas. Ideal para alcanzar objetivos físicos con constancia y seguimiento.",90,plan6.jpg
+Plan Advance Semestral,6_meses,650000,"Acceso completo por 6 meses con beneficios exclusivos y tarifa reducida. Pensado para usuarios comprometidos con su evolución física a mediano plazo.",180,plan7.jpg
+Plan Elite Anual,1_ano,1150000,"Plan anual con el mejor costo-beneficio. Incluye acceso total, clases ilimitadas y beneficios adicionales para una transformación física sostenible.",365,plan12.jpg
+Plan Xtreme VIP,12_mes,1850000,"Plan premium que incluye acceso total, entrenador personal, asesoría continua y atención prioritaria. Diseñado para ofrecer una experiencia fitness de alto nivel.",365,plan8.jpg
+Plan Familiar Diario,1_dia,35000,"Acceso por un día para hasta 4 personas con uso completo de todas las instalaciones. Ideal para compartir una experiencia saludable en grupo.",1,plan2.jpg
+Plan Estudiantil Mensual,1_mes,75000,"Plan mensual con tarifa preferencial para estudiantes. Incluye acceso a zonas básicas de entrenamiento, fomentando hábitos saludables y constancia.",30,logo1.jpg

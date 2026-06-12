@@ -1,0 +1,821 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+    .economia-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    @media (max-width: 1200px) { .economia-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .economia-grid { grid-template-columns: 1fr; } }
+
+    .metric-card {
+        background: #1a1a1a;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #222;
+        position: relative;
+        overflow: hidden;
+    }
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 4px; height: 100%;
+    }
+    .metric-card.inversion::before { background: #6c757d; }
+    .metric-card.ingresos::before { background: #0d6efd; }
+    .metric-card.ganancia::before { background: #198754; }
+    .metric-card.margen::before { background: #FFD700; }
+
+    .metric-card .metric-icon { font-size: 1.3rem; margin-bottom: 8px; }
+    .metric-card .metric-label {
+        color: #888; font-size: 0.75rem;
+        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+    }
+    .metric-card .metric-value { font-size: 1.6rem; font-weight: 800; }
+    .metric-card .metric-sub { color: #666; font-size: 0.8rem; margin-top: 4px; }
+
+    /* Gráficos */
+    .graficos-section {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    @media (max-width: 900px) { .graficos-section { grid-template-columns: 1fr; } }
+    
+    .grafico-card {
+        background: #1a1a1a;
+        border-radius: 12px;
+        border: 1px solid #222;
+        overflow: hidden;
+    }
+    .grafico-card .header {
+        background: linear-gradient(135deg, var(--primary), #8e0000);
+        padding: 15px 20px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .grafico-card .body {
+        padding: 20px;
+        height: 300px;
+    }
+    .grafico-card.grafico-full {
+        grid-column: 1 / -1;
+    }
+    .grafico-card.grafico-full .body {
+        height: 350px;
+    }
+
+    .profit-section {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    @media (max-width: 900px) { .profit-section { grid-template-columns: 1fr; } }
+
+    .profit-breakdown {
+        background: #1a1a1a; border-radius: 12px;
+        border: 1px solid #222; overflow: hidden;
+    }
+    .profit-breakdown .header {
+        background: linear-gradient(135deg, #198754, #157347);
+        padding: 15px 20px; font-weight: 700;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .profit-breakdown .body { padding: 20px; }
+
+    .profit-row {
+        display: flex; justify-content: space-between;
+        align-items: center; padding: 12px 0;
+        border-bottom: 1px solid #222;
+    }
+    .profit-row:last-child { border-bottom: none; }
+    .profit-row .label { color: #aaa; font-size: 0.9rem; }
+    .profit-row .value { font-weight: 700; font-size: 1rem; }
+    .profit-row.total {
+        border-top: 2px solid #198754;
+        margin-top: 10px; padding-top: 15px;
+    }
+    .profit-row.total .label { color: #fff; font-weight: 700; }
+    .profit-row.total .value { color: #198754; font-size: 1.3rem; }
+    .profit-row.negative .value { color: var(--primary); }
+
+    .margin-gauge {
+        background: #1a1a1a; border-radius: 12px;
+        border: 1px solid #222; padding: 25px;
+        text-align: center; display: flex;
+        flex-direction: column; justify-content: center; align-items: center;
+    }
+    .margin-gauge .gauge-value { font-size: 3rem; font-weight: 800; color: #198754; }
+    .margin-gauge .gauge-label { color: #888; font-size: 0.85rem; margin-top: 5px; }
+    .margin-gauge .gauge-bar {
+        width: 100%; height: 8px; background: #333;
+        border-radius: 4px; margin-top: 15px; overflow: hidden;
+    }
+    .margin-gauge .gauge-fill {
+        height: 100%; border-radius: 4px;
+        background: linear-gradient(90deg, var(--primary), #FFD700, #198754);
+        transition: width 0.5s;
+    }
+
+    .table-responsive { overflow-x: auto; }
+
+    /* Historial */
+    .historial-tipo {
+        display: inline-block; padding: 3px 10px;
+        border-radius: 12px; font-size: 0.7rem;
+        font-weight: 600; text-transform: uppercase;
+    }
+    .historial-tipo.producto { background: rgba(13,110,253,0.2); color: #0d6efd; }
+    .historial-tipo.plan { background: rgba(255,215,0,0.2); color: #FFD700; }
+    .historial-tipo.maquinaria { background: rgba(25,135,84,0.2); color: #198754; }
+    .historial-tipo.compra { background: rgba(108,117,125,0.2); color: #6c757d; }
+
+    .ganancia-positiva { color: #198754; font-weight: 700; }
+    .ganancia-negativa { color: #dc3545; font-weight: 700; }
+
+    .btn-eliminar-sm {
+        background: rgba(220,53,69,0.15); color: #dc3545;
+        border: 1px solid rgba(220,53,69,0.3); border-radius: 6px;
+        padding: 4px 10px; font-size: 0.75rem; cursor: pointer;
+        text-decoration: none; transition: all 0.2s;
+    }
+    .btn-eliminar-sm:hover {
+        background: #dc3545; color: white;
+    }
+
+    .btn-peligro {
+        background: #dc3545; color: white; border: none;
+        border-radius: 8px; padding: 8px 16px; font-size: 0.85rem;
+        cursor: pointer; font-weight: 600;
+    }
+    .btn-peligro:hover { background: #b02a37; }
+
+    .filter-tabs {
+        display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;
+    }
+    .filter-tab {
+        padding: 6px 16px; border-radius: 20px;
+        font-size: 0.8rem; text-decoration: none;
+        border: 1px solid #333; color: #888;
+        transition: all 0.2s;
+    }
+    .filter-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-tab.active {
+        background: var(--primary); color: white;
+        border-color: var(--primary);
+    }
+</style>
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-chart-pie" style="margin-right:10px;color:var(--primary);"></i>Panel Financiero</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="{% url 'economia_reporte_pdf' %}{% if filtro_fecha %}?fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}{% endif %}" class="btn-gym" style="background:#0d6efd;">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </a>
+                <a href="{% url 'economia_reporte_excel' %}{% if filtro_fecha %}?fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}{% endif %}" class="btn-gym" style="background:#198754;">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </a>
+                <form method="POST" action="{% url 'eliminar_todas_ventas' %}" onsubmit="event.preventDefault(); Swal.fire({title:'¿Estás seguro?',text:'Se eliminarán TODAS las ventas de productos y planes. El stock será restaurado. Esta acción no se puede deshacer.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar todo',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)this.submit()});" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-peligro">
+                        <i class="fas fa-trash-alt"></i> Limpiar Todo
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}{% for message in messages %}
+    <div class="alert-gym" style="background:{% if 'error' in message.tags %}#dc3545{% else %}#198754{% endif %};">{{ message }}</div>
+    {% endfor %}{% endif %}
+
+    <!-- Filtros de fecha -->
+    <div class="filter-bar">
+        <form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;">
+            <div style="flex:1;min-width:150px;">
+                <label class="form-label">Desde</label>
+                <input type="date" name="fecha_inicio" class="form-input" value="{% if fecha_inicio %}{{ fecha_inicio|date:'Y-m-d' }}{% endif %}">
+            </div>
+            <div style="flex:1;min-width:150px;">
+                <label class="form-label">Hasta</label>
+                <input type="date" name="fecha_fin" class="form-input" value="{% if fecha_fin %}{{ fecha_fin|date:'Y-m-d' }}{% endif %}">
+            </div>
+            <input type="hidden" name="tipo" value="{{ tipo_filtro }}">
+            <div><button class="btn-gym"><i class="fas fa-filter"></i> Filtrar</button></div>
+            {% if filtro_fecha %}
+            <div><a href="{% url 'economia' %}" class="btn-gym" style="background:#6c757d;"><i class="fas fa-times"></i> Limpiar</a></div>
+            {% endif %}
+        </form>
+        {% if not filtro_fecha %}
+        <div style="margin-top:8px;color:#666;font-size:0.8rem;">
+            <i class="fas fa-info-circle"></i> Mostrando todos los registros.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- MÉTRICAS PRINCIPALES -->
+    <div class="economia-grid">
+        <div class="metric-card inversion">
+            <div class="metric-icon" style="color:#6c757d;"><i class="fas fa-shopping-cart"></i></div>
+            <div class="metric-label">Inversión Total</div>
+            <div class="metric-value" style="color:#6c757d;">{% if total_inversion %}{{ total_inversion|cop }}{% else %}$0 COP{% endif %}</div>
+            <div class="metric-sub">Dinero gastado en {{ total_compras_count }} compra{{ total_compras_count|pluralize:"s" }}</div>
+        </div>
+        <div class="metric-card ingresos">
+            <div class="metric-icon" style="color:#0d6efd;"><i class="fas fa-cash-register"></i></div>
+            <div class="metric-label">Ingresos Totales</div>
+            <div class="metric-value" style="color:#0d6efd;">{% if total_ingresos %}{{ total_ingresos|cop }}{% else %}$0 COP{% endif %}</div>
+            <div class="metric-sub">{{ total_ventas_count }} venta{{ total_ventas_count|pluralize:"s" }} + {{ total_planes_count }} plan{{ total_planes_count|pluralize:"es" }}</div>
+        </div>
+        <div class="metric-card ganancia">
+            <div class="metric-icon" style="color:#198754;"><i class="fas fa-chart-line"></i></div>
+            <div class="metric-label">Ganancia Bruta</div>
+            <div class="metric-value" style="color:#198754;">{% if ganancia_bruta_total %}{{ ganancia_bruta_total|cop }}{% else %}$0 COP{% endif %}</div>
+            <div class="metric-sub">Ingresos - Costo de productos</div>
+        </div>
+        <div class="metric-card margen">
+            <div class="metric-icon" style="color:#FFD700;"><i class="fas fa-percentage"></i></div>
+            <div class="metric-label">Margen Bruto</div>
+            <div class="metric-value" style="color:#FFD700;">{% if margen_bruto %}{{ margen_bruto }}%{% else %}0%{% endif %}</div>
+            <div class="metric-sub">Porcentaje de ganancia</div>
+        </div>
+    </div>
+
+    <!-- GRÁFICOS INTERACTIVOS -->
+    <div class="graficos-section">
+        <!-- Gráfico de Ventas por Mes -->
+        <div class="grafico-card grafico-full">
+            <div class="header">
+                <i class="fas fa-chart-area"></i> Ventas por Mes (Últimos 12 meses)
+            </div>
+            <div class="body">
+                <canvas id="graficoVentasMes"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="graficos-section">
+        <!-- Gráfico de Distribución de Ingresos -->
+        <div class="grafico-card">
+            <div class="header">
+                <i class="fas fa-chart-pie"></i> Distribución de Ingresos
+            </div>
+            <div class="body">
+                <canvas id="graficoDistribucion"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de Top Productos -->
+        <div class="grafico-card">
+            <div class="header">
+                <i class="fas fa-trophy"></i> Top 5 Productos Más Vendidos
+            </div>
+            <div class="body">
+                <canvas id="graficoTopProductos"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="graficos-section">
+        <!-- Gráfico de Categorías -->
+        <div class="grafico-card">
+            <div class="header">
+                <i class="fas fa-tags"></i> Ventas por Categoría
+            </div>
+            <div class="body">
+                <canvas id="graficoCategorias"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico Financiero -->
+        <div class="grafico-card">
+            <div class="header">
+                <i class="fas fa-chart-bar"></i> Resumen Financiero
+            </div>
+            <div class="body">
+                <canvas id="graficoFinanciero"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESGLOSE DE GANANCIA -->
+    <div class="profit-section">
+        <div class="profit-breakdown">
+            <div class="header">
+                <i class="fas fa-balance-scale"></i> Desglose de Ganancia Bruta
+            </div>
+            <div class="body">
+                <div style="margin-bottom:20px;">
+                    <p style="color:#888;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+                        <i class="fas fa-box me-1"></i> Productos (incluye Maquinaria)
+                    </p>
+                    <div class="profit-row">
+                        <span class="label">Ingresos por ventas</span>
+                        <span class="value" style="color:#0d6efd;">{% if total_ventas_productos %}{{ total_ventas_productos|cop }}{% else %}$0 COP{% endif %}</span>
+                    </div>
+                    <div class="profit-row negative">
+                        <span class="label">(-) Costo de productos vendidos</span>
+                        <span class="value">-{% if cogs_productos %}{{ cogs_productos|cop }}{% else %}$0 COP{% endif %}</span>
+                    </div>
+                    <div class="profit-row">
+                        <span class="label" style="color:#fff;font-weight:600;">= Ganancia Productos</span>
+                        <span class="value" style="color:#198754;font-size:1.1rem;">{% if ganancia_bruta_productos %}{{ ganancia_bruta_productos|cop }}{% else %}$0 COP{% endif %}</span>
+                    </div>
+                </div>
+                <div style="border-top:1px solid #222;padding-top:20px;">
+                    <p style="color:#888;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+                        <i class="fas fa-dumbbell me-1"></i> Planes (Suscripciones)
+                    </p>
+                    <div class="profit-row">
+                        <span class="label">Ingresos por planes</span>
+                        <span class="value" style="color:#0d6efd;">{% if total_ventas_planes %}{{ total_ventas_planes|cop }}{% else %}$0 COP{% endif %}</span>
+                    </div>
+                    <div class="profit-row">
+                        <span class="label" style="color:#fff;font-weight:600;">= Ganancia Planes (100%)</span>
+                        <span class="value" style="color:#198754;font-size:1.1rem;">{% if ganancia_bruta_planes %}{{ ganancia_bruta_planes|cop }}{% else %}$0 COP{% endif %}</span>
+                    </div>
+                </div>
+                <div class="profit-row total">
+                    <span class="label"><i class="fas fa-trophy me-2" style="color:#FFD700;"></i>Ganancia Bruta Total</span>
+                    <span class="value">{% if ganancia_bruta_total %}{{ ganancia_bruta_total|cop }}{% else %}$0 COP{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="margin-gauge">
+            <div style="color:#888;font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Margen de Ganancia</div>
+            <div class="gauge-value">{% if margen_bruto %}{{ margen_bruto }}{% else %}0{% endif %}%</div>
+            <div class="gauge-label">de cada peso vendido es ganancia</div>
+            <div class="gauge-bar">
+                <div class="gauge-fill" style="width: {{ margen_bruto }}%;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;width:100%;margin-top:8px;">
+                <span style="color:#666;font-size:0.7rem;">0%</span>
+                <span style="color:#666;font-size:0.7rem;">50%</span>
+                <span style="color:#666;font-size:0.7rem;">100%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTORIAL COMPLETO DE TRANSACCIONES -->
+    <div class="card-dark" style="margin-bottom:25px;">
+        <div class="card-dark-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <span><i class="fas fa-history" style="margin-right:8px;"></i>Historial de Transacciones ({{ historial_count }})</span>
+        </div>
+        <div class="card-dark-body" style="padding:15px;">
+            <!-- Filtros por tipo -->
+            <div class="filter-tabs">
+                <a href="?{% if filtro_fecha %}fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}&{% endif %}tipo=todos" class="filter-tab {% if tipo_filtro == 'todos' %}active{% endif %}">
+                    <i class="fas fa-layer-group"></i> Todos
+                </a>
+                <a href="?{% if filtro_fecha %}fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}&{% endif %}tipo=productos" class="filter-tab {% if tipo_filtro == 'productos' %}active{% endif %}">
+                    <i class="fas fa-box"></i> Productos ({{ total_ventas_count }})
+                </a>
+                <a href="?{% if filtro_fecha %}fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}&{% endif %}tipo=planes" class="filter-tab {% if tipo_filtro == 'planes' %}active{% endif %}">
+                    <i class="fas fa-dumbbell"></i> Planes ({{ total_planes_count }})
+                </a>
+                <a href="?{% if filtro_fecha %}fecha_inicio={{ fecha_inicio|date:'Y-m-d' }}&fecha_fin={{ fecha_fin|date:'Y-m-d' }}&{% endif %}tipo=compras" class="filter-tab {% if tipo_filtro == 'compras' %}active{% endif %}">
+                    <i class="fas fa-truck"></i> Compras ({{ total_compras_count }})
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table-dark-custom">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>ID</th>
+                            <th>Usuario / Proveedor</th>
+                            <th>Detalle</th>
+                            <th>Total</th>
+                            <th>Ganancia</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historial %}
+                        <tr>
+                            <td style="white-space:nowrap;">{{ h.fecha|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <span class="historial-tipo {{ h.tipo }}">
+                                    {% if h.tipo == 'producto' %}<i class="fas fa-box"></i>
+                                    {% elif h.tipo == 'plan' %}<i class="fas fa-dumbbell"></i>
+                                    {% elif h.tipo == 'maquinaria' %}<i class="fas fa-cog"></i>
+                                    {% elif h.tipo == 'compra' %}<i class="fas fa-truck"></i>
+                                    {% endif %}
+                                    {{ h.tipo_display }}
+                                </span>
+                            </td>
+                            <td>#{{ h.id }}</td>
+                            <td>{{ h.usuario }}</td>
+                            <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ h.descripcion }}">
+                                {{ h.descripcion }}
+                            </td>
+                            <td style="font-weight:700;">{{ h.total|cop }}</td>
+                            <td class="{% if h.ganancia >= 0 %}ganancia-positiva{% else %}ganancia-negativa{% endif %}">
+                                {% if h.tipo == 'compra' %}-{% endif %}{{ h.ganancia|cop }}
+                            </td>
+                            <td>
+                                {% if h.delete_url %}
+                                    {% if h.tipo == 'compra' %}
+                                    <a href="/compras/detalle/{{ h.delete_id }}/" class="btn-eliminar-sm" title="Ver detalle de compra" style="background:#0d6efd;">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url h.delete_url h.delete_id %}?next=economia" class="btn-eliminar-sm" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar transacción?',text:'{% if h.tipo == "producto" or h.tipo == "maquinaria" %}El stock será restaurado.{% endif %}',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='{% url h.delete_url h.delete_id %}?next=economia'});">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                {% else %}
+                                <a href="/compras/eliminar/{{ h.id }}/" class="btn-eliminar-sm" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar compra?',text:'El stock será restaurado.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/compras/eliminar/{{ h.id }}/'});" title="Eliminar desde modulo de compras">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" style="text-align:center;padding:40px;color:#666;">
+                                <i class="fas fa-inbox" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+                                No hay transacciones registradas.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTARIO Y TOP PRODUCTOS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:25px;">
+        <div class="card-dark">
+            <div class="card-dark-header"><i class="fas fa-warehouse" style="margin-right:8px;"></i>Resumen de Inventario</div>
+            <div class="card-dark-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;text-align:center;">
+                    <div>
+                        <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Unidades en Stock</p>
+                        <p style="font-size:1.5rem;font-weight:800;margin:5px 0 0;">{{ total_productos_stock }}</p>
+                    </div>
+                    <div>
+                        <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Valor a Venta</p>
+                        <p style="font-size:1.5rem;font-weight:800;color:#0d6efd;margin:5px 0 0;">{{ inventario_venta_total|cop }}</p>
+                    </div>
+                    <div>
+                        <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Costo del Inventario</p>
+                        <p style="font-size:1.5rem;font-weight:800;color:#6c757d;margin:5px 0 0;">{{ inventario_costo_total|cop }}</p>
+                    </div>
+                    <div>
+                        <p style="color:#888;font-size:0.75rem;text-transform:uppercase;margin:0;">Ganancia Potencial</p>
+                        <p style="font-size:1.5rem;font-weight:800;color:#198754;margin:5px 0 0;">{{ inventario_ganancia_potencial|cop }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-dark">
+            <div class="card-dark-header"><i class="fas fa-trophy" style="margin-right:8px;"></i>Productos Más Vendidos</div>
+            <div class="card-dark-body">
+                {% for tp in top_productos %}
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222;">
+                    <div>
+                        <strong>{{ tp.producto__nombre }}</strong>
+                        <br><small style="color:#666;">{{ tp.total_vendido }} unidad{{ tp.total_vendido|pluralize:"es" }}</small>
+                    </div>
+                    <span style="color:#198754;font-weight:700;">{{ tp.ingreso_total|cop }}</span>
+                </div>
+                {% empty %}
+                <div style="color:#666;text-align:center;padding:20px;">No hay ventas en este periodo.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTARIO DETALLADO -->
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Inventario con Márgenes</div>
+        <div class="table-responsive">
+            {% if productos %}
+            <table class="table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Categoria</th>
+                        <th>Stock</th>
+                        <th>Costo Unit.</th>
+                        <th>Precio Venta</th>
+                        <th>Margen/Unidad</th>
+                        <th>% Margen</th>
+                        <th>Valor Stock (Costo)</th>
+                        <th>Valor Stock (Venta)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                    <tr>
+                        <td><strong>{{ p.nombre }}</strong></td>
+                        <td>{{ p.categoria }}</td>
+                        <td>
+                            <span class="{% if p.stock_actual < 5 %}badge-venta{% elif p.stock_actual < 20 %}badge-reparacion{% else %}badge-activo{% endif %}">
+                                {{ p.stock_actual }}
+                            </span>
+                        </td>
+                        <td style="color:#6c757d;">{{ p.precio_costo|cop }}</td>
+                        <td style="color:#0d6efd;">{{ p.precio_venta|cop }}</td>
+                        <td style="color:#198754;font-weight:700;">{{ p.margen_unidad|cop }}</td>
+                        <td>
+                            <span style="background:rgba(25,135,84,0.2);color:#198754;padding:3px 10px;border-radius:12px;font-size:0.8rem;font-weight:600;">
+                                {{ p.porcentaje_margen }}%
+                            </span>
+                        </td>
+                        <td style="color:#6c757d;">{{ p.valor_costo|cop }}</td>
+                        <td style="color:var(--primary);font-weight:700;">{{ p.valor_venta|cop }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="padding:30px;text-align:center;color:#666;">No hay productos en el inventario.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS PARA GRÁFICOS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuración global de Chart.js
+    Chart.defaults.color = '#888';
+    Chart.defaults.font.family = "'Segoe UI', sans-serif";
+    
+    // Colores para los gráficos
+    const colores = {
+        primary: '#3b82f6',
+        primaryClaro: '#60a5fa',
+        azul: '#0d6efd',
+        verde: '#198754',
+        dorado: '#FFD700',
+        gris: '#6c757d',
+        negro: '#333'
+    };
+    
+    // 1. Gráfico de Ventas por Mes (Barras agrupadas)
+    const ctxVentas = document.getElementById('graficoVentasMes');
+    if (ctxVentas) {
+        new Chart(ctxVentas, {
+            type: 'bar',
+            data: {
+                labels: {{ grafico_meses_labels|safe }},
+                datasets: [
+                    {
+                        label: 'Productos',
+                        data: {{ grafico_ventas_productos }},
+                        backgroundColor: colores.primary,
+                        borderRadius: 5,
+                    },
+                    {
+                        label: 'Planes',
+                        data: {{ grafico_ventas_planes }},
+                        backgroundColor: colores.dorado,
+                        borderRadius: 5,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { color: '#fff', padding: 20 }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1a1a1a',
+                        titleColor: '#fff',
+                        bodyColor: '#ccc',
+                        borderColor: '#333',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.raw.toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#222' },
+                        ticks: { color: '#888' }
+                    },
+                    y: {
+                        grid: { color: '#222' },
+                        ticks: {
+                            color: '#888',
+                            callback: function(value) {
+                                return '$' + value.toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 2. Gráfico de Distribución (Doughnut)
+    const ctxDistribucion = document.getElementById('graficoDistribucion');
+    if (ctxDistribucion) {
+        new Chart(ctxDistribucion, {
+            type: 'doughnut',
+            data: {
+                labels: {{ grafico_distribucion_labels|safe }},
+                datasets: [{
+                    data: {{ grafico_distribucion_data }},
+                    backgroundColor: [colores.primary, colores.dorado],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#fff', padding: 15 }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1a1a1a',
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.raw / total) * 100).toFixed(1);
+                                return context.label + ': $' + context.raw.toLocaleString('es-CO') + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+    }
+    
+    // 3. Gráfico Top Productos (Barras horizontales)
+    const ctxTop = document.getElementById('graficoTopProductos');
+    if (ctxTop) {
+        new Chart(ctxTop, {
+            type: 'bar',
+            data: {
+                labels: {{ grafico_top_productos_labels|safe }},
+                datasets: [{
+                    label: 'Ingresos',
+                    data: {{ grafico_top_productos_data }},
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#2563eb',
+                        '#1d4ed8',
+                        '#1e40af',
+                        '#1e3a8a'
+                    ],
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a1a1a',
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.raw.toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: '#222' },
+                        ticks: {
+                            color: '#888',
+                            callback: function(value) {
+                                return '$' + value.toLocaleString('es-CO');
+                            }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { color: '#fff' }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 4. Gráfico de Categorías (Polar Area)
+    const ctxCategorias = document.getElementById('graficoCategorias');
+    if (ctxCategorias) {
+        new Chart(ctxCategorias, {
+            type: 'polarArea',
+            data: {
+                labels: {{ grafico_categorias_labels|safe }},
+                datasets: [{
+                    data: {{ grafico_categorias_data }},
+                    backgroundColor: [
+                        'rgba(198, 40, 40, 0.7)',
+                        'rgba(13, 110, 253, 0.7)',
+                        'rgba(25, 135, 84, 0.7)',
+                        'rgba(255, 215, 0, 0.7)',
+                        'rgba(108, 117, 125, 0.7)',
+                        'rgba(255, 107, 107, 0.7)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { color: '#fff', padding: 10, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1a1a1a',
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': $' + context.raw.toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        grid: { color: '#222' },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+    }
+    
+    // 5. Gráfico Financiero (Barras comparativas)
+    const ctxFinanciero = document.getElementById('graficoFinanciero');
+    if (ctxFinanciero) {
+        new Chart(ctxFinanciero, {
+            type: 'bar',
+            data: {
+                labels: {{ grafico_financiero_labels|safe }},
+                datasets: [{
+                    data: {{ grafico_financiero_data }},
+                    backgroundColor: [colores.azul, colores.verde, colores.gris],
+                    borderRadius: 8,
+                    barThickness: 50
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1a1a1a',
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.raw.toLocaleString('es-CO');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#fff', font: { size: 12 } }
+                    },
+                    y: {
+                        grid: { color: '#222' },
+                        ticks: {
+                            color: '#888',
+                            callback: function(value) {
+                                return '$' + (value / 1000000).toFixed(1) + 'M';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>

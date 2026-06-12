@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Rutina General - 1 Mes</title>
+</head>
+<body style="font-family: Arial, sans-serif; font-size: 11px; color: #333; margin: 0; padding: 0;">
+
+<!-- HEADER -->
+<div style="background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; padding: 25px; text-align: center;">
+    <h1 style="font-size: 22px; margin: 0 0 5px 0; text-transform: uppercase; letter-spacing: 3px;">RUTINA GENERAL</h1>
+    <p style="color: white; font-size: 12px; font-weight: bold; letter-spacing: 2px; margin: 0;">PROGRAMA FITNESS - 1 MES</p>
+    
+    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 10px;">
+        <p style="margin: 3px 0;"><strong>Usuario:</strong> {{ usuario.username }}</p>
+        <p style="margin: 3px 0;"><strong>Plan:</strong> {{ plan.nombre }}</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div style="background: #1a1a1a; color: white; padding: 12px 25px; display: flex; justify-content: space-around;">
+    <div style="text-align: center;">
+        <div style="font-size: 18px; font-weight: bold;">{{ duracion_real_dias }}</div>
+        <div style="font-size: 8px; text-transform: uppercase;">Días</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 18px; font-weight: bold;">4</div>
+        <div style="font-size: 8px; text-transform: uppercase;">Días/Semana</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 18px; font-weight: bold;">Full Body</div>
+        <div style="font-size: 8px; text-transform: uppercase;">Tipo</div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-size: 18px; font-weight: bold;">45 min</div>
+        <div style="font-size: 8px; text-transform: uppercase;">Duración</div>
+    </div>
+</div>
+
+<!-- PROGRAMA -->
+<div style="padding: 20px;">
+    <div style="background: #ff4444; color: white; padding: 10px 15px; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        PROGRAMA FULL BODY - PRINCIPIANTES
+    </div>
+    
+    <!-- SEMANA 1-2 -->
+    <div style="margin-top: 15px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #ff6666; color: white; padding: 10px 15px; font-weight: bold;">
+            📅 SEMANA 1-2: ADAPTACIÓN
+        </div>
+        <div style="padding: 12px;">
+            
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #ff4444;">DÍA 1 - tren COMPLETO A</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Calentamiento: 5 min<br>
+                    • Sentadillas: 3x12<br>
+                    • Flexiones (de rodillas): 3x10<br>
+                    • Remo con mancuernas: 3x12<br>
+                    • Zancadas: 3x10 c/pierna<br>
+                    • Press de hombros: 3x12<br>
+                    • Plancha: 3x20 seg
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #ff4444;">DÍA 2 - CORE + CARDIO</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Caminata rápida: 15 min<br>
+                    • Crunches: 3x15<br>
+                    • Plancha lateral: 2x15 seg<br>
+                    • Jumping Jacks: 3x20<br>
+                    • Mountain Climbers: 3x15<br>
+                    • Caminata: 10 min
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444;">DÍA 3 - tren COMPLETO B</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Calentamiento: 5 min<br>
+                    • Peso muerto rumano: 3x12<br>
+                    • Flexiones: 3x10<br>
+                    • Hip thrust: 3x12<br>
+                    • Jalón al pecho: 3x10<br>
+                    • Elevaciones de talones: 3x15<br>
+                    • Burpees: 3x8
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- SEMANA 3-4 -->
+    <div style="margin-top: 15px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background: #cc0000; color: white; padding: 10px 15px; font-weight: bold;">
+            📅 SEMANA 3-4: PROGRESIÓN
+        </div>
+        <div style="padding: 12px;">
+            
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #ff4444;">DÍA 1 - tren INTENSO A</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Sentadilla: 4x10<br>
+                    • Flexiones: 4x10-12<br>
+                    • Remo barra: 3x10<br>
+                    • Zancadas bulgaras: 3x10<br>
+                    • Press militar: 3x10<br>
+                    • Plancha: 4x30 seg
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #ff4444;">DÍA 2 - CARDIO HIIT</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Calentamiento: 5 min<br>
+                    • Sprint en sitio: 30 seg<br>
+                    • Descanso: 30 seg<br>
+                    • Repetir 10 veces<br>
+                    • HIIT burpees: 8x20 seg<br>
+                    • Enfriamiento: 5 min
+                </p>
+            </div>
+            
+            <div style="margin-bottom: 0;">
+                <strong style="color: #ff4444;">DÍA 3 - tren INTENSO B</strong>
+                <p style="margin: 5px 0; font-size: 10px;">
+                    • Peso muerto: 4x8<br>
+                    • Press banca: 3x10<br>
+                    • Jalón al pecho: 4x10<br>
+                    • Hip thrust: 4x12<br>
+                    • Curl biceps: 3x12<br>
+                    • Extensión triceps: 3x12<br>
+                    • Cardio suave: 10 min
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+
+<!-- NUTRICION -->
+<div style="padding: 0 20px 20px 20px;">
+    <div style="background: #1a1a1a; color: white; padding: 10px 15px; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px;">
+        NUTRICIÓN BALANCEADA
+    </div>
+    
+    <div style="display: flex; margin-top: 15px;">
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 15px;">
+            <div style="font-size: 18px; font-weight: bold; color: #ff4444;">{{ perfil.peso|default:"70" }}g</div>
+            <div style="font-size: 9px; text-transform: uppercase; color: #666;">Proteína</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 15px; border-left: none;">
+            <div style="font-size: 18px; font-weight: bold; color: #ff4444;">200g</div>
+            <div style="font-size: 9px; text-transform: uppercase; color: #666;">Carbohidratos</div>
+        </div>
+        <div style="flex: 1; border: 1px solid #ddd; text-align: center; padding: 15px; border-left: none;">
+            <div style="font-size: 18px; font-weight: bold; color: #ff4444;">70g</div>
+            <div style="font-size: 9px; text-transform: uppercase; color: #666;">Grasas</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 15px; background: #fff3f3; padding: 15px; border-left: 4px solid #ff4444;">
+        <h4 style="font-size: 11px; text-transform: uppercase; margin: 0 0 10px 0;">HIDRATACIÓN Y RECUPERACIÓN</h4>
+        <p style="font-size: 10px; margin: 3px 0;">• Beber 2.5-3 litros de agua diarios</p>
+        <p style="font-size: 10px; margin: 3px 0;">• Dormir 7-8 horas cada noche</p>
+        <p style="font-size: 10px; margin: 3px 0;">• Estirar después de cada entreno</p>
+        <p style="font-size: 10px; margin: 3px 0;">• Progresión: aumentar peso 5% semanal</p>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<div style="background: #1a1a1a; color: white; padding: 15px; text-align: center;">
+    <p style="font-size: 14px; font-weight: bold; color: #ff4444; margin: 0 0 5px 0; letter-spacing: 2px;">GYM FITNESS</p>
+    <p style="font-size: 8px; margin: 0; color: #888;">Transforma tu cuerpo, transforma tu vida 💪🔥</p>
+</div>
+
+</body>
+</html>

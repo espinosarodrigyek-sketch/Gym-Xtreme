@@ -1,0 +1,240 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<style>
+    .stat-card { background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:20px;position:relative;overflow:hidden; }
+    .stat-card::before { content:'';position:absolute;top:0;left:0;width:4px;height:100%; }
+    .stat-card.usuarios::before { background:#0d6efd; }
+    .stat-card.clientes::before { background:#198754; }
+    .stat-card.ventas::before { background:#6c757d; }
+    .stat-card.ingresos::before { background:#FFD700; }
+    .stat-card .stat-icon { font-size:1.5rem;margin-bottom:10px; }
+    .stat-card .stat-value { font-size:2rem;font-weight:800; }
+    .stat-card .stat-label { color:#888;font-size:0.8rem;text-transform:uppercase; }
+    .stat-card .stat-change { font-size:0.75rem;margin-top:5px; }
+    .stat-positivo { color:#198754; }
+    .stat-negativo { color:#dc3545; }
+    
+    .section-title { font-size:1.1rem;font-weight:700;margin-bottom:15px;display:flex;align-items:center;gap:10px; }
+    .section-title i { color:var(--rojo); }
+    
+    .alert-card { background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:15px;margin-bottom:10px; }
+    .alert-card.warning { border-left:4px solid #ffc107; }
+    .alert-card.danger { border-left:4px solid #dc3545; }
+    .alert-card.success { border-left:4px solid #198754; }
+    
+    .quick-action { background:#0a0a0a;border:2px solid #333;border-radius:12px;padding:20px;text-align:center;color:#fff;text-decoration:none;transition:all 0.2s; }
+    .quick-action:hover { border-color:var(--rojo);transform:translateY(-2px); }
+    .quick-action i { font-size:1.8rem;color:var(--rojo);margin-bottom:10px;display:block; }
+    
+    .stock-badge { padding:3px 10px;border-radius:12px;font-size:0.75rem;font-weight:600; }
+    .stock-badge.critico { background:rgba(220,53,69,0.2);color:#dc3545; }
+    .stock-badge.bajo { background:rgba(255,193,7,0.2);color:#ffc107; }
+    .stock-badge.normal { background:rgba(25,135,84,0.2);color:#198754; }
+</style>
+
+<div class="main-content">
+    <!-- DEBUG: ingresos_mes={{ ingresos_mes }}, ingresos_semana={{ ingresos_semana }}, ganancia_mes={{ ganancia_mes }}, inversion_mes={{ inversion_mes }}, maquinaria_activa={{ maquinaria_activa }} -->
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-chart-line" style="margin-right:10px;color:var(--rojo);"></i>Dashboard</h2>
+            <span style="background:var(--rojo);padding:6px 15px;border-radius:20px;font-size:0.85rem;font-weight:600;">Gym Xtreme</span>
+        </div>
+    </div>
+
+    <!-- MÉTRICAS PRINCIPALES -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px;">
+        <div class="stat-card usuarios">
+            <div class="stat-icon" style="color:#0d6efd;"><i class="fas fa-users"></i></div>
+            <div class="stat-value">{{ total_usuarios|default:0 }}</div>
+            <div class="stat-label">Total Usuarios</div>
+        </div>
+        <div class="stat-card clientes">
+            <div class="stat-icon" style="color:#198754;"><i class="fas fa-user-check"></i></div>
+            <div class="stat-value">{{ clientes_activos|default:0 }}</div>
+            <div class="stat-label">Clientes Activos</div>
+            <div class="stat-change" style="color:#6c757d;">{{ clientes_inactivos|default:0 }} inactivos</div>
+        </div>
+        <div class="stat-card ventas">
+            <div class="stat-icon" style="color:#6c757d;"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-value">{{ total_ventas|default:0 }}</div>
+            <div class="stat-label">Ventas Planes</div>
+        </div>
+        <div class="stat-card ingresos">
+            <div class="stat-icon" style="color:#FFD700;"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-value">{{ ingresos_mes|default:0|cop }}</div>
+            <div class="stat-label">Ingresos Mes</div>
+            <div class="stat-change">Esta semana: {{ ingresos_semana|default:0|cop }}</div>
+        </div>
+    </div>
+
+    <!-- SEGUNDA FILA: GANANCIA + INVERSIÓN + STOCK -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin-bottom:25px;">
+        <div class="card-dark">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#198754,#157347);">
+                <i class="fas fa-chart-line"></i> Ganancia del Mes
+            </div>
+            <div class="card-dark-body" style="text-align:center;">
+                <div style="font-size:2.5rem;font-weight:800;color:#198754;">{{ ganancia_mes|default:0|cop }}</div>
+                <div style="color:#888;font-size:0.85rem;margin-top:5px;">
+                    Ingresos: {{ ingresos_mes|default:0|cop }} | Inversión: {{ inversion_mes|default:0|cop }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-dark">
+            <div class="card-dark-header">
+                <i class="fas fa-warehouse"></i> Inventario
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;text-align:center;">
+                    <div>
+                        <div style="font-size:1.8rem;font-weight:700;">{{ total_productos }}</div>
+                        <div style="color:#888;font-size:0.75rem;">Productos</div>
+                    </div>
+                    <div>
+                        <div style="font-size:1.8rem;font-weight:700;">{{ total_stock }}</div>
+                        <div style="color:#888;font-size:0.75rem;">Unidades</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-dark">
+            <div class="card-dark-header">
+                <i class="fas fa-cogs"></i> Maquinaria
+            </div>
+            <div class="card-dark-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;text-align:center;">
+                    <div>
+                        <div style="font-size:1.8rem;font-weight:700;color:#198754;">{{ maquinaria_activa|default:0 }}</div>
+                        <div style="color:#888;font-size:0.75rem;">Activa</div>
+                    </div>
+                    <div>
+                        <div style="font-size:1.8rem;font-weight:700;color:#ffc107;">{{ maquinaria_mantenimiento|default:0 }}</div>
+                        <div style="color:#888;font-size:0.75rem;">En Reparación</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TERCERA FILA: ALERTAS + TOP PRODUCTOS -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:25px;">
+        <!-- PRODUCTOS BAJO STOCK -->
+        <div class="card-dark">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#dc3545,#a71d2a);">
+                <i class="fas fa-exclamation-triangle"></i> Stock Bajo
+            </div>
+            <div class="card-dark-body">
+                {% if productos_bajo_stock %}
+                    {% for p in productos_bajo_stock %}
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222;">
+                        <div>
+                            <strong>{{ p.nombre }}</strong>
+                            <div style="color:#888;font-size:0.75rem;">{{ p.categoria }}</div>
+                        </div>
+                        <span class="stock-badge {% if p.stock_actual <= 3 %}critico{% else %}bajo{% endif %}">
+                            {{ p.stock_actual }} unidades
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align:center;padding:20px;color:#198754;">
+                        <i class="fas fa-check-circle" style="font-size:2rem;margin-bottom:10px;"></i>
+                        <div>Stock OK</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- SUSCRIPCIONES POR VENCER -->
+        <div class="card-dark">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#ffc107,#cc9900);color:#000;">
+                <i class="fas fa-clock"></i> Por Vencer (7 días)
+            </div>
+            <div class="card-dark-body">
+                {% if proximas_vencer %}
+                    {% for s in proximas_vencer %}
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222;">
+                        <div>
+                            <strong>{{ s.usuario.username }}</strong>
+                            <div style="color:#888;font-size:0.75rem;">{{ s.plan.nombre }}</div>
+                        </div>
+                        <span style="color:#ffc107;font-size:0.85rem;font-weight:600;">
+                            {{ s.fecha_fin|date:"d/m" }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align:center;padding:20px;color:#198754;">
+                        <i class="fas fa-check-circle" style="font-size:2rem;margin-bottom:10px;"></i>
+                        <div>Sin vencimientos próximos</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- TOP PRODUCTOS VENDIDOS -->
+        <div class="card-dark">
+            <div class="card-dark-header" style="background:linear-gradient(135deg,#0d6efd,#0a5edd);">
+                <i class="fas fa-trophy"></i> Top 5 Vendidos (30 días)
+            </div>
+            <div class="card-dark-body">
+                {% if top_productos %}
+                    {% for p in top_productos %}
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #222;">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span style="background:var(--rojo);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;">
+                                {{ forloop.counter }}
+                            </span>
+                            <span>{{ p.producto__nombre }}</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:700;color:#198754;">{{ p.ingreso_total|cop }}</div>
+                            <div style="color:#888;font-size:0.7rem;">{{ p.total_vendido }} uds</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align:center;padding:20px;color:#666;">
+                        Sin ventas en el período
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCIONES RÁPIDAS -->
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-bolt"></i>Acciones Rápidas</div>
+        <div class="card-dark-body">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px;">
+                <a href="/admin-panel/planes/crear/" class="quick-action">
+                    <i class="fas fa-plus-circle"></i>
+                    <span style="font-weight:600;">Nuevo Plan</span>
+                </a>
+                <a href="/panel/clientes/" class="quick-action">
+                    <i class="fas fa-users"></i>
+                    <span style="font-weight:600;">Ver Clientes</span>
+                </a>
+                <a href="/admin-panel/economia/" class="quick-action">
+                    <i class="fas fa-chart-pie"></i>
+                    <span style="font-weight:600;">Economía</span>
+                </a>
+                <a href="/productos/" class="quick-action">
+                    <i class="fas fa-box"></i>
+                    <span style="font-weight:600;">Inventario</span>
+                </a>
+                <a href="/proveedores/" class="quick-action">
+                    <i class="fas fa-truck"></i>
+                    <span style="font-weight:600;">Proveedores</span>
+                </a>
+                <a href="/maquinaria/" class="quick-action">
+                    <i class="fas fa-cogs"></i>
+                    <span style="font-weight:600;">Maquinaria</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

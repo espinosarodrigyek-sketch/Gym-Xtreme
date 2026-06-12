@@ -1,0 +1,151 @@
+rutina,dia,ejercicio,series,repeticiones,descanso
+1,lunes,Press de banca,4,8-12,90
+1,lunes,Sentadilla,4,10-12,90
+1,lunes,Press de hombros,3,10-12,60
+1,lunes,Curl de biceps,3,12-15,60
+1,lunes,Triceps polea,3,12-15,60
+1,lunes,Crunch abdominal,3,15,60
+1,martes,Remo con barra,4,8-12,90
+1,martes,Jalcon al pecho,4,10-12,90
+1,martes,Peso muerto,4,8-10,90
+1,martes,Pull-ups,3,8-12,60
+1,martes,Ruffy curls,3,12-15,60
+1,martes,Plancha,3,60,60
+1,miercoles,Press banca inclinado,4,8-12,90
+1,miercoles,Leg press,4,12-15,90
+1,miercoles,Pullover,3,12-15,60
+1,miercoles,Elevacion lateral,3,12-15,60
+1,miercoles,Elevacion de talones,3,15-20,60
+1,miercoles,Rueda abdominal,3,12,60
+1,jueves,Press de banca wide,4,8-12,90
+1,jueves,Peso muerto rumano,4,10-12,90
+1,jueves,Fondos,3,10-12,60
+1,jueves,Face pulls,3,15,60
+1,jueves,Martillo curl,3,12-15,60
+1,jueves,Dips,3,8-12,60
+1,viernes,Sentadilla frontal,4,8-10,90
+1,viernes,Press de banca close,4,8-12,90
+1,viernes,Peso muerto convencional,4,8-10,90
+1,viernes,Push-ups,3,MAX,60
+1,viernes,Remo con mancuerna,3,12,60
+1,viernes,Sentadilla jump,3,15,60
+2,lunes,Sentadilla,4,8-12,90
+2,lunes,Press de banca,4,10-12,90
+2,lunes,Press de hombros,3,10-12,60
+2,lunes,Pullover,3,12-15,60
+2,lunes,Elevacion lateral,3,12-15,60
+2,lunes,Crunch,3,15,60
+2,martes,Remo con mancuerna,4,10-12,90
+2,martes,Jalcon al pecho,4,10-12,90
+2,martes,Curl de biceps,3,12-15,60
+2,martes,Predenza curl,3,12-15,60
+2,martes,Face pulls,3,15,60
+2,martes,Plancha,3,60,60
+2,miercoles,Peso muerto,4,8-10,90
+2,miercoles,Leg press,4,12-15,90
+2,miercedes,Prensa horizontal,3,12-15,60
+2,miercoles,Elevacion de talones,3,15-20,60
+2,miercoles,Extensiones de cuadriceps,3,12-15,60
+2,miercoles,Rueda abdominal,3,12,60
+2,jueves,Press de banca inclinado,4,8-12,90
+2,jueves,Peso muerto rumano,3,10-12,90
+2,jueves,Fondos,3,8-12,60
+2,jueves,Triceps polea,3,12-15,60
+2,jueves,Triceps patada,3,12-15,60
+2,jueves,Dips,3,MAX,60
+2,viernes,Push-ups,3,MAX,60
+2,viernes,Sentadilla jump,3,15,60
+2,viernes,Ascenso de talones,3,15,60
+2,viernes,Abductores,3,12-15,60
+2,viernes,Adductores,3,12-15,60
+2,viernes,Abdominales,3,15,60
+3,lunes,Peso muerto convencional,4,8-10,90
+3,lunes,Sentadilla,4,8-12,90
+3,lunes,Press de banca,4,10-12,90
+3,lunes,Curl de biceps,3,12-15,60
+3,lunes,Triceps,3,12-15,60
+3,lunes,Plancha,3,60,60
+3,martes,Jalcon al pecho,4,10-12,90
+3,martes,Remo con barra,4,10-12,90
+3,martes,Peso muerto rumano,3,10-12,90
+3,martes,Pull-ups,3,8-12,60
+3,martes,Face pulls,3,15,60
+3,martes,Abdominales,3,15,60
+3,miercoles,Press de banca close,4,8-12,90
+3,miercoles,Press banca inclinado,4,8-12,90
+3,miercoles,Sentadilla frontal,4,8-10,90
+3,miercoles,Leg press,4,12-15,90
+3,miercoles,Pullover,3,12-15,60
+3,miercoles,Crunch,3,15,60
+3,jueves,Remo con mancuerna,4,10-12,90
+3,jueves,Peso muerto,4,8-10,90
+3,jueves,Press de hombros,3,10-12,60
+3,jueves,Elevacion lateral,3,12-15,60
+3,jueves,Curl martillo,3,12-15,60
+3,jueves,Plancha,3,60,60
+3,viernes,Push-ups,3,MAX,60
+3,viernes,Dips,3,8-12,60
+3,viernes,Fondos,3,10-12,60
+3,viernes,Extensiones,3,12-15,60
+3,viernes,Sentadilla jump,3,15,60
+3,viernes,Abdominales,3,15,60
+4,lunes,Sentadilla,4,8-12,90
+4,lunes,Press banca,4,8-12,90
+4,lunes,Press de hombros,3,10-12,60
+4,lunes,Curl de biceps,3,12-15,60
+4,lunes,Triceps polea,3,12-15,60
+4,lunes,Abdominales,3,15,60
+4,martes,Remo con barra,4,8-12,90
+4,martes,Jalcon al pecho,4,10-12,90
+4,martes,Peso muerto,4,8-10,90
+4,martes,Pull-ups,3,8-12,60
+4,martes,Ruffy curls,3,12-15,60
+4,martes,Plancha,3,60,60
+4,miercoles,Peso muerto rumano,4,10-12,90
+4,miercoles,Leg press,4,12-15,90
+4,miercedes,Prensa,3,12-15,60
+4,miercoles,Elevacion de talones,3,15-20,60
+4,miercoles,Pullover,3,12-15,60
+4,miercoles,Rueda abdominal,3,12,60
+4,jueves,Press banca wide,4,8-12,90
+4,jueves,Press banca inclinado,4,8-12,90
+4,jueves,Sentadilla frontal,4,8-10,90
+4,jueves,Face pulls,3,15,60
+4,jueves,Martillo curl,3,12-15,60
+4,jueves,Dips,3,8-12,60
+4,viernes,Push-ups,3,MAX,60
+4,viernes,Sentadilla jump,3,15,60
+4,viernes,Remo con mancuerna,3,12,60
+4,viernes,Curl concentrado,3,12-15,60
+4,viernes,Triceps patada,3,12-15,60
+4,viernes,Abdominales,3,15,60
+5,lunes,Press de banca,4,8-12,90
+5,lunes,Sentadilla,4,10-12,90
+5,lunes,Press de hombros,3,10-12,60
+5,lunes,Curl de biceps,3,12-15,60
+5,lunes,Triceps polea,3,12-15,60
+5,lunes,Crunch,3,15,60
+5,martes,Remo con barra,4,8-12,90
+5,martes,Jalcon al pecho,4,10-12,90
+5,martes,Peso muerto,4,8-10,90
+5,martes,Pull-ups,3,8-12,60
+5,martes,Face pulls,3,15,60
+5,martes,Plancha,3,60,60
+5,miercoles,Leg press,4,12-15,90
+5,miercoles,Peso muerto rumano,4,10-12,90
+5,miercedes,Sentadilla frontal,3,8-10,90
+5,miercoles,Pullover,3,12-15,60
+5,miercoles,Elevacion lateral,3,12-15,60
+5,miercoles,Abdominales,3,15,60
+5,jueves,Peso muerto convencional,4,8-10,90
+5,jueves,Press banca close,4,8-12,90
+5,jueves,Sentadilla,4,8-12,90
+5,jueves,Dips,3,8-12,60
+5,jueves,Triceps,3,12-15,60
+5,jueves,Abdominales,3,15,60
+5,viernes,Push-ups,3,MAX,60
+5,viernes,Sentadilla jump,3,15,60
+5,viernes,Remo con mancuerna,3,12,60
+5,viernes,Curl martillo,3,12-15,60
+5,viernes,Elevacion de talones,3,15,60
+5,viernes,Plancha,3,60,60

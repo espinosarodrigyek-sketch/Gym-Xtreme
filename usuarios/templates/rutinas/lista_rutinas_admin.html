@@ -1,0 +1,94 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-running" style="margin-right:10px;color:var(--rojo);"></i>Gestión de Rutinas</h2>
+            <a href="/admin-panel/rutinas/crear/" class="btn-gym">
+                <i class="fas fa-plus"></i> Nueva Rutina
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-gym {% if message.tags == 'success' %}success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card-dark">
+        <div class="card-dark-header">
+            <i class="fas fa-list" style="margin-right:8px;"></i>Rutinas Creadas
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Nivel</th>
+                        <th>Duración</th>
+                        <th>Ejercicios</th>
+                        <th>Estado</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rutina in rutinas %}
+                    <tr>
+                        <td>{{ rutina.id }}</td>
+                        <td><strong>{{ rutina.nombre }}</strong></td>
+                        <td>
+                            <span class="badge-{% if rutina.nivel == 'principiante' %}activo{% elif rutina.nivel == 'intermedio' %}reparacion{% else %}venta{% endif %}">
+                                {{ rutina.get_nivel_display }}
+                            </span>
+                        </td>
+                        <td>{{ rutina.duracion_dias }} días</td>
+                        <td>{{ rutina.num_ejercicios }}</td>
+                        <td>
+                            {% if rutina.activa %}
+                            <span class="badge-activo">Activa</span>
+                            {% else %}
+                            <span class="badge-vendido">Inactiva</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rutina.es_predeterminada %}
+                            <span class="badge" style="background:#ffc107;color:#000;">Sistema</span>
+                            {% else %}
+                            <span class="badge" style="background:#6c757d;">Admin</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ rutina.fecha_creacion|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="/admin-panel/rutinas/editar/{{ rutina.id }}/" class="btn-action btn-edit" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/admin-panel/rutinas/eliminar/{{ rutina.id }}/" class="btn-action btn-delete" 
+                               onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar rutina?',text:'¿Eliminar la rutina &quot;{{ rutina.nombre }}&quot;? Esta acción no se puede deshacer.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'Sí, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/admin-panel/rutinas/eliminar/{{ rutina.id }}/'});" 
+                               title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" style="text-align:center;padding:30px;color:#666;">
+                            <i class="fas fa-running" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                            No hay rutinas creadas aún.
+                            <br><br>
+                            <a href="/admin-panel/rutinas/crear/" class="btn-gym">
+                                <i class="fas fa-plus"></i> Crear Primera Rutina
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

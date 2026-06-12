@@ -1,0 +1,490 @@
+{% extends "base.html" %}
+{% load formato_cop %}
+
+{% block content %}
+
+<style>
+    :root {
+        --negro: #0f172a;
+        --negro-claro: #1e293b;
+        --verde-gym: #22c55e;
+        --verde-oscuro: #16a34a;
+        --blanco: #ffffff;
+        --gris: #64748b;
+        --gris-claro: #e2e8f0;
+    }
+
+    body {
+        background: var(--negro);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .planes-carrito-container {
+        max-width: 960px;
+        margin: 0 auto 40px;
+        padding: 30px;
+        background: var(--negro-claro);
+        border-radius: 16px;
+        border: 1px solid #334155;
+    }
+
+    .planes-carrito-titulo {
+        color: var(--blanco);
+        font-size: 2rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .planes-carrito-titulo i {
+        color: var(--verde-gym);
+        margin-right: 10px;
+    }
+
+    /* ALERTA INFORMATIVA */
+    .planes-alerta-dias {
+        background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+        border-left: 4px solid var(--verde-gym);
+        border-radius: 10px;
+        padding: 18px 22px;
+        margin-bottom: 28px;
+        color: #e2e8f0;
+        font-size: 15px;
+        line-height: 1.6;
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .planes-alerta-dias i {
+        color: var(--verde-gym);
+        font-size: 22px;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .planes-alerta-dias strong {
+        color: var(--verde-gym);
+    }
+
+    /* ITEM PLAN */
+    .plan-item {
+        background: #1a2744;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: border-color 0.3s;
+    }
+
+    .plan-item:hover {
+        border-color: var(--verde-gym);
+    }
+
+    .plan-item-nombre {
+        flex: 1;
+        color: var(--blanco);
+        font-size: 1.20rem;
+        font-weight: 700;
+    }
+
+    .plan-item-duracion {
+        color: var(--gris);
+        font-size: 13px;
+        margin-top: 3px;
+    }
+
+    .plan-item-precio-u {
+        color: #94a3b8;
+        font-size: 14px;
+        text-align: right;
+        min-width: 90px;
+    }
+
+    .plan-item-precio-u span {
+        color: var(--verde-gym);
+        font-size: 1.05rem;
+        font-weight: 600;
+        display: block;
+    }
+
+    /* CONTROLES CANTIDAD */
+    .cantidad-control {
+        display: flex;
+        align-items: center;
+        background: #0f172a;
+        border-radius: 50px;
+        padding: 4px 8px;
+        gap: 4px;
+    }
+
+    .btn-cantidad {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: var(--verde-gym);
+        color: white;
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        text-decoration: none;
+    }
+
+    .btn-cantidad:hover {
+        background: var(--verde-oscuro);
+        transform: scale(1.1);
+    }
+
+    .cantidad-valor {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 700;
+        min-width: 36px;
+        text-align: center;
+    }
+
+    /* SUBTOTAL */
+    .plan-item-subtotal {
+        color: var(--verde-gym);
+        font-size: 1.3rem;
+        font-weight: 800;
+        min-width: 110px;
+        text-align: right;
+    }
+
+    /* BOTÓN ELIMINAR */
+    .btn-eliminar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 2px solid var(--verde-gym);
+        background: transparent;
+        color: var(--verde-gym);
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-eliminar:hover {
+        background: var(--verde-gym);
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    /* RESUMEN */
+    .planes-resumen {
+        background: #0f172a;
+        border: 2px solid #334155;
+        border-radius: 14px;
+        padding: 24px 28px;
+        margin-top: 20px;
+    }
+
+    .planes-resumen-titulo {
+        color: var(--blanco);
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .planes-resumen-linea {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #334155;
+        color: #94a3b8;
+        font-size: 15px;
+    }
+
+    .planes-resumen-linea:last-of-type {
+        border-bottom: none;
+    }
+
+    .planes-resumen-linea span:last-child {
+        color: var(--blanco);
+        font-weight: 700;
+    }
+
+    .planes-resumen-total {
+        background: linear-gradient(135deg, var(--verde-gym) 0%, var(--verde-oscuro) 100%);
+        border-radius: 12px;
+        padding: 18px 22px;
+        margin-top: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .planes-resumen-total .label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .planes-resumen-total .valor {
+        color: white;
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    /* BOTONES ACCIÓN */
+    .planes-acciones {
+        display: flex;
+        gap: 14px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+    }
+
+    .btn-planes-pagar {
+        flex: 1;
+        min-width: 200px;
+        background: linear-gradient(135deg, var(--verde-gym) 0%, var(--verde-oscuro) 100%);
+        color: white;
+        border: none;
+        padding: 16px 30px;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-planes-pagar:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-planes-seguir {
+        flex: 1;
+        min-width: 180px;
+        background: transparent;
+        color: var(--gris-claro);
+        border: 2px solid #475569;
+        padding: 14px 28px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .btn-planes-seguir:hover {
+        background: #334155;
+        color: white;
+        border-color: #64748b;
+    }
+
+    /* VACÍO */
+    .planes-vacio {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .planes-vacio i {
+        font-size: 5rem;
+        color: #334155;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .planes-vacio h3 {
+        color: var(--blanco);
+        font-size: 1.6rem;
+        margin-bottom: 12px;
+    }
+
+    .planes-vacio p {
+        color: var(--gris);
+        margin-bottom: 30px;
+        font-size: 15px;
+    }
+
+    .btn-planes-catalogo {
+        display: inline-block;
+        background: var(--verde-gym);
+        color: white;
+        padding: 14px 36px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+    .btn-planes-catalogo:hover {
+        background: var(--verde-oscuro);
+        color: white;
+    }
+
+    /* FILA TOTAL */
+    .planes-total-fila {
+        margin-top: 6px;
+        padding-top: 14px;
+        border-top: 2px solid #334155;
+    }
+
+    .planes-total-fila .planes-resumen-linea {
+        border-bottom: none;
+        padding: 6px 0;
+        font-size: 15px;
+    }
+
+    .planes-total-fila .planes-resumen-linea span:first-child {
+        color: #64748b;
+        font-weight: 400;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .plan-item {
+        animation: fadeInUp 0.4s ease forwards;
+    }
+
+    .plan-item:nth-child(1) { animation-delay: 0.05s; }
+    .plan-item:nth-child(2) { animation-delay: 0.10s; }
+    .plan-item:nth-child(3) { animation-delay: 0.15s; }
+    .plan-item:nth-child(4) { animation-delay: 0.20s; }
+    .plan-item:nth-child(5) { animation-delay: 0.25s; }
+</style>
+
+<div class="planes-carrito-container">
+
+    <h1 class="planes-carrito-titulo">
+        <i class="fas fa-shopping-cart"></i> Carrito de Planes
+    </h1>
+
+    <!-- ALERTA: DÍAS SE SUMAN -->
+    <div class="planes-alerta-dias">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <strong>Importante:</strong> Si compras más de un plan, los días se sumarán automáticamente al vencimiento de tu plan actual. No se pierde ningún día de tu suscripción vigente.
+        </div>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="margin-bottom: 18px; padding: 14px 18px; border-radius: 10px; font-size: 15px;
+                {% if message.tags == 'success' %}background:#15803d20;border-left:4px solid #22c55e;color:#86efac{% endif %}
+                {% if message.tags == 'error'   %}background:#991b1b20;border-left:4px solid #ef4444;color:#fca5a5{% endif %}
+                {% if message.tags == 'warning' %}background:#92400e20;border-left:4px solid #f59e0b;color:#fde68a{% endif %}
+                {% if message.tags == 'info'    %}background:#1e3a8a20;border-left:4px solid #3b82f6;color:#93c5fd{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if carrito %}
+
+    {% for key, item in carrito.items %}
+    <div class="plan-item">
+
+        <div>
+            <div class="plan-item-nombre">{{ item.nombre }}</div>
+            <div class="plan-item-duracion">{{ item.duracion_dias }} días por plan</div>
+        </div>
+
+        <div class="plan-item-precio-u">
+            Precio c/u
+            <span>{{ item.precio|cop }}</span>
+        </div>
+
+        <div class="cantidad-control">
+            <a href="{% url 'planes:restar_plan_carrito' key %}" class="btn-cantidad" title="Disminuir">−</a>
+            <span class="cantidad-valor">{{ item.cantidad }}</span>
+            <a href="{% url 'planes:sumar_plan_carrito' key %}" class="btn-cantidad" title="Aumentar">+</a>
+        </div>
+
+        <div class="plan-item-subtotal">
+            {{ item.subtotal|cop }}
+        </div>
+
+        <a href="{% url 'planes:eliminar_plan_carrito' key %}" class="btn-eliminar" title="Eliminar plan">
+            <i class="fas fa-trash"></i>
+        </a>
+
+    </div>
+    {% endfor %}
+
+    <!-- RESUMEN -->
+    <div class="planes-resumen">
+        <div class="planes-resumen-titulo">
+            <i class="fas fa-receipt"></i> Resumen
+        </div>
+
+        <div class="planes-resumen-linea">
+            <span>Planes en el carrito</span>
+            <span>{{ carrito|length }} tipo(s) de plan</span>
+        </div>
+
+        <div class="planes-resumen-linea">
+            <span>Total de días incluidos</span>
+            <span style="color:#22c55e;font-weight:700;">{{ total_dias }} días</span>
+        </div>
+
+        <div class="planes-resumen-linea">
+            <span>Subtotal</span>
+            <span>{{ total|cop }}</span>
+        </div>
+
+        <div class="planes-resumen-linea">
+            <span>Envío / Gestión</span>
+            <span style="color:#22c55e;">Incluido</span>
+        </div>
+
+        <div class="planes-total-fila">
+            <div class="planes-resumen-linea" style="border-bottom:none;padding-bottom:0;">
+                <span style="font-size:1rem;font-weight:700;color:#e2e8f0;">Total a pagar</span>
+                <span style="font-size:1.4rem;color:#22c55e;">{{ total|cop }}</span>
+            </div>
+        </div>
+
+        <div class="planes-acciones">
+            <a href="{% url 'planes:pasarela_pago_planes' %}" class="btn-planes-pagar">
+                <i class="fas fa-credit-card"></i> Ir a Pagar
+            </a>
+            <a href="{% url 'planes:ver_planes' %}" class="btn-planes-seguir">
+                <i class="fas fa-arrow-left"></i> Seguir comprando
+            </a>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- CARRITO VACÍO -->
+    <div class="planes-vacio">
+        <i class="fas fa-shopping-basket"></i>
+        <h3>Tu carrito de planes está vacío</h3>
+        <p>Explora nuestros planes y agrega los que más te convengan.</p>
+        <a href="{% url 'planes:ver_planes' %}" class="btn-planes-catalogo">
+            <i class="fas fa-tags"></i> Ver planes
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

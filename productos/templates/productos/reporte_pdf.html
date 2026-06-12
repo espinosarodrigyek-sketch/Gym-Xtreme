@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+{% load formato_cop %}
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #111;
+            font-size: 16px;
+        }
+        
+        h2 {
+            text-align: left;
+            color: #2c3e50;
+            font-size: 14px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        
+        .info {
+            text-align: right;
+            font-size: 9px;
+            margin-bottom: 15px;
+            color: #666;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 11px;
+            border: 1px solid #ddd;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            font-size: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .lote-info {
+            background-color: #f8f9fa;
+            font-size: 9px;
+        }
+        
+        .lote-header {
+            background-color: #ecf0f1;
+            font-weight: bold;
+        }
+        
+        .activo {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .inactivo {
+            color: gray;
+        }
+        
+        .vencido {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .disponible {
+            color: blue;
+            font-weight: bold;
+        }
+        
+        .agotado {
+            color: orange;
+            font-weight: bold;
+        }
+        
+        .no-lotes {
+            text-align: center;
+            font-style: italic;
+            color: #999;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📊 Reporte de Productos con Lotes</h1>
+
+<div class="info">
+    Fecha: {{ now|date:"d/m/Y H:i" }}
+</div>
+
+{% if productos %}
+    {% for producto in productos %}
+        <h2>Producto: {{ producto.nombre }}</h2>
+        
+        {% if producto.categoria %}
+            <p><strong>Categoría:</strong> {{ producto.categoria.nombre }}</p>
+        {% endif %}
+        
+        {% if producto.descripcion %}
+            <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+        {% endif %}
+        
+        <p><strong>Precio Costo:</strong> {{ producto.precio_costo|cop }}</p>
+        <p><strong>Precio Venta:</strong> {{ producto.precio_venta|cop }}</p>
+        <p><strong>Stock Actual:</strong> {{ producto.stock_actual }} uds</p>
+        <p><strong>Estado:</strong> 
+            {% if producto.estado == "activo" %}
+                <span class="activo">Activo</span>
+            {% else %}
+                <span class="inactivo">Inactivo</span>
+            {% endif %}
+        </p>
+        
+        {% if producto.lotes.all %}
+            <h3>Lotes Asociados:</h3>
+            <table>
+                <tr>
+                    <th>Lote</th>
+                    <th>Fecha Compra</th>
+                    <th>Fecha Vencimiento</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                </tr>
+                {% for lote in producto.lotes.all|dictsort:"fecha_vencimiento" %}
+                <tr>
+                    <td>{{ lote.numero_lote }}</td>
+                    <td>
+                        {% if lote.fecha_compra %}
+                            {{ lote.fecha_compra|date:"d/m/Y" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ lote.fecha_vencimiento|date:"d/m/Y" }}</td>
+                    <td>{{ lote.cantidad }} uds</td>
+                    <td>
+                        {% if lote.estado == "vencido" %}
+                            <span class="vencido">VENCIDO</span>
+                        {% elif lote.estado == "disponible" %}
+                            <span class="disponible">Disponible</span>
+                        {% elif lote.estado == "agotado" %}
+                            <span class="agotado">Agotado</span>
+                        {% else %}
+                            {{ lote.estado|title }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p class="no-lotes">No hay lotes registrados para este producto.</p>
+        {% endif %}
+        
+        <br>
+    {% endfor %}
+{% else %}
+    <p class="no-lotes">No hay productos registrados en el sistema.</p>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Mensajes de Django -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+        {% if message.tags == 'success' %}
+        <i class="fas fa-check-circle me-2"></i>
+        {% elif message.tags == 'error' %}
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">TRANSFORMA TU <span>CUERPO</span></h1>
+        <p class="hero-subtitle">El único límite eres tú mismo. Únete a Gym Xtreme y alcanza tu mejor versión.</p>
+        <div class="frase-box">
+            <i class="fas fa-quote-left"></i>
+            <span>{{ frase_motivacional.frase }}</span>
+            <cite>— {{ frase_motivacional.autor }}</cite>
+        </div>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'registro' %}" class="btn-hero">
+            <i class="fas fa-user-plus"></i> Únete Ahora
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<!-- Dashboard Usuario -->
+<div class="dashboard">
+    <h2 class="section-title">
+        <i class="fas fa-user-circle"></i> Hola, {{ user.first_name|default:user.username }}
+        <span class="badge">{% if suscripcion_activa %}Activo{% else %}Sin Membresía{% endif %}</span>
+    </h2>
+    
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-weight"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Peso</span>
+                <span class="stat-value">{% if perfil %}{{ perfil.peso|default:"--" }} kg{% else %}--{% endif %}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-ruler-vertical"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Estatura</span>
+                <span class="stat-value">{% if perfil %}{% if perfil.estatura %}{{ perfil.estatura|floatformat:2 }} m{% else %}--{% endif %}{% else %}--{% endif %}</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-heartbeat"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">IMC</span>
+                <span class="stat-value">{% if imc %}{{ imc|floatformat:1 }}{% else %}--{% endif %}</span>
+                <span class="stat-badge {% if clasificacion_imc == 'normal' %}success{% elif clasificacion_imc == 'sobrepeso' %}warning{% elif clasificacion_imc == 'obesidad' %}danger{% else %}secondary{% endif %}">
+                    {% if clasificacion_imc == 'bajo_peso' %}Bajo
+                    {% elif clasificacion_imc == 'normal' %}Normal
+                    {% elif clasificacion_imc == 'sobrepeso' %}Sobrepeso
+                    {% elif clasificacion_imc == 'obesidad' %}Obesidad{% else %}--{% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Objetivo</span>
+                <span class="stat-value">
+                    {% if objetivo_usuario == 'bajar_peso' %}🔥 Bajar
+                    {% elif objetivo_usuario == 'subir_masa' %}💪 Subir
+                    {% elif objetivo_usuario == 'mantener' %}⚖️ Mantener
+                    {% elif objetivo_usuario == 'definir' %}✨ Definir{% else %}--{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Membresía -->
+    <div class="membership-card">
+        {% if suscripcion_activa %}
+        <div class="membership-header">
+            <i class="fas fa-check-circle"></i>
+            <h3>Membresía Activa</h3>
+        </div>
+        <div class="membership-details">
+            <div class="detail"><span class="label">Plan</span><span class="value">{{ suscripcion_activa.plan.nombre }}</span></div>
+            <div class="detail"><span class="label">Objetivo</span><span class="value">{{ suscripcion_activa.objetivo_rutina|title }}</span></div>
+            <div class="detail"><span class="label">Vence</span><span class="value">{{ suscripcion_activa.fecha_fin|date:"d/m/Y" }}</span></div>
+            <div class="detail"><span class="label">Días</span><span class="value text-danger">{{ dias_restantes }} días</span></div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width: {% widthratio dias_restantes suscripcion_activa.plan.duracion_dias 100 %}%"></div></div>
+        {% else %}
+        <div class="membership-header">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>¡Sin Membresía!</h3>
+        </div>
+        <p>Adquiere un plan y comienza a transformar tu cuerpo.</p>
+        <a href="{% url 'planes:ver_planes' %}" class="btn-action">Ver Planes</a>
+        {% endif %}
+    </div>
+    
+    <!-- Acciones -->
+    <div class="quick-actions">
+        <a href="{% url 'perfil' %}" class="action-btn"><i class="fas fa-user-edit"></i> Mi Perfil</a>
+        <a href="{% url 'ver_rutinas' %}" class="action-btn"><i class="fas fa-dumbbell"></i> Ver Rutinas</a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Features -->
+<div class="features">
+    <h2 class="section-title"><i class="fas fa-star"></i> ¿Por qué Gym Xtreme?</h2>
+    <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-dumbbell"></i></div><h3>Equipamiento</h3><p>Equipos de última generación</p></div>
+        <div class="feature-card"><div class="feature-icon"><i class="fas fa-clock"></i></div><h3>Horario</h3><p>Lun-Vie: 5am-10pm<br>Sáb-Dom: 10am-4pm</p></div>
+    </div>
+</div>
+
+<style>
+:root { --primary: #3b82f6; --primary-hover: #2563eb; --success: #22c55e; --warning: #f59e0b; --danger: #ef4444; }
+.hero { position: relative; min-height: 400px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a, #1e293b); padding: 50px 20px; text-align: center; }
+.hero-title { font-size: 2.5rem; font-weight: 900; color: white; letter-spacing: 2px; margin-bottom: 10px; }
+.hero-subtitle { color: #ccc; font-size: 1.1rem; margin-bottom: 25px; }
+.frase-box { background: rgba(59, 130, 246, 0.2); border: 2px solid var(--primary); border-radius: 12px; padding: 20px 30px; margin: 0 auto 25px; max-width: 600px; }
+.frase-box i { color: var(--primary); font-size: 1.5rem; }
+.frase-box span { display: block; color: white; font-size: 1.1rem; font-style: italic; line-height: 1.5; margin: 10px 0; }
+.frase-box cite { color: var(--primary); font-weight: bold; }
+.btn-hero { background: var(--primary); color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; }
+
+/* Dashboard */
+.dashboard { padding: 40px 20px; max-width: 1000px; margin: 0 auto; }
+.section-title { text-align: center; font-size: 1.6rem; font-weight: 700; color: #ffffff; margin-bottom: 25px; }
+.section-title i { color: var(--primary); margin-right: 8px; }
+.badge { background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-left: 10px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+.stat-card { background: #2d2d2d; border-radius: 12px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 3px 15px rgba(0,0,0,0.3); border-left: 4px solid var(--primary); }
+.stat-icon { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.stat-icon i { color: white; font-size: 1.2rem; }
+.stat-info { display: flex; flex-direction: column; }
+.stat-label { color: #aaa; font-size: 0.85rem; }
+.stat-value { color: #ffffff; font-size: 1.3rem; font-weight: 700; }
+.stat-badge { display: inline-block; padding: 2px 8px; border-radius: 15px; font-size: 0.7rem; font-weight: 600; width: fit-content; margin-top: 4px; }
+.stat-badge.success { background: #d4edda; color: #155724; }
+.stat-badge.warning { background: #fff3cd; color: #856404; }
+.stat-badge.danger { background: #f8d7da; color: #721c24; }
+.stat-badge.secondary { background: #e2e3e5; color: #383d41; }
+
+/* Membership */
+.membership-card { background: #2d2d2d; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); margin-bottom: 25px; }
+.membership-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.membership-header i { font-size: 1.8rem; color: var(--primary); }
+.membership-header h3 { margin: 0; color: #ffffff; }
+.membership-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 15px; }
+.detail { background: #3d3d3d; padding: 12px; border-radius: 8px; }
+.detail .label { display: block; color: #aaa; font-size: 0.8rem; }
+.detail .value { display: block; color: #ffffff; font-weight: 700; font-size: 1rem; }
+.progress-bar { height: 6px; background: #555; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #A71D2A); border-radius: 3px; }
+.membership-card p { color: #ccc; margin-bottom: 15px; }
+.btn-action { background: var(--primary); color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; }
+
+/* Features */
+.features { background: #f8f9fa; padding: 40px 20px; border-radius: 15px; }
+.features .section-title { margin-bottom: 30px; color: #1a1a1a; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+.feature-card { background: white; border: 2px solid #dee2e6; border-radius: 12px; padding: 25px; text-align: center; transition: all 0.3s; }
+.feature-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+.feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; }
+.feature-icon i { font-size: 1.5rem; color: white; }
+.feature-card h3 { color: #1a1a1a; font-size: 1.1rem; margin-bottom: 8px; }
+.feature-card p { color: #666; font-size: 0.9rem; margin: 0; }
+
+/* Quick Actions */
+.quick-actions { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+.action-btn { background: #2d2d2d; border: 2px solid var(--primary); color: #ffffff; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s; }
+.action-btn:hover { background: var(--primary); color: white; }
+
+@media (max-width: 768px) {
+    .hero-title { font-size: 1.8rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .quick-actions { flex-direction: column; }
+    .action-btn { justify-content: center; }
+}
+</style>
+
+{% endblock %}

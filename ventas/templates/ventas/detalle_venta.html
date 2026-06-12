@@ -1,0 +1,40 @@
+{% load formato_cop %}
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+<div style="max-width:700px;margin:0 auto;">
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-eye" style="margin-right:8px;"></i>Detalle de Venta #{{ venta.id_venta }}</div>
+        <div class="card-dark-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;">
+                <div>
+                    <p style="color:#888;margin:5px 0;"><strong>Usuario:</strong> {{ venta.usuario.username }}</p>
+                    <p style="color:#888;margin:5px 0;"><strong>Fecha:</strong> {{ venta.fecha|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div style="text-align:right;">
+                    <p style="color:var(--rojo);font-size:1.5rem;font-weight:800;margin:0;">{{ venta.total|cop }}</p>
+                    <p style="color:#666;margin:5px 0;">Total</p>
+                </div>
+            </div>
+
+            <table class="table-dark-custom">
+                <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead>
+                <tbody>
+                    {% for d in detalles %}
+                    <tr>
+                        <td>{{ d.producto.nombre }}</td>
+                        <td>{{ d.cantidad }}</td>
+                        <td>{{ d.precio_unitario|cop }}</td>
+                        <td style="color:var(--rojo);font-weight:700;">{{ d.subtotal|cop }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" style="text-align:center;color:#666;">No hay productos.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a href="/ventas/" style="display:block;text-align:center;color:#666;margin-top:20px;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Volver</a>
+        </div>
+    </div>
+</div>
+</div>

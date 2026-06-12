@@ -1,0 +1,156 @@
+{% include 'partials/admin_base.html' %}
+{% load formato_cop %}
+
+<div class="main-content">
+    <div style="max-width:600px;margin:0 auto;">
+        <div class="card-dark">
+            <div class="card-dark-header" style="text-align:center;">
+                <i class="fas fa-plus-circle" style="font-size:1.5rem;margin-bottom:5px;display:block;"></i>Nuevo Producto
+            </div>
+            <div class="card-dark-body">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre" class="form-input" placeholder="Nombre del producto" required>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="descripcion" class="form-input" rows="3" placeholder="Descripción del producto"></textarea>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;">
+                        <div style="margin-bottom:18px;">
+                            <label class="form-label">Categoría</label>
+                            <div style="display:flex;gap:5px;align-items:flex-start;">
+                                <div style="flex:1;">
+                                    <select name="categoria" class="form-input">
+                                        <option value="">Seleccione una categoría</option>
+                                        {% for cat in categorias %}
+                                        <option value="{{ cat.id }}">{{ cat.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small style="color:#666;font-size:0.7rem;">Seleccione una categoría existente</small>
+                                </div>
+                                <button type="button" class="btn-gym" style="padding:10px 15px;margin-top:24px;" onclick="abrirModalCategoria()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:18px;">
+                            <label class="form-label">Precio Costo (COP)</label>
+                            <input type="number" name="precio_costo" class="form-input" step="100" placeholder="Precio de compra" required>
+                            <small style="color:#666;font-size:0.7rem;">Lo que pagas al proveedor</small>
+                        </div>
+                        <div style="margin-bottom:18px;">
+                            <label class="form-label">Precio Venta (COP)</label>
+                            <input type="number" name="precio_venta" class="form-input" step="100" placeholder="Precio de venta" required>
+                            <small style="color:#666;font-size:0.7rem;">Precio para el cliente</small>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Stock Inicial</label>
+                        <input type="number" name="stock_inicial" class="form-input" value="0" min="0" required>
+                        <small style="color:#666;font-size:0.7rem;">Cantidad inicial en inventario</small>
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Imagen del producto</label>
+                        <input type="file" name="imagen" class="form-input" accept="image/*">
+                    </div>
+                    <div style="margin-bottom:18px;">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-input">
+                            <option value="activo" selected>Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-gym" style="width:100%;justify-content:center;padding:14px;"><i class="fas fa-save"></i> Guardar Producto</button>
+                    <a href="/productos/" style="display:block;text-align:center;color:#666;margin-top:12px;text-decoration:none;padding:12px;border:1px solid #333;border-radius:8px;">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para crear nueva categoría -->
+<div class="modal" id="modalCategoria" tabindex="-1" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.7);">
+    <div style="background-color:#1e1e1e;margin:10% auto;padding:25px;border:1px solid #444;border-radius:12px;max-width:400px;position:relative;">
+        <span onclick="cerrarModalCategoria()" style="color:#aaa;float:right;font-size:28px;font-weight:bold;cursor:pointer;">&times;</span>
+        <h3 style="color:#fff;margin-bottom:20px;"><i class="fas fa-tags"></i> Nueva Categoría</h3>
+        <div style="margin-bottom:18px;">
+            <label class="form-label" style="color:#ccc;">Nombre de la categoría</label>
+            <input type="text" id="nombreCategoria" class="form-input" placeholder="Ej: Suplementos" required>
+        </div>
+        <div id="errorCategoria" style="color:#ff6b6b;margin-bottom:15px;display:none;"></div>
+        <button type="button" onclick="crearCategoria()" class="btn-gym" style="width:100%;justify-content:center;">
+            <i class="fas fa-save"></i> Guardar Categoría
+        </button>
+    </div>
+</div>
+
+<script>
+function abrirModalCategoria() {
+    document.getElementById('modalCategoria').style.display = 'block';
+    document.getElementById('nombreCategoria').value = '';
+    document.getElementById('errorCategoria').style.display = 'none';
+    document.getElementById('nombreCategoria').focus();
+}
+
+function cerrarModalCategoria() {
+    document.getElementById('modalCategoria').style.display = 'none';
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function crearCategoria() {
+    var nombre = document.getElementById('nombreCategoria').value.trim();
+    var errorDiv = document.getElementById('errorCategoria');
+    var csrfToken = getCookie('csrftoken');
+    
+    if (!nombre) {
+        errorDiv.textContent = 'Por favor ingresa un nombre para la categoría';
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    fetch('/productos/crear_categoria/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({ nombre: nombre })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            errorDiv.textContent = data.error || 'Error al crear categoría';
+            errorDiv.style.display = 'block';
+        }
+    })
+    .catch(error => {
+        location.reload();
+    });
+}
+
+window.onclick = function(event) {
+    var modal = document.getElementById('modalCategoria');
+    if (event.target == modal) {
+        cerrarModalCategoria();
+    }
+}
+</script>

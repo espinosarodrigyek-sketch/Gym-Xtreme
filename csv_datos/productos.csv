@@ -1,0 +1,33 @@
+nombre,descripcion,categoria,precio_costo,precio_venta,stock_actual,estado,imagen
+"Proteína Whey Gold","Proteína de suero Gold 5lbs sabor vainilla - 100% whey isolate",Suplementos,85000,145000,50,activo,whey_gold_standard.jpg
+"Creatina Monohidratada","Creatina 300g monohidratada saborizada - 5g por dosis",Suplementos,35000,65000,120,activo,creatina-healthy-sports-100-dosis_Uac1ZVD.jpg
+"Pre-Workout Explosive","Pre entrenamiento 300g - Cafeína + Beta Alanine + Citrulina",Suplementos,42000,78000,80,activo,preentreno1.jpg
+"BCAA Energy","Aminoácidos ramificados - Ratio 2:1:1 - 120 caps",Suplementos,28000,52000,95,activo,Energy.jpg
+"Caseína Night","Caseína lenta 2lbs - 24g proteína por porción",Suplementos,75000,125000,30,activo,L-Carnitine.jpg
+"L-Carnitine","L-Carnitina 120 caps - 500mg por cápsula",Suplementos,32000,58000,60,activo,L-Carnitine.jpg
+"Glutamina","Glutamina 300g - Recuperación muscular",Suplementos,38000,70000,70,activo,glutamina.jpg
+"Omega 3 Fish Oil","Omega 3 120 caps - 1000mg EPA/DHA",Vitaminas,25000,48000,150,activo,omega3.jpg
+"Vitamina D3","Vitamina D3 10000UI - 365 cápsulas",Vitaminas,18000,35000,200,activo,Vitaminad3.jpg
+"Vitamina B Complex","Complejo B 90 caps - Energía y metabolismo",Vitaminas,22000,42000,130,activo,Vitamina B Complex.jpg
+"Proteína Smart Proscience Vainilla 6lbs","Proteína en polvo Proscience 6lbs sabor vainilla - Alta calidad para ganancia muscular - 24g proteína por porción",Proteinas,95000,165000,10,activo,smart.jpg
+"Whey Gold Standard 5lbs","Proteína de suero de leche 100% pura - Ideal para post-entreno y definición muscular - 24g proteína por porción",Proteinas,110000,185000,15,activo,whey_gold_standard.jpg
+"CREATINA IRON 300g","Creatina monohidrato de grado farmacéutico - Aumenta fuerza y volumen muscular - 5g por porción",Creatinas,65000,110000,20,activo,CREATINA IRON.jpg
+"PSYCHOTIC Pre-entreno","Pre-entreno de alta intensidad - Energía extrema y pumps intensos - 300g",Suplementos,75000,135000,12,activo,preentreno1.jpg
+"Te Verde Natural","Té verde 100% natural - Antioxidantes y metabolismo",Suplementos,15000,28000,30,activo,teverde.jpg
+"Guantes de Gimnasio","Guantes protectores para levantamiento de pesas - Agarre seguro",Accesorios,25000,45000,25,activo,guantes1.jpg
+"Guantes de Gimnasio Pro","Guantes profesionales para levantamiento - Palmas acolchonadas",Accesorios,35000,60000,25,activo,guantes2.jpg
+"Straps de Levantamiento","Correas para levantamiento de pesas - Soporte de muñecas",Accesorios,18000,32000,25,activo,straps1.jpg
+"Straps de Levantamiento Pro","Correas profesionales para levantamiento - Material resistente",Accesorios,25000,45000,25,activo,straps2.jpg
+"Proteína ISO Clean 5lbs","Proteína aislada ultra pura - Baja en grasa y carbohidratos",Proteinas,105000,175000,20,activo,iso_clean.jpg
+"Mass Gainer 10lbs","Suplemento para aumento de masa muscular - Alto en calorías",Proteinas,120000,195000,15,activo,mass_gainer.jpg
+"Multivitamínico Daily Pack","Complejo multivitamínico completo - Refuerzo diario",Vitaminas,20000,40000,100,activo,multivitaminico.jpg
+"ZMA Recovery","ZMA con zinc, magnesio y vitamina B6 - Mejora descanso",Vitaminas,18000,35000,80,activo,zma.jpg
+"Shaker 700ml","Shaker mezclador con rejilla - Ideal para proteínas",Accesorios,8000,18000,200,activo,shaker.jpg
+"Cinturón de Levantamiento","Cinturón de cuero para soporte lumbar en ejercicios pesados",Accesorios,45000,80000,30,activo,cinturon.jpg
+"Rodillera Deportiva","Rodillera elástica para soporte en entrenamientos intensos",Accesorios,15000,30000,60,activo,rodillera.jpg
+"Cuerda para Saltar","Cuerda de velocidad para cardio - Ajustable y ligera",Accesorios,7000,15000,120,activo,cuerda.jpg
+"Termogénico Fat Burner","Suplemento quemador de grasa - Aumenta metabolismo y energía",Suplementos,40000,75000,50,activo,fat_burner.jpg
+"Colágeno Hidrolizado","Colágeno para articulaciones y piel - 300g en polvo",Suplementos,30000,55000,70,activo,colageno.jpg
+"Banda Elástica Set","Set de bandas elásticas con diferentes resistencias",Accesorios,12000,25000,150,activo,banda.jpg
+"Pelota de Yoga","Pelota de yoga anti-deslizante - 65cm",Accesorios,18000,35000,80,activo,pelota.jpg
+"Balón Medicinal 4kg","Balón medicinal para entrenamiento funcional",Accesorios,35000,65000,40,activo,balon.jpg

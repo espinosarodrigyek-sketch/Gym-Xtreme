@@ -1,0 +1,89 @@
+{% include 'partials/admin_base.html' %}
+
+<style>
+.modal-custom { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;justify-content:center;align-items:center;z-index:9999; }
+.modal-content-custom { background:#1a1a1a;border:2px solid var(--rojo);border-radius:15px;width:90%;max-width:500px;overflow:hidden; }
+.modal-header-custom { padding:15px 20px;background:linear-gradient(135deg,var(--rojo),#8e0000);display:flex;justify-content:space-between;align-items:center; }
+.close-modal { color:#fff;font-size:2rem;cursor:pointer; }
+.close-modal:hover { color:#ff4444; }
+.modal-body-custom { padding:20px; }
+.modal-footer-custom { padding:15px 20px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #333; }
+</style>
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-truck" style="margin-right:10px;color:var(--rojo);"></i>Proveedores</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="/proveedores/crear/" class="btn-gym"><i class="fas fa-plus"></i> Nuevo</a>
+                <a href="/proveedores/reporte/pdf/?{% if request.GET.nombre %}nombre={{ request.GET.nombre }}&{% endif %}{% if request.GET.ciudad %}ciudad={{ request.GET.ciudad }}&{% endif %}{% if request.GET.estado %}estado={{ request.GET.estado }}{% endif %}" class="btn-gym" style="background:#0d6efd;"><i class="fas fa-file-pdf"></i> PDF</a>
+                <a href="/proveedores/reporte/excel/?{% if request.GET.nombre %}nombre={{ request.GET.nombre }}&{% endif %}{% if request.GET.ciudad %}ciudad={{ request.GET.ciudad }}&{% endif %}{% if request.GET.estado %}estado={{ request.GET.estado }}{% endif %}" class="btn-gym" style="background:#198754;"><i class="fas fa-file-excel"></i> Excel</a>
+                <button type="button" class="btn-gym" style="background:#ff4444;border:none;" onclick="document.getElementById('modal-limpiar').style.display='flex'">
+                    <i class="fas fa-trash"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIMPIAR -->
+    <div id="modal-limpiar" class="modal-custom">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <h3 style="color:#fff;margin:0;"><i class="fas fa-exclamation-triangle"></i> Confirmar Limpieza</h3>
+                <span class="close-modal" onclick="document.getElementById('modal-limpiar').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body-custom" style="text-align:center;padding:20px;">
+                <i class="fas fa-trash" style="font-size:4rem;color:#ff4444;margin-bottom:20px;"></i>
+                <h4 style="color:#fff;">¿Eliminar TODOS los proveedores?</h4>
+                <p style="color:#888;">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-gym" style="background:#333;" onclick="document.getElementById('modal-limpiar').style.display='none'">Cancelar</button>
+                <form method="post" action="/proveedores/limpiar/" style="display:inline;">{% csrf_token %}<button type="submit" class="btn-gym" style="background:#ff4444;border:none;">Confirmar</button></form>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}{% for message in messages %}<div class="alert-gym">{{ message }}</div>{% endfor %}{% endif %}
+
+    <div class="filter-bar">
+        <form method="GET" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;">
+            <input type="number" name="id_proveedor" class="form-input" placeholder="ID">
+            <input type="text" name="nombre" class="form-input" placeholder="Nombre">
+            <input type="text" name="ciudad" class="form-input" placeholder="Ciudad">
+            <select name="estado" class="form-input">
+                <option value="">Estado</option>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select>
+            <button class="btn-gym"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Proveedores Registrados</div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead><tr><th>ID</th><th>Nombre</th><th>Ciudad</th><th>Telefono</th><th>Email</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody>
+                    {% for proveedor in proveedores %}
+                    <tr>
+                        <td>{{ proveedor.id_proveedor }}</td>
+                        <td><strong>{{ proveedor.nombre }}</strong></td>
+                        <td>{{ proveedor.ciudad|default:"-" }}</td>
+                        <td>{{ proveedor.telefono|default:"-" }}</td>
+                        <td>{{ proveedor.email|default:"-" }}</td>
+                        <td>{% if proveedor.estado == 'activo' %}<span class="badge-activo">Activo</span>{% else %}<span class="badge-vendido">Inactivo</span>{% endif %}</td>
+                        <td>
+                            <a href="/proveedores/editar/{{ proveedor.id_proveedor }}/" class="btn-action btn-edit"><i class="fas fa-edit"></i></a>
+                            <a href="/proveedores/eliminar/{{ proveedor.id_proveedor }}/" class="btn-action btn-delete" onclick="event.preventDefault(); Swal.fire({title:'¿Eliminar?',text:'¿Seg油o que deseas eliminar este proveedor?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',cancelButtonColor:'#6c757d',confirmButtonText:'S铆, eliminar',cancelButtonText:'Cancelar'}).then(r=>{if(r.isConfirmed)window.location.href='/proveedores/eliminar/{{ proveedor.id_proveedor }}/'});"><i class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" style="text-align:center;padding:30px;color:#666;">No hay proveedores.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

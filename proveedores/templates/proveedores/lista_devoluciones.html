@@ -1,0 +1,112 @@
+{% include 'partials/admin_base.html' %}
+
+<div class="main-content">
+    <div class="page-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2><i class="fas fa-undo-alt" style="margin-right:10px;color:var(--rojo);"></i>Devoluciones</h2>
+            <div style="display:flex;gap:10px;">
+                <a href="/proveedores/devoluciones/crear/" class="btn-gym">
+                    <i class="fas fa-plus"></i> Nueva Devolución
+                </a>
+                <a href="/proveedores/devoluciones/reporte/pdf/" class="btn-gym" style="background:#0d6efd;">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </a>
+                <a href="/proveedores/devoluciones/reporte/excel/" class="btn-gym" style="background:#198754;">
+                    <i class="fas fa-file-excel"></i> Excel
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert-gym {% if message.tags == 'success' %}success{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="filter-bar">
+        <form method="GET" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
+            <select name="proveedor" class="form-input">
+                <option value="">Todos los proveedores</option>
+                {% for p in proveedores %}
+                <option value="{{ p.id_proveedor }}">{{ p.nombre }}</option>
+                {% endfor %}
+            </select>
+            <select name="estado" class="form-input">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="aprobada">Aprobada</option>
+                <option value="rechazada">Rechazada</option>
+                <option value="completada">Completada</option>
+            </select>
+            <button class="btn-gym"><i class="fas fa-search"></i> Filtrar</button>
+        </form>
+    </div>
+
+    <div class="card-dark">
+        <div class="card-dark-header"><i class="fas fa-list" style="margin-right:8px;"></i>Registro de Devoluciones</div>
+        <div style="overflow-x:auto;">
+            <table class="table-dark-custom">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Proveedor</th>
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for devolucion in devoluciones %}
+                    <tr>
+                        <td>#{{ devolucion.id }}</td>
+                        <td>{{ devolucion.fecha_devolucion|date:"d/m/Y" }}</td>
+                        <td><strong>{{ devolucion.producto_nombre }}</strong></td>
+                        <td>{{ devolucion.cantidad }}</td>
+                        <td>{{ devolucion.proveedor.nombre }}</td>
+                        <td>
+                            {% if devolucion.motivo == 'dañado' %}
+                            <span class="badge-reparacion">Dañado</span>
+                            {% elif devolucion.motivo == 'vencido' %}
+                            <span class="badge-venta">Vencido</span>
+                            {% elif devolucion.motivo == 'error' %}
+                            <span class="badge-activo">Error</span>
+                            {% else %}
+                            <span class="badge-vendido">Otro</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if devolucion.estado == 'pendiente' %}
+                            <span style="color:#ffc107;">● Pendiente</span>
+                            {% elif devolucion.estado == 'aprobada' %}
+                            <span style="color:#198754;">● Aprobada</span>
+                            {% elif devolucion.estado == 'rechazada' %}
+                            <span style="color:#dc3545;">● Rechazada</span>
+                            {% else %}
+                            <span style="color:#6c757d;">● Completada</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/proveedores/devoluciones/{{ devolucion.id }}/" class="btn-action btn-edit">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align:center;padding:30px;color:#666;">
+                            <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:10px;display:block;"></i>
+                            No hay devoluciones registradas
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

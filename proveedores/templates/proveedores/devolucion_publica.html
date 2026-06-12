@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devolución #{{ devolucion.id }} - Gym Xtreme</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --rojo: #DC3545; --rojo-dark: #A71D2A; --negro: #111111; --negro-light: #1a1a1a; }
+        body { background: var(--negro); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .card { background: var(--negro-light); border: 1px solid #333; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        .header { background: linear-gradient(135deg, var(--rojo), var(--rojo-dark)); border-radius: 15px; padding: 30px; text-align: center; margin-bottom: 20px; }
+        h1 { margin: 0; font-weight: 700; }
+        .label { color: #888; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+        .value { color: #fff; font-size: 1.1rem; margin-bottom: 15px; }
+        .btn { display: inline-block; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600; margin: 5px; transition: all 0.2s; }
+        .btn-aprobar { background: #198754; color: white; }
+        .btn-aprobar:hover { background: #157347; transform: scale(1.05); }
+        .btn-rechazar { background: var(--rojo); color: white; }
+        .btn-rechazar:hover { background: var(--rojo-dark); transform: scale(1.05); }
+        .btn-volver { background: #6c757d; color: white; }
+        .badge { padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; }
+        .badge-pendiente { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .badge-aprobada { background: rgba(25, 135, 84, 0.2); color: #198754; }
+        .badge-rechazada { background: rgba(220, 53, 69, 0.2); color: var(--rojo); }
+        .badge-completada { background: rgba(108, 117, 125, 0.2); color: #6c757d; }
+        .section-title { color: var(--rojo); font-size: 1.2rem; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .product-img { max-width: 200px; border-radius: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-undo-alt"></i> Devolución #{{ devolucion.id }}</h1>
+            <p style="margin: 10px 0 0; opacity: 0.9;">Gym Xtreme</p>
+        </div>
+
+        <div class="card">
+            <div class="section-title"><i class="fas fa-box"></i> Producto</div>
+            <span class="label">Nombre</span>
+            <p class="value">{{ devolucion.producto_nombre }}</p>
+            
+            <span class="label">Cantidad</span>
+            <p class="value">{{ devolucion.cantidad }} unidad(es)</p>
+            
+            <span class="label">Motivo</span>
+            <p class="value">
+                {% if devolucion.motivo == 'dañado' %}Producto Dañado
+                {% elif devolucion.motivo == 'vencido' %}Producto Vencido
+                {% elif devolucion.motivo == 'error' %}Error en el Pedido
+                {% else %}Otro Motivo{% endif %}
+            </p>
+            
+            <span class="label">Descripción</span>
+            <p class="value">{{ devolucion.descripcion }}</p>
+            
+            {% if devolucion.imagen %}
+            <span class="label">Imagen</span>
+            <img src="{{ devolucion.imagen.url }}" alt="Producto" class="product-img">
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="section-title"><i class="fas fa-truck"></i> Proveedor</div>
+            <span class="label">Nombre</span>
+            <p class="value">{{ devolucion.proveedor.nombre }}</p>
+            
+            <span class="label">Email</span>
+            <p class="value">{{ devolucion.proveedor.email }}</p>
+        </div>
+
+        <div class="card">
+            <div class="section-title"><i class="fas fa-info-circle"></i> Estado</div>
+            <p class="value">
+                <span class="badge badge-{{ devolucion.estado }}">
+                    {{ devolucion.get_estado_display }}
+                </span>
+            </p>
+            <span class="label">Fecha de Solicitud</span>
+            <p class="value">{{ devolucion.fecha_devolucion|date:"d/m/Y H:i" }}</p>
+            {% if devolucion.fecha_respuesta %}
+            <span class="label">Fecha de Respuesta</span>
+            <p class="value">{{ devolucion.fecha_respuesta|date:"d/m/Y H:i" }}</p>
+            {% endif %}
+        </div>
+
+        {% if devolucion.estado == 'pendiente' %}
+        <div class="card" style="text-align: center;">
+            <div class="section-title" style="text-align: center;"><i class="fas fa-reply"></i> Responder</div>
+            <p style="color: #ccc; margin-bottom: 20px;">¿Acepta o rechaza esta devolución?</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <a href="/proveedores/devolucion/{{ devolucion.token }}/aprobar/" class="btn btn-aprobar">
+                    <i class="fas fa-check"></i> Aprobar
+                </a>
+                <a href="/proveedores/devolucion/{{ devolucion.token }}/rechazar/" class="btn btn-rechazar">
+                    <i class="fas fa-times"></i> Rechazar
+                </a>
+            </div>
+            <p style="color: #666; font-size: 0.85rem; margin-top: 15px; margin-bottom: 0;">
+                <i class="fas fa-info-circle"></i> Al aprobar o rechazar, podrá escribir el motivo de su respuesta
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
