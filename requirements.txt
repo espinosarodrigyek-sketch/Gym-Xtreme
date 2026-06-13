@@ -1,5 +1,5 @@
 Django==4.2.16
 gunicorn==26.0.0
-dj-database-url==2.2.0
-psycopg2-binary==2.9.9
+mysqlclient==2.2.8
+PyMySQL==1.1.1
 python-dotenv==1.0.1
