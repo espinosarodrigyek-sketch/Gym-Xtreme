@@ -16,7 +16,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-change-in
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'gym-xtreme.onrender.com',
+]
 
 SESSION_COOKIE_AGE = 1209600
 SESSION_COOKIE_HTTPONLY = True
