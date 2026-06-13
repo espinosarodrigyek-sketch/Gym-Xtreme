@@ -8,6 +8,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # =========================
 # SEGURIDAD
 # =========================
@@ -92,19 +93,18 @@ WSGI_APPLICATION = 'gym.wsgi.application'
 
 
 # =========================
-# BASE DE DATOS (RENDER POSTGRESQL)
+# BASE DE DATOS (POSTGRESQL RENDER)
 # =========================
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,
-        ssl_require=True
+        conn_max_age=600
     )
 }
 
 
 # =========================
-# VALIDADORES
+# VALIDADORES DE CONTRASEÑA
 # =========================
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -127,8 +127,8 @@ USE_TZ = True
 # STATIC / MEDIA
 # =========================
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -164,7 +164,7 @@ CACHES = {
 
 
 # =========================
-# LOGGING (RENDER SAFE)
+# LOGGING
 # =========================
 LOGGING = {
     'version': 1,
@@ -182,7 +182,7 @@ LOGGING = {
 
 
 # =========================
-# SECURITY
+# SEGURIDAD (PRODUCCIÓN)
 # =========================
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
