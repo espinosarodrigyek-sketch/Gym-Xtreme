@@ -1,6 +1,6 @@
 Django==4.2.16
 gunicorn==21.2.0
 dj-database-url==2.2.0
-psycopg2-binary==2.9.9
-whitenoise
+psycopg[binary]
+whitenoise==6.12.0
 PyMySQL==1.1.0
