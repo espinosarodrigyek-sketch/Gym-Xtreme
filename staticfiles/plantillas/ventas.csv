@@ -1,0 +1,4 @@
+username,producto_id,cantidad,precio_unitario,metodo_pago
+cliente1,1,2,45000,efectivo
+cliente1,2,1,32000,tarjeta_credito
+cliente2,3,1,38000,transferencia

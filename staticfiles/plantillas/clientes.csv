@@ -1,0 +1,6 @@
+username,email,password,first_name,last_name,telefono,edad,peso,estatura
+cliente1,cliente1@ejemplo.com,gym123456,Juan,Perez,3001234567,28,75.5,1.75
+cliente2,cliente2@ejemplo.com,gym123456,Maria,Garcia,3002345678,32,68.0,1.62
+cliente3,cliente3@ejemplo.com,gym123456,Carlos,Rodriguez,3003456789,25,82.3,1.80
+cliente4,cliente4@ejemplo.com,gym123456,Ana,Martinez,3004567890,30,55.0,1.58
+cliente5,cliente5@ejemplo.com,gym123456,Pedro, Lopez,3005678901,35,90.0,1.78
